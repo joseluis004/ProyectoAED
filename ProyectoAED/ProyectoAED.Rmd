@@ -1,0 +1,152 @@
+---
+title: "Análisis exploratorio de la calidad del aire en València"
+author:
+  - name: "Noa Martín Hodar"
+    affil: "1"
+affiliation:
+  - num: 1
+    address: |
+      Máster en Ciencia de Datos
+      Universidad o centro de estudios
+      València, España
+    email: correo@ejemplo.com
+authorcitation: |
+  Apellido, N.
+correspondence: |
+  correo@ejemplo.com
+journal: notspecified
+type: article
+status: submit
+simplesummary: |
+  Proyecto académico de análisis exploratorio de datos de calidad del aire en València.
+abstract: |
+  Resumen pendiente de redactar cuando se hayan completado los análisis.
+keywords: |
+  calidad del aire; València; NO2; PM10; O3; análisis exploratorio
+bibliography: mybibfile.bib
+appendix: appendix.tex
+endnotes: false
+header-includes:
+  - \providecommand{\pandocbounded}[1]{#1}
+output:
+  rticles::mdpi_article:
+    number_sections: true
+    keep_tex: true
+    extra_dependencies: longtable
+---
+
+```{r configuracion, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{=latex}
+\renewcommand{\contentsname}{Índice del proyecto}
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+```
+
+# Introducción
+
+## Objetivo del proyecto
+
+El objetivo es realizar un análisis exploratorio de la calidad del aire en los 19 distritos de València, utilizando inicialmente el fichero "calidad_aire.csv" descargado del portal de datos abiertos del Ayuntamiento de Valencia....
+
+## Preguntas de investigación
+
+1. ¿Cómo se distribuyen los niveles de NO2, PM10 y O3 entre las estaciones de medición? ¿Hay diferencias entre distritos?
+
+2. ¿Existe relación entre la densidad de población de cada distrito y sus niveles de contaminación?
+
+3. ¿Cómo evolucionan los contaminantes a lo largo del tiempo? ¿Se observa estacionalidad?
+
+4. ¿Qué días o períodos presentan valores atípicos?
+
+5. ¿Se puede predecir si una estación superará el umbral diario de NO2 de la OMS a partir de variables meteorológicas y temporales?
+
+# Datos
+
+## Fuentes de datos previstas
+
+Se prevé utilizar registros horarios de contaminantes y meteorología del Portal de Datos Abiertos del Ayuntamiento de València, información sobre la ubicación y el distrito de cada estación de medida, datos de población por distrito del Padrón Municipal e información sobre intensidad de tráfico de las espiras electromagnéticas. En esta primera versión se trabaja con `calidad_aire.csv`; ...
+
+# calidad_aire.csv
+
+## Importación del fichero
+
+El fichero se lee con separador de punto y coma. Para evitar depender de una ruta absoluta del ordenador, el código busca `calidad_aire.csv` en la carpeta del proyecto y, después, dentro de `data/`.
+
+```{r importacion}
+
+#Cargamos la librería "readr"
+library(readr)
+
+#Importamos usando ruta relativa 
+fichero <- "calidad_aire.csv"
+
+datos <- read.csv(fichero, sep = ";", fileEncoding = "UTF-8")
+```
+
+## Conversión de la fecha y hora
+
+El archivo calidad_aire.csv trae la fecha con una letra “T” en medio (ej.:2020-01-01T00:00:00). R necesita interpretarla como una fecha real y no como un texto plano para poder hacer gráficos temporales después. Por lo que convertiremos la columna “Fecha” a formato fecha-hora real con as.POSIXct:
+
+```{r conversion-fecha}
+datos$Fecha <- as.POSIXct(datos$Fecha, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+
+```
+
+## Estructura del conjunto de datos
+
+Se revisa la estructura del conjunto de datos para comprobar los tipos de las variables y el número de observaciones y columnas.
+
+```{r estructura-datos}
+str(datos)
+#La estructura del dataset cuenta con 449.026 observaciones y 27 variables.
+#Observamos la columna Fecha correctamente convertida a tipo POSIXct.
+```
+
+## Primera revisión de los valores perdidos
+
+Calculamos número de valores ausentes por columna :
+
+```{r valores-perdidos}
+##colSums(is.na(datos) 
+nulos_por_columna <- sort(colSums(is.na(datos)),decreasing = TRUE)
+
+#Mostramos el resultado en pantalla:
+print(nulos_por_columna)
+```
+Al analizar la integridad de los datos, lo primero que destaca es que las columnas clave como la fecha, la hora, la estación y el día de la semana no tienen ni un solo valor nulo, lo que nos asegura una estructura temporal completamente limpia y continua para trabajar.
+
+En cuanto a las variables contaminantes se observa una clara diferencia en su disponibilidad,indicio claro de las limitaciones instrumentales, ya que las casetas meteorológicas más sencillas miden menos parámetros que las estaciones mejor equipadas:
+
+* Por un lado, los contaminantes principales como el NO2, el PM10 y el O3, junto con las variables meteorológicas, muestran una cantidad de datos muy robusta y una disponibilidad alta, lo que nos da una base sólida para realizar un análisis estadístico
+
+* Por otro lado, compuestos más específicos como el benceno C6H6, el tolueno C7H8, el xileno C8H10o el ruido presentan ausencias masivas con cientos de miles de datos perdidos.
+
+Factor que hemos considerado a la hora de seleccionar las variables definitivas para nuestro estudio.
+
+# Acondicionamiento de los datos
+
+# Análisis de datos perdidos e imputación
+
+# Detección de valores atípicos
+
+# Análisis univariante
+
+# Análisis bivariante
+
+# Análisis temporal
+
+# Modelo predictivo
+
+# Discusión
+
+# Conclusiones finales
+
+# Aportaciones adicionales
