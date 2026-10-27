@@ -269,19 +269,21 @@ Con esta transformación, garantizamos la continuidad de las instancias, dejando
 
 ### Detección de valores atípicos (*Outliers*):
 
-Siguiendo los principios del Análisis Exploratorio de Datos, la búsqueda de anomalías se centra en identificar valores fuera de rango o registros que distorsionen las distribuciones de probabilidad. Para abordarlos de manera resistente, aplicamos dos estrategias:
+La búsqueda de anomalías se centra en identificar valores fuera de rango que puedan distorsionar la smétricas estadísitcas. Por ejemplo, valores como la radiación negativa ($-7.0$) son físicamente imposibles, por lo que podemos sustiruirlo por NA.
 
-1.  **Limpieza de errores físicos (Filtro directo):** Valores como la Radiación negativa ($-7.0$) son físicamente imposibles. Los eliminaremos sustituyéndolos por NA o filtrándolos directamente.
+Para los contaminantes como el $NO_2$, consideramos *outliers* aquellos valores que superan el límite del rango intercuartílico ($1.5 \times IQR$) en el boxplot. No los borraremos, ya que, aunque sean considerados outliers, son datos de contaminación que el proyecto debe estudiar.
 
-2.  **Identificación estadística de picos (Criterio del Boxplot):** Para los contaminantes como el $NO_2$, consideramos *outliers* aquellos valores que superan el límite del rango intercuartílico ($1.5 \times IQR$). No los borraremos, ya que en calidad del aire representan episodios críticos de contaminación que el proyecto debe estudiar.
-
-Ejecutamos el análisis visual y el filtrado de las inconsistencias físicas:
+Graficamos el boxplot:
 
 ```{r}
 
-#Corregimos el error físico de la Radiación sustituyendo los valores negativos por la mediana de la variable:
+#Corregimos el error físico de la radiación sustituyendo los valores negativos por la mediana de la variable:
+
 mediana_rad <- median(datos_limpios$Radiación, na.rm = TRUE)
 datos_limpios$Radiación[datos_limpios$Radiación < 0] <- mediana_rad
+
+#Configuramos la pantalla para tener 1 fila y 2 columnas
+par(mfrow = c(1, 2))
 
 #Boxplot del NO2 para detectar outliers
 boxplot(datos_limpios$NO2, 
@@ -301,12 +303,12 @@ boxplot(datos_limpios$NO2,
 ```
 Al observar el *boxplot* de la distribución del $NO_2$, podemos extraer tres conclusiones para el análisis exploratorio:
 
-*   **Asimetría hacia la derecha:** La caja azul y la línea negra central (la mediana) y los cuartiles se concentran entre los 10 y los 30 $\mu g/m^3$. Esto demuestra que la mayor parte del tiempo la ciudad de Valencia goza de niveles de dióxido de nitrógeno bajos y seguros.
+*  La caja azul y la línea negra central (la mediana) y los cuartiles se concentran entre los 10 y los 30 $\mu g/m^3$. Esto demuestra que la mayor parte del tiempo la ciudad de Valencia goza de niveles de dióxido de nitrógeno bajos y seguros.
 Al alargarse el bigote derecho y la sucesión de puntos mucho más que el izquierdo, el gráfico revela una distribución con asimetría indicio de que los valores bajos y moderados son lo habitual en el registro atmosférico de la ciudad, mientras que las concentraciones muy elevadas son fenómenos excepcionales.
 
-*   **Presencia masiva de outliers:** A partir de aproximadamente los 55 $\mu \ g/m^3$ (el límite del bigote derecho), se observa una densa línea negra continua formada por cientos de puntos individuales que se extiende hasta superar los 200 $\mu \ g/m^3$. Estadísticamente son *outliers*, pero no son errores de medición; representan episodios reales de alta contaminación (horas punta de tráfico, retenciones o condiciones meteorológicas que impiden la dispersión del aire).
+* A partir de aproximadamente los 55 $\mu \ g/m^3$ (el límite del bigote derecho), se observa una densa línea negra continua formada por cientos de *outliers* que se extiende hasta superar los 200 $\mu \ g/m^3$. Estadísticamente son *outliers*, pero no son errores de medición; representan episodios reales de alta contaminación (horas punta de tráfico, retenciones o condiciones meteorológicas que impiden la dispersión del aire).
 
-*   **Justificación de la mediana:** El gráfico expone visualmente el grave peligro de utilizar la media como método de imputación, debido a la franja derecha de outliers, una media aritmética se vería forzamadamente arrastrada hacia datos altos, ofreciendo un valor irreal de la contaminación promedio. El Boxplot justifica la decisión de utilizar la mediana (representada por la línea central de la caja) garantizando que los procesos de imputación y análisis univariante posteriores no se vean sesgados por los picos de contaminación.
+* El gráfico expone visualmente el grave peligro de utilizar la media como método de imputación, debido a la franja derecha de outliers, una media aritmética se vería forzamadamente arrastrada hacia datos altos, ofreciendo un valor irreal de la contaminación promedio. El Boxplot justifica la decisión de utilizar la mediana (representada por la línea central de la caja) garantizando que los procesos de imputación y análisis univariante posteriores no se vean sesgados por los picos de contaminación.
 
 Con la eliminación de los errores de rango (radiación) y la identificación de los picos de contaminación, transformamos definitivamente el set de datos en **Consistent Data**. A partir de este momento, los datos están listos para ser analizados mediante estadísticos descriptivos.
 
@@ -356,6 +358,9 @@ Aplicando la cuarta R **Revelación (Data visualization)** (diapositiva 18 ref 1
 #Cargamos la librería ggplot2
 library(ggplot2)
 
+#Cargamos librería para poder juntar ambas gráficas
+library(patchwork)
+
 #Inicializamos el objeto gráfico definiendo el set de datos y aes()
 grafico <- ggplot(data = datos_limpios, mapping = aes(x = NO2))
 
@@ -382,15 +387,6 @@ grafico_hist_no2
 #Guardamos el resultado en la carpeta results
 ggsave(filename = "../results/Histograma_NO2.pdf", plot = grafico_hist_no2)
 
-
-```
-
-Este gráfico es el ejemplo perfecto de la asimetría mencionada anteriormente maracda por el sesgo a la derecha.
-
-El histograma se dispara brutalmente hacia arriba (pico verde vertical) alrededor del valor 18, que es exactamente la mediana que calculamos en el dataframe. Ahí es donde se concentra la inmensa mayoría de los 449.026 datos.
-Por otro lado, a partir de 50, las barras azules se vuelven casi invisibles y la línea verde se arrastra pegada al eje x hasta pasar de 200. Esos son los famosos outliers o picos de contaminación extrema de los que hablábamos.
-
-```{r}
 #Creamos también el gráfico de violín segmentando por la columna estación
 violin_estaciones <- ggplot(data = datos_limpios,
   mapping = aes(x = Estación,y = NO2, fill = Estación)) + geom_violin() +
@@ -408,8 +404,17 @@ violin_estaciones
 
 #Guardamos
 ggsave(filename = "../results/Violin_Estaciones_NO2.pdf", plot = violin_estaciones)
+
+#Los mostramos juntos en pantalla
+grafico_hist_no2 + violin_estaciones
+
 ```
-El gráfico de violines revela de manera muy directa cómo cambia la contaminación según el punto de medición de la ciudad, permitiendo extraer tres conclusiones:
+
+El histograma de la izquierda se dispara brutalmente hacia arriba (pico verde vertical) alrededor del valor 18, que es exactamente la mediana que calculamos en el dataframe. Ahí es donde se concentra la inmensa mayoría de los 449.026 datos. También refleja el sesgo hacia la derecha marcado por los outilers, mencionado en el anterior apartado.
+
+Por otro lado, a partir de 50, las barras azules se vuelven casi invisibles y la línea verde se arrastra pegada al eje x hasta pasar de 200. Esos son los famosos outliers o picos de contaminación extrema de los que hablábamos.
+
+El gráfico de violines de la derecha revela de manera muy directa cómo cambia la contaminación según el punto de medición de la ciudad, permitiendo extraer tres conclusiones:
 
 * Las estaciones urbanas con mucho tráfico directo, como *Pista Silla*, *Bulevard Sud* o *Avda. Francia*, muestran violines con más estirados hacia arriba y líneas verticales muy altas. Esto indica que en estas zonas los picos extremos de contaminación son muy frecuentes debido a la circulación de vehículos.
 
