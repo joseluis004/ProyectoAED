@@ -1,0 +1,1173 @@
+%  LaTeX support: latex@mdpi.com
+%  For support, please attach all files needed for compiling as well as the log file, and specify your operating system, LaTeX version, and LaTeX editor.
+
+%=================================================================
+% pandoc conditionals added to preserve backwards compatibility with previous versions of rticles
+
+\documentclass[notspecified,article,submit,oneauthor,pdftex]{Definitions/mdpi}
+
+
+%% Some pieces required from the pandoc template
+\setlist[itemize]{leftmargin=*,labelsep=5.8mm}
+\setlist[enumerate]{leftmargin=*,labelsep=4.9mm}
+
+
+%--------------------
+% Class Options:
+%--------------------
+
+%---------
+% article
+%---------
+% The default type of manuscript is "article", but can be replaced by:
+% abstract, addendum, article, book, bookreview, briefreport, casereport, comment, commentary, communication, conferenceproceedings, correction, conferencereport, entry, expressionofconcern, extendedabstract, datadescriptor, editorial, essay, erratum, hypothesis, interestingimage, obituary, opinion, projectreport, reply, retraction, review, perspective, protocol, shortnote, studyprotocol, systematicreview, supfile, technicalnote, viewpoint, guidelines, registeredreport, tutorial
+% supfile = supplementary materials
+
+%----------
+% submit
+%----------
+% The class option "submit" will be changed to "accept" by the Editorial Office when the paper is accepted. This will only make changes to the frontpage (e.g., the logo of the journal will get visible), the headings, and the copyright information. Also, line numbering will be removed. Journal info and pagination for accepted papers will also be assigned by the Editorial Office.
+
+%------------------
+% moreauthors
+%------------------
+% If there is only one author the class option oneauthor should be used. Otherwise use the class option moreauthors.
+
+%---------
+% pdftex
+%---------
+% The option pdftex is for use with pdfLaTeX. Remove "pdftex" for (1) compiling with LaTeX & dvi2pdf (if eps figures are used) or for (2) compiling with XeLaTeX.
+
+%=================================================================
+% MDPI internal commands - do not modify
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2023}
+\copyrightyear{2023}
+%\externaleditor{Academic Editor: Firstname Lastname}
+\datereceived{ }
+\daterevised{ } % Comment out if no revised date
+\dateaccepted{ }
+\datepublished{ }
+%\datecorrected{} % For corrected papers: "Corrected: XXX" date in the original paper.
+%\dateretracted{} % For corrected papers: "Retracted: XXX" date in the original paper.
+\hreflink{https://doi.org/} % If needed use \linebreak
+%\doinum{}
+%\pdfoutput=1 % Uncommented for upload to arXiv.org
+
+%=================================================================
+% Add packages and commands here. The following packages are loaded in our class file: fontenc, inputenc, calc, indentfirst, fancyhdr, graphicx, epstopdf, lastpage, ifthen, float, amsmath, amssymb, lineno, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, tabto, xcolor, colortbl, soul, multirow, microtype, tikz, totcount, changepage, attrib, upgreek, array, tabularx, pbox, ragged2e, tocloft, marginnote, marginfix, enotez, amsthm, natbib, hyperref, cleveref, scrextend, url, geometry, newfloat, caption, draftwatermark, seqsplit
+% cleveref: load \crefname definitions after \begin{document}
+
+%=================================================================
+% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition, Notation, Assumption
+%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
+
+%=================================================================
+% Full title of the paper (Capitalized)
+\Title{Análisis exploratorio de la calidad del aire en València}
+
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{Análisis exploratorio de la calidad del aire en València}
+
+% Author Orchid ID: enter ID or remove command
+%\newcommand{\orcidauthorA}{0000-0000-0000-000X} % Add \orcidA{} behind the author's name
+%\newcommand{\orcidauthorB}{0000-0000-0000-000X} % Add \orcidB{} behind the author's name
+
+
+% Authors, for the paper (add full first names)
+\Author{Jose Luis, Marcos$^{1}$}
+
+
+%\longauthorlist{yes}
+
+
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{Jose Luis, Marcos}
+
+% MDPI internal command: Authors, for citation in the left column
+%\AuthorCitation{Lastname, F.; Lastname, F.; Lastname, F.}
+% If this is a Chicago style journal: Lastname, Firstname, Firstname Lastname, and Firstname Lastname.
+\AuthorCitation{Apellido, N.}
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{%
+$^{1}$ \quad Máster en Ciencia de Datos Universitat de
+València; \href{mailto:correo@ejemplo.com}{\nolinkurl{correo@ejemplo.com}}\\
+}
+
+% Contact information of the corresponding author
+\corres{Correspondence: \href{mailto:correo@ejemplo.com}{\nolinkurl{correo@ejemplo.com}}}
+
+% Current address and/or shared authorship
+
+
+
+
+
+
+
+
+% The commands \thirdnote{} till \eighthnote{} are available for further notes
+
+% Simple summary
+\simplesumm{Proyecto de la asignatura Análisis Exploratorio de Datos
+(AED) sobre la calidad del aire en Valencia.}
+
+%\conference{} % An extended version of a conference paper
+
+% Abstract (Do not insert blank lines, i.e. \\)
+\abstract{Resumen}
+
+
+% Keywords
+\keyword{calidad del aire; contaminantes; NO2; PM10; O3; análisis
+exploratorio}
+
+% The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
+%\PACS{J0101}
+%\MSC{}
+%\JEL{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Diversity
+%\LSID{\url{http://}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Applied Sciences
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Data
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Toxins
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Encyclopedia
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Advances in Respiratory Medicine
+%\addhighlights{yes}
+%\renewcommand{\addhighlights}{%
+
+%\noindent This is an obligatory section in “Advances in Respiratory Medicine”, whose goal is to increase the discoverability and readability of the article via search engines and other scholars. Highlights should not be a copy of the abstract, but a simple text allowing the reader to quickly and simplified find out what the article is about and what can be cited from it. Each of these parts should be devoted up to 2~bullet points.\vspace{3pt}\\
+%\textbf{What are the main findings?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}\vspace{3pt}
+%\textbf{What is the implication of the main finding?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}
+%}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pandoc syntax highlighting
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+\providecommand{\pandocbounded}[1]{#1}
+\usepackage{longtable}
+
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\contentsname}{Índice del proyecto}
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+
+\section{Introducción}\label{introducciuxf3n}
+
+El proyecto nace con el propósito de abordar un problema real de
+tratamiento de datos, aplicando de manera práctica los conocimientos
+adquiridos a lo largo de la asignatura de Análisis Exploratorio de Datos
+(AED). Para este análisis, hemos seleccionado dos conjuntos de datos
+públicos y oficiales. Por un lado, el registro de
+\emph{calidad\_aire.csv}, obtenido directamente a través del portal de
+datos abiertos del Ayuntamiento de Valencia.
+
+Por otro lado, \emph{padron.csv} \ldots{}
+
+\section{Objetivo del proyecto}\label{objetivo-del-proyecto}
+
+El objetivo es realizar un análisis exploratorio de la calidad del aire
+en los distritos de la ciudad de Valencia, combinando datos abiertos de
+contaminación atmosférica (NO2, PM10, O3) con información demográfica.
+Logrando así responder a cinco preguntas sobre la distribución espacial
+de los contaminantes, su relación con la densidad de población y su
+evolución temporal.
+
+\section{Preguntas de
+investigación}\label{preguntas-de-investigaciuxf3n}
+
+Antes de manipular la información, realizamos un primer acercamiento
+visual y estructural de los archivos para formular las preguntas clave
+que guiarán nuestro proyecto:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  ¿Cómo se distribuyen los niveles de NO2, PM10 y O3 entre las
+  estaciones de medición? ¿Hay diferencias entre distritos?
+\item
+  ¿Existe relación entre la densidad de población de cada distrito y sus
+  niveles de contaminación?
+\item
+  ¿Cómo evolucionan los contaminantes a lo largo del tiempo? ¿Se observa
+  estacionalidad?
+\item
+  ¿Qué días o períodos presentan valores atípicos?
+\item
+  ¿Se puede predecir si una estación superará el umbral diario de NO2 de
+  la OMS a partir de variables meteorológicas y temporales?
+\end{enumerate}
+
+\section{Fuentes de datos}\label{fuentes-de-datos}
+
+Utilizaremos registros sobre contaminantes y meteorología del portal de
+datos abiertos del Ayuntamiento de Valencia, información sobre la
+ubicación y el distrito de cada estación de medida y datos de población
+por distrito del Padrón Municipal:
+
+\begin{itemize}
+\tightlist
+\item
+  calidad\_aire.csv
+\item
+  padron.csv
+\end{itemize}
+
+Este proyecto se aborda bajo el enfoque de un \textbf{Análisis
+Exploratorio de Datos (AED)}. Siguiendo las diapositivas de (Referencia
+1 de la bib), nuestro objetivo no es confirmar una hipótesis
+preestablecida (Análisis Confirmatorio), sino explorar de forma abierta
+\emph{datasets} para descubrir patrones ocultos, identificar estructuras
+de interés y generar nuevas preguntas sobre el comportamiento ambiental
+de la ciudad, así como responder a las ya planteadas.
+
+El formato elegido es CSV, un tipo de documento en formato abierto para
+representar datos en formato de tabla. Las columnas se separan por comas
+(o punto y coma) y las filas por saltos de línea.
+
+\subsection{Fichero calidad\_aire.csv}\label{fichero-calidad_aire.csv}
+
+Comenzamos trabajando con el archivo de texto \textbf{calidad\_aire.csv}
+
+\subsubsection{Importación y
+acondicionamiento:}\label{importaciuxf3n-y-acondicionamiento}
+
+El objetivo de este primer bloque es realizar una inspección global para
+detectar qué elementos debemos corregir.
+
+El archivo original se considera \textbf{Raw Data} debido a que contiene
+inconsistencias de formato (como la inserción de la letra ``T'' en las
+cadenas temporales). Mediante este proceso de acondicionamiento,
+transformaremos el archivo en un dataset \textbf{Technically Correct
+Data}, asegurando que R interprete cada variable bajo su tipo
+correspondiente.
+
+El fichero se lee con separador de punto y coma. Para evitar depender de
+una ruta absoluta del ordenador, el código busca
+\emph{calidad\_aire.csv} en la carpeta del proyecto y, después, dentro
+de la carpeta \emph{data}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Cargamos la librería "readr"}
+\FunctionTok{library}\NormalTok{(readr)}
+
+\CommentTok{\#Importamos usando ruta relativa }
+\NormalTok{fichero }\OtherTok{\textless{}{-}} \StringTok{"calidad\_aire.csv"}
+
+\NormalTok{datos }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(fichero, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{fileEncoding =} \StringTok{"UTF{-}8"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Exploración inicial}\label{exploraciuxf3n-inicial}
+
+Ejecutamos las funciones de inspección básicas (\emph{str()},
+\emph{head()}, \emph{tail()} y \emph{summary()}) para estudiar estado
+inicial del dataset.
+
+Este paso nos permitirá verificar la transición de nuestros datos hacia
+el estado de \textbf{Technically Correct Data} (diapositiva 12 ref 1 de
+la bib):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Inspeccionamos estructura interna de las variables}
+\FunctionTok{str}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    449026 obs. of  27 variables:
+##  $ Fecha                      : chr  "2020-01-01T00:00:00" "2020-01-01T00:00:00" "2020-01-01T00:00:00" "2020-01-01T00:00:00" ...
+##  $ Día.de.la.semana           : chr  "Miércoles" "Miércoles" "Miércoles" "Miércoles" ...
+##  $ Día.del.mes                : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Hora                       : chr  "0:00:00" "1:00:00" "2:00:00" "3:00:00" ...
+##  $ Estación                   : chr  "Avda. Francia" "Avda. Francia" "Avda. Francia" "Avda. Francia" ...
+##  $ PM1                        : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ PM2.5                      : int  77 65 47 43 36 28 25 24 22 22 ...
+##  $ PM10                       : int  83 70 51 46 39 30 27 26 24 24 ...
+##  $ NO                         : int  16 20 16 16 10 2 2 6 8 6 ...
+##  $ NO2                        : num  45 37 35 29 23 19 19 22 17 19 ...
+##  $ NOx                        : int  69 68 61 53 39 23 22 32 29 27 ...
+##  $ O3                         : num  3 3 3 3 3 3 3 3 3 5 ...
+##  $ SO2                        : num  7 5 5 5 4 4 3 4 4 3 ...
+##  $ CO                         : num  0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 ...
+##  $ Velocidad.del.viento       : num  1.3 1.9 2.2 1.7 1.2 2.1 0.3 1.5 2.5 0.4 ...
+##  $ Dirección.del.viento       : int  313 315 316 310 312 314 304 317 315 298 ...
+##  $ NH3                        : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ C7H8                       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ C6H6                       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Ruido                      : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ C8H10                      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Temperatura                : num  6.6 6.2 5.9 5.5 5.3 5.1 4.9 4.7 5.1 4.9 ...
+##  $ Humedad.relativa           : int  89 89 90 90 89 88 87 87 83 85 ...
+##  $ Presión                    : int  1019 1019 1019 1019 1018 1018 1018 1019 1019 1020 ...
+##  $ Radiación                  : int  0 0 0 0 0 0 0 0 11 45 ...
+##  $ Precipitación              : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Velocidad.máxima.del.viento: num  3.2 4.2 4.1 4.1 3.8 4.5 2 3.1 4.6 2.3 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Número de filas y columnas en total}
+\FunctionTok{dim}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 449026     27
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Observamos la columna Fecha correctamente convertida a tipo POSIXct.}
+
+\CommentTok{\#Inpeccionamos las primera filas, por defecto son 6}
+\FunctionTok{head}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 Fecha Día.de.la.semana Día.del.mes    Hora      Estación PM1
+## 1 2020-01-01T00:00:00        Miércoles           1 0:00:00 Avda. Francia  NA
+## 2 2020-01-01T00:00:00        Miércoles           1 1:00:00 Avda. Francia  NA
+## 3 2020-01-01T00:00:00        Miércoles           1 2:00:00 Avda. Francia  NA
+## 4 2020-01-01T00:00:00        Miércoles           1 3:00:00 Avda. Francia  NA
+## 5 2020-01-01T00:00:00        Miércoles           1 4:00:00 Avda. Francia  NA
+## 6 2020-01-01T00:00:00        Miércoles           1 5:00:00 Avda. Francia  NA
+##   PM2.5 PM10 NO NO2 NOx O3 SO2  CO Velocidad.del.viento Dirección.del.viento
+## 1    77   83 16  45  69  3   7 0.2                  1.3                  313
+## 2    65   70 20  37  68  3   5 0.2                  1.9                  315
+## 3    47   51 16  35  61  3   5 0.1                  2.2                  316
+## 4    43   46 16  29  53  3   5 0.1                  1.7                  310
+## 5    36   39 10  23  39  3   4 0.1                  1.2                  312
+## 6    28   30  2  19  23  3   4 0.1                  2.1                  314
+##   NH3 C7H8 C6H6 Ruido C8H10 Temperatura Humedad.relativa Presión Radiación
+## 1  NA   NA   NA    NA    NA         6.6               89    1019         0
+## 2  NA   NA   NA    NA    NA         6.2               89    1019         0
+## 3  NA   NA   NA    NA    NA         5.9               90    1019         0
+## 4  NA   NA   NA    NA    NA         5.5               90    1019         0
+## 5  NA   NA   NA    NA    NA         5.3               89    1018         0
+## 6  NA   NA   NA    NA    NA         5.1               88    1018         0
+##   Precipitación Velocidad.máxima.del.viento
+## 1             0                         3.2
+## 2             0                         4.2
+## 3             0                         4.1
+## 4             0                         4.1
+## 5             0                         3.8
+## 6             0                         4.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Inspeccionamos las 6 últimas filas}
+\FunctionTok{tail}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      Fecha Día.de.la.semana Día.del.mes     Hora
+## 449021 2021-12-31T00:00:00          Viernes          31 18:00:00
+## 449022 2021-12-31T00:00:00          Viernes          31 19:00:00
+## 449023 2021-12-31T00:00:00          Viernes          31 20:00:00
+## 449024 2021-12-31T00:00:00          Viernes          31 21:00:00
+## 449025 2021-12-31T00:00:00          Viernes          31 22:00:00
+## 449026 2021-12-31T00:00:00          Viernes          31 23:00:00
+##                       Estación PM1 PM2.5 PM10 NO NO2 NOx O3 SO2  CO
+## 449021 Puerto llit antic Túria  NA    19   21  3  39  44 23   3 0.3
+## 449022 Puerto llit antic Túria  NA    25   27 30  56 103  5   3 0.3
+## 449023 Puerto llit antic Túria  NA    24   26 22  59  93  1   2 0.4
+## 449024 Puerto llit antic Túria  NA    24   28 21  53  86  1   3 0.4
+## 449025 Puerto llit antic Túria  NA    28   31 25  49  87  1   2 0.5
+## 449026 Puerto llit antic Túria  NA    30   34 31  50  98  1   3 0.5
+##        Velocidad.del.viento Dirección.del.viento NH3 C7H8 C6H6 Ruido C8H10
+## 449021                  0.8                  345  NA   NA   NA    NA    NA
+## 449022                  0.5                    2  NA   NA   NA    NA    NA
+## 449023                  0.2                  360  NA   NA   NA    NA    NA
+## 449024                  0.1                   54  NA   NA   NA    NA    NA
+## 449025                  0.2                   41  NA   NA   NA    NA    NA
+## 449026                  0.3                  359  NA   NA   NA    NA    NA
+##        Temperatura Humedad.relativa Presión Radiación Precipitación
+## 449021        11.3               95    1028         1             0
+## 449022        10.6               99    1028         1             0
+## 449023        10.0               99    1029         1             0
+## 449024         9.4               99    1028         1             0
+## 449025         9.6               99    1030         1             0
+## 449026         9.4               99    1028         1             0
+##        Velocidad.máxima.del.viento
+## 449021                         1.2
+## 449022                         1.1
+## 449023                         0.4
+## 449024                         0.1
+## 449025                         0.4
+## 449026                         0.6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Visualizamos el resumen estadística preliminar}
+\FunctionTok{summary}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Fecha           Día.de.la.semana    Día.del.mes        Hora          
+##  Length:449026      Length:449026      Min.   : 1.00   Length:449026     
+##  Class :character   Class :character   1st Qu.: 8.00   Class :character  
+##  Mode  :character   Mode  :character   Median :16.00   Mode  :character  
+##                                        Mean   :15.72                     
+##                                        3rd Qu.:23.00                     
+##                                        Max.   :31.00                     
+##                                                                          
+##    Estación              PM1             PM2.5             PM10       
+##  Length:449026      Min.   :  0.0    Min.   :  0.00   Min.   :  0.00  
+##  Class :character   1st Qu.:  3.0    1st Qu.:  5.00   1st Qu.:  8.00  
+##  Mode  :character   Median :  7.0    Median :  9.00   Median : 14.00  
+##                     Mean   :  9.3    Mean   : 11.72   Mean   : 18.36  
+##                     3rd Qu.: 12.0    3rd Qu.: 15.00   3rd Qu.: 24.00  
+##                     Max.   :177.0    Max.   :193.00   Max.   :372.00  
+##                     NA's   :374126   NA's   :226614   NA's   :226609  
+##        NO              NO2              NOx               O3        
+##  Min.   :  1.00   Min.   :  0.00   Min.   :  2.00   Min.   :  0.10  
+##  1st Qu.:  2.00   1st Qu.:  9.00   1st Qu.: 12.00   1st Qu.: 28.00  
+##  Median :  3.00   Median : 18.00   Median : 24.00   Median : 53.00  
+##  Mean   : 10.33   Mean   : 24.28   Mean   : 39.68   Mean   : 51.02  
+##  3rd Qu.:  9.00   3rd Qu.: 34.00   3rd Qu.: 48.00   3rd Qu.: 72.00  
+##  Max.   :532.00   Max.   :229.00   Max.   :987.00   Max.   :172.00  
+##  NA's   :113588   NA's   :96232    NA's   :113587   NA's   :122897  
+##       SO2               CO         Velocidad.del.viento Dirección.del.viento
+##  Min.   :  0.00   Min.   :0.10     Min.   : 0.000       Min.   :  0.0       
+##  1st Qu.:  3.00   1st Qu.:0.10     1st Qu.: 0.500       1st Qu.:124.0       
+##  Median :  3.00   Median :0.10     Median : 1.600       Median :232.0       
+##  Mean   :  3.79   Mean   :0.16     Mean   : 2.352       Mean   :199.8       
+##  3rd Qu.:  4.00   3rd Qu.:0.20     3rd Qu.: 3.400       3rd Qu.:294.0       
+##  Max.   :167.00   Max.   :1.80     Max.   :26.400       Max.   :360.0       
+##  NA's   :124888   NA's   :298277   NA's   :15832        NA's   :13442       
+##       NH3              C7H8             C6H6            Ruido       
+##  Min.   : 0.0     Min.   :  0.1    Min.   : 0.2     Min.   :  6.0   
+##  1st Qu.: 3.0     1st Qu.:  1.3    1st Qu.: 0.4     1st Qu.: 57.0   
+##  Median : 5.0     Median :  2.9    Median : 0.9     Median : 60.0   
+##  Mean   : 5.1     Mean   :  4.6    Mean   : 1.4     Mean   : 59.7   
+##  3rd Qu.: 7.0     3rd Qu.:  5.6    3rd Qu.: 1.9     3rd Qu.: 62.0   
+##  Max.   :75.0     Max.   :231.7    Max.   :30.0     Max.   :250.0   
+##  NA's   :401307   NA's   :402240   NA's   :402660   NA's   :397324  
+##      C8H10         Temperatura    Humedad.relativa    Presión     
+##  Min.   :  0.1    Min.   : 0.70   Min.   : 11.00   Min.   : 976   
+##  1st Qu.:  0.3    1st Qu.:13.50   1st Qu.: 51.00   1st Qu.:1001   
+##  Median :  1.1    Median :18.10   Median : 66.00   Median :1004   
+##  Mean   :  2.1    Mean   :18.35   Mean   : 65.04   Mean   :1005   
+##  3rd Qu.:  2.6    3rd Qu.:23.40   3rd Qu.: 80.00   3rd Qu.:1009   
+##  Max.   :177.6    Max.   :41.60   Max.   :107.00   Max.   :1033   
+##  NA's   :402087   NA's   :16827   NA's   :32027    NA's   :13753  
+##    Radiación      Precipitación    Velocidad.máxima.del.viento
+##  Min.   :  -7.0   Min.   : 0.000   Min.   : 0.000             
+##  1st Qu.:   0.0   1st Qu.: 0.000   1st Qu.: 2.300             
+##  Median :   9.0   Median : 0.000   Median : 4.700             
+##  Mean   : 201.5   Mean   : 0.047   Mean   : 5.817             
+##  3rd Qu.: 364.0   3rd Qu.: 0.000   3rd Qu.: 8.000             
+##  Max.   :1129.0   Max.   :37.600   Max.   :42.500             
+##  NA's   :16182    NA's   :14525    NA's   :15736
+\end{verbatim}
+
+Al interpretar los resultados en consola de estas funciones, extraemos
+tres conclusiones inmediatas sobre nuestros datos:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Dimensión del sataset:} El set cuenta con \textbf{449,026
+  observaciones y 27 variables}.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Observaciones (filas): 449.026 en total.
+  \item
+    Variables (columnas): 27 en total.
+  \end{itemize}
+\end{enumerate}
+
+Al ser un volumen tan grande, confirmamos que el enfoque de este
+proyecto debe ser un \textbf{Análisis Exploratorio de Datos (AED)}
+asistido por R, buscando patrones en lugar de aplicar análisis
+confirmatorio.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{Inconsistencia en tipos de datos:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    La columna ``Fecha'' se ha importado como texto plano (chr) y
+    contiene una letra ``T'' intermedia (ej. 2020-01-01T00:00:00), lo
+    que impide a R tratarla como una línea de tiempo real.
+  \item
+    Las variables cualitativas ``Día.de.la.semana'', ``Hora'' y
+    ``Estación'' también figuran como texto (chr). Si las dejamos así,
+    no podremos agrupar los contaminantes por días o zonas en los
+    análisis univariantes y bivariantes.
+  \end{itemize}
+\item
+  \textbf{Anomalías en Summary():} La función \emph{summary()} nos
+  revela que compuestos como el Benceno (C6H6) o el Ruido tienen cerca
+  de 400.000 \textbf{valores perdidos (NAs)}, que existen picos extremos
+  de polución (mientras el 75\% del NOx está por debajo de 48, su máximo
+  se dispara a 987) y que la variable Radiación tiene un mínimo físico
+  imposible de -7.0.
+\end{enumerate}
+
+Para corregir los errores detectados en la previasualización y
+transformar los datos en un dataframe ``Técnicamente Correcto'',
+aplicamos dos soluciones inmediatas sobre las columnas:
+
+\paragraph{Conversión de la fecha y
+hora}\label{conversiuxf3n-de-la-fecha-y-hora}
+
+Transformamos la columna ``Fecha'' para eliminar el obstáculo de la
+letra ``T'' intermedia (ej.:2020-01-01T00:00:00), permitiendo que R la
+interprete como una variable cronológica real (POSIXct) para los futuros
+gráficos temporales, en lugar de textxo plano:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Fecha }\OtherTok{\textless{}{-}} \FunctionTok{as.POSIXct}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Fecha, }\AttributeTok{format =} \StringTok{"\%Y{-}\%m{-}\%dT\%H:\%M:\%S"}\NormalTok{, }\AttributeTok{tz =} \StringTok{"UTC"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Para comprender la importancia crítica de transformar los datos de
+\textbf{Raw Data} (texto plano) a \textbf{Technically Correct Data},
+contrastamos gráficamente el comportamiento de R ante ambos formatos.
+Representaremos la evolución del dióxido de nitrógeno (NO2) en la
+estación de ``Avda. Francia'' durante las primeras horas registradas en
+el dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Creamos el vector de NO2}
+\NormalTok{no2\_valores }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{45}\NormalTok{, }\DecValTok{35}\NormalTok{, }\FloatTok{6.3}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+
+\CommentTok{\#Vector en formato texto plano }
+\NormalTok{fechas\_texto }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"2016{-}07{-}31 13:00:00"}\NormalTok{, }\StringTok{"2018{-}06{-}23 12:00:00"}\NormalTok{, }\StringTok{"2020{-}01{-}01 00:00:00"}\NormalTok{, }\StringTok{"2020{-}02{-}01 00:00:00"}\NormalTok{)}
+
+\CommentTok{\#Vector en formato fecha real}
+\NormalTok{fechas\_reales }\OtherTok{\textless{}{-}} \FunctionTok{as.POSIXct}\NormalTok{(fechas\_texto, }\AttributeTok{format=}\StringTok{"\%Y{-}\%m{-}\%d \%H:\%M:\%S"}\NormalTok{, }\AttributeTok{tz=}\StringTok{"UTC"}\NormalTok{)}
+
+\CommentTok{\#Configuramos la pantalla para ver ambos gráficos uno al lado del otro}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\#Gráfica en formato texto (oculta los huecos reales)}
+\CommentTok{\#Para forzar a R a pintar el texto debemos convertir el vector fechas\_texto a tipo factor. Así R le asigna internamente una posición numérica (1, 2, 3, 4) a cada texto.}
+\FunctionTok{plot}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, no2\_valores, }
+     \AttributeTok{type =} \StringTok{"b"}\NormalTok{, }
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{, }
+     \AttributeTok{col =} \StringTok{"darkred"}\NormalTok{, }
+     \AttributeTok{xaxt =} \StringTok{"n"}\NormalTok{, }\CommentTok{\# Ocultamos el eje numérico 1, 2, 3, 4}
+     \AttributeTok{main =} \StringTok{"Gráfico A: Fechas como Texto (Falso Continuo)"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Fecha (Texto plano)"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"NO2 (ug/m3)"}\NormalTok{)}
+\FunctionTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{at =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{labels =}\NormalTok{ fechas\_texto, }\AttributeTok{cex.axis =} \FloatTok{0.7}\NormalTok{)}
+
+\CommentTok{\#Gráfica en formato fecha real (revela los saltos temporales)}
+
+\FunctionTok{plot}\NormalTok{(fechas\_reales, no2\_valores, }
+     \AttributeTok{type =} \StringTok{"b"}\NormalTok{, }
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"darkblue"}\NormalTok{, }
+     \AttributeTok{main =} \StringTok{"Gráfico B: Fechas como POSIXct"}\NormalTok{, }
+     \AttributeTok{xlab =} \StringTok{"Línea temporal real"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"NO2 (ug/m3)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{ProyectoAED_files/figure-latex/unnamed-chunk-1-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Restauramos los parámetros de la pantalla por defecto}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{Conversión de texto a variables categóricas
+(Factores)}\label{conversiuxf3n-de-texto-a-variables-categuxf3ricas-factores}
+
+Pasamos las columnas de agrupación a tipo \emph{factor}. Esto optimiza
+la memoria de R y nos habilita para segmentar y comparar estadísticos
+(como las medianas o medias de contaminación) según la estación
+meteorológica o la franja horaria.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Día.de.la.semana }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Día.de.la.semana)}
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Hora             }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Hora)}
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Estación         }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Estación)}
+
+\CommentTok{\#Verificamos las transformaciones}
+
+\FunctionTok{str}\NormalTok{(datos[}\FunctionTok{c}\NormalTok{(}\StringTok{"Fecha"}\NormalTok{, }\StringTok{"Día.de.la.semana"}\NormalTok{, }\StringTok{"Hora"}\NormalTok{, }\StringTok{"Estación"}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    449026 obs. of  4 variables:
+##  $ Fecha           : POSIXct, format: "2020-01-01" "2020-01-01" ...
+##  $ Día.de.la.semana: Factor w/ 7 levels "Domingo","Jueves",..: 5 5 5 5 5 5 5 5 5 5 ...
+##  $ Hora            : Factor w/ 24 levels "0:00:00","1:00:00",..: 1 2 13 18 19 20 21 22 23 24 ...
+##  $ Estación        : Factor w/ 12 levels "Avda. Francia",..: 1 1 1 1 1 1 1 1 1 1 ...
+\end{verbatim}
+
+Con este acondicionamiento finalizado, el set de datos ya está
+estructurado correctamente. Todos los estadísticos descriptivos
+preliminares que nos ha arrojado el \emph{summary()} (las medianas,
+cuartiles y máximos de cada contaminante) los analizaremos en
+profundidad más adelante, específicamente en el apartado de
+\textbf{Análisis Univariante}, una vez hayamos saneado los valores
+atípicos.
+
+\subsubsection{Análisis de datos perdidos e
+imputación:}\label{anuxe1lisis-de-datos-perdidos-e-imputaciuxf3n}
+
+Aquí abordamos el principio de \textbf{Resistencia} del AED, evaluando
+cómo las imperfecciones y ausencias de datos pueden comprometer la
+estabilidad y fiabilidad de nuestros posteriores cálculos estadísticos.
+
+Para solucionar las ausencias antes de la caracterización de variables,
+realizaremos un proceso de \textbf{Transformación de instancias e
+imputación} basado en la naturaleza y el volumen de cada variable:
+
+Calculamos número de valores ausentes por columna :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#colSums(is.na(datos) }
+\NormalTok{nulos\_por\_columna }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(}\FunctionTok{colSums}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(datos)),}\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\#Mostramos el resultado en pantalla:}
+\FunctionTok{print}\NormalTok{(nulos\_por\_columna)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                        C6H6                        C7H8 
+##                      402660                      402240 
+##                       C8H10                         NH3 
+##                      402087                      401307 
+##                       Ruido                         PM1 
+##                      397324                      374126 
+##                          CO                       PM2.5 
+##                      298277                      226614 
+##                        PM10                         SO2 
+##                      226609                      124888 
+##                          O3                          NO 
+##                      122897                      113588 
+##                         NOx                         NO2 
+##                      113587                       96232 
+##            Humedad.relativa                 Temperatura 
+##                       32027                       16827 
+##                   Radiación        Velocidad.del.viento 
+##                       16182                       15832 
+## Velocidad.máxima.del.viento               Precipitación 
+##                       15736                       14525 
+##                     Presión        Dirección.del.viento 
+##                       13753                       13442 
+##                       Fecha            Día.de.la.semana 
+##                           0                           0 
+##                 Día.del.mes                        Hora 
+##                           0                           0 
+##                    Estación 
+##                           0
+\end{verbatim}
+
+Al analizar la integridad de los datos, lo primero que destaca es que
+las columnas clave como la fecha, la hora, la estación y el día de la
+semana no tienen ni un solo valor nulo, lo que nos asegura una
+estructura temporal completamente limpia y continua para trabajar.
+
+En cuanto a las variables contaminantes se observa una clara diferencia
+en su disponibilidad,indicio claro de las limitaciones instrumentales,
+ya que las casetas meteorológicas más sencillas miden menos parámetros
+que las estaciones mejor equipadas:
+
+\begin{itemize}
+\item
+  Por un lado, los contaminantes principales como el \(NO_2\), el
+  \(PM_{10}\) y el \(O_3\), junto con las variables meteorológicas,
+  muestran una cantidad de datos muy robusta y una disponibilidad alta,
+  lo que nos da una base sólida para realizar un análisis estadístico
+\item
+  Por otro lado, compuestos más específicos como el benceno \(C_6H_6\),
+  el tolueno \(C_7H_8\), el xileno \(C_8H_{10}\) o el ruido presentan
+  ausencias masivas con cientos de miles de datos perdidos.
+\end{itemize}
+
+Para solucionar las ausencias antes de la caracterización de variables,
+realizaremos un proceso de \textbf{Transformación de instancias e
+imputación} basado en la naturaleza y el volumen de cada variable:
+
+A continuación, ejecutamos el siguiente código para limpiar el dataset y
+consolidar nuestro conjunto de datos definitivos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Eliminamos las columnas con pérdidas masivas (Feature Selection)}
+\NormalTok{variables\_descartadas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"C6H6"}\NormalTok{, }\StringTok{"C7H8"}\NormalTok{, }\StringTok{"C8H10"}\NormalTok{, }\StringTok{"Ruido"}\NormalTok{, }\StringTok{"NH3"}\NormalTok{, }\StringTok{"PM1"}\NormalTok{)}
+\NormalTok{datos\_limpios }\OtherTok{\textless{}{-}}\NormalTok{ datos[, }\SpecialCharTok{!}\NormalTok{(}\FunctionTok{names}\NormalTok{(datos) }\SpecialCharTok{\%in\%}\NormalTok{ variables\_descartadas)]}
+
+\CommentTok{\#Imputamos con la mediana de NO2 omitiendo los NA}
+\NormalTok{mediana\_no2 }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\#Reemplazamos los NA por dicha mediana transformando así las instancias}
+\NormalTok{datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2[}\FunctionTok{is.na}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2)] }\OtherTok{\textless{}{-}}\NormalTok{ mediana\_no2}
+
+\CommentTok{\#Verificamos que la columna NO2 ya no tiene nulos}
+\FunctionTok{sum}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+Con esta transformación, garantizamos la continuidad de las instancias,
+dejando el set preparado para la detección de anomalías
+(\emph{outliers}).
+
+\subsubsection{\texorpdfstring{Detección de valores atípicos
+(\emph{Outliers}):}{Detección de valores atípicos (Outliers):}}\label{detecciuxf3n-de-valores-atuxedpicos-outliers}
+
+Siguiendo los principios del Análisis Exploratorio de Datos, la búsqueda
+de anomalías se centra en identificar valores fuera de rango o registros
+que distorsionen las distribuciones de probabilidad. Para abordarlos de
+manera resistente, aplicamos dos estrategias:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Limpieza de errores físicos (Filtro directo):} Valores como la
+  Radiación negativa (\(-7.0\)) son físicamente imposibles. Los
+  eliminaremos sustituyéndolos por NA o filtrándolos directamente.
+\item
+  \textbf{Identificación estadística de picos (Criterio del Boxplot):}
+  Para los contaminantes como el \(NO_2\), consideramos \emph{outliers}
+  aquellos valores que superan el límite del rango intercuartílico
+  (\(1.5 \times IQR\)). No los borraremos, ya que en calidad del aire
+  representan episodios críticos de contaminación que el proyecto debe
+  estudiar.
+\end{enumerate}
+
+Ejecutamos el análisis visual y el filtrado de las inconsistencias
+físicas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Corregimos el error físico de la Radiación sustituyendo los valores negativos por la mediana de la variable:}
+\NormalTok{mediana\_rad }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{Radiación, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{datos\_limpios}\SpecialCharTok{$}\NormalTok{Radiación[datos\_limpios}\SpecialCharTok{$}\NormalTok{Radiación }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{] }\OtherTok{\textless{}{-}}\NormalTok{ mediana\_rad}
+
+\CommentTok{\#Boxplot del NO2 para detectar outliers}
+\FunctionTok{boxplot}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }
+        \AttributeTok{main =} \StringTok{"Boxplot y Outliers de NO2"}\NormalTok{, }
+        \AttributeTok{ylab =} \StringTok{"Concentración (ug/m3)"}\NormalTok{, }
+        \AttributeTok{col =} \StringTok{"turquoise"}\NormalTok{, }
+        \AttributeTok{horizontal =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{ProyectoAED_files/figure-latex/unnamed-chunk-4-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Vemos el boxplot mejor recortando eje }
+\FunctionTok{boxplot}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }
+        \AttributeTok{main =} \StringTok{"Distribución y Outliers de NO2"}\NormalTok{, }
+        \AttributeTok{xlab =} \StringTok{"Concentración (ug/m3)"}\NormalTok{, }
+        \AttributeTok{col =} \StringTok{"turquoise"}\NormalTok{, }
+        \AttributeTok{horizontal =} \ConstantTok{TRUE}\NormalTok{,}
+        \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{60}\NormalTok{)) }
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{ProyectoAED_files/figure-latex/unnamed-chunk-4-2.pdf}}
+Al observar el \emph{boxplot} de la distribución del \(NO_2\), podemos
+extraer tres conclusiones para el análisis exploratorio:
+
+\begin{itemize}
+\item
+  \textbf{Asimetría hacia la derecha:} La caja azul y la línea negra
+  central (la mediana) y los cuartiles se concentran entre los 10 y los
+  30 \(\mu g/m^3\). Esto demuestra que la mayor parte del tiempo la
+  ciudad de Valencia goza de niveles de dióxido de nitrógeno bajos y
+  seguros. Al alargarse el bigote derecho y la sucesión de puntos mucho
+  más que el izquierdo, el gráfico revela una distribución con asimetría
+  indicio de que los valores bajos y moderados son lo habitual en el
+  registro atmosférico de la ciudad, mientras que las concentraciones
+  muy elevadas son fenómenos excepcionales.
+\item
+  \textbf{Presencia masiva de outliers:} A partir de aproximadamente los
+  55 \(\mu \ g/m^3\) (el límite del bigote derecho), se observa una
+  densa línea negra continua formada por cientos de puntos individuales
+  que se extiende hasta superar los 200 \(\mu \ g/m^3\).
+  Estadísticamente son \emph{outliers}, pero no son errores de medición;
+  representan episodios reales de alta contaminación (horas punta de
+  tráfico, retenciones o condiciones meteorológicas que impiden la
+  dispersión del aire).
+\item
+  \textbf{Justificación de la mediana:} El gráfico expone visualmente el
+  grave peligro de utilizar la media como método de imputación, debido a
+  la franja derecha de outliers, una media aritmética se vería
+  forzamadamente arrastrada hacia datos altos, ofreciendo un valor
+  irreal de la contaminación promedio. El Boxplot justifica la decisión
+  de utilizar la mediana (representada por la línea central de la caja)
+  garantizando que los procesos de imputación y análisis univariante
+  posteriores no se vean sesgados por los picos de contaminación.
+\end{itemize}
+
+Con la eliminación de los errores de rango (radiación) y la
+identificación de los picos de contaminación, transformamos
+definitivamente el set de datos en \textbf{Consistent Data}. A partir de
+este momento, los datos están listos para ser analizados mediante
+estadísticos descriptivos.
+
+\subsubsection{Análisis univariante}\label{anuxe1lisis-univariante}
+
+\paragraph{Estadísticos descriptivos (Mediana, Media, Moda, Desviación
+estándar, Varianza, Máximos y Mínimos) caracterizar
+variables}\label{estaduxedsticos-descriptivos-mediana-media-moda-desviaciuxf3n-estuxe1ndar-varianza-muxe1ximos-y-muxednimos-caracterizar-variables}
+
+Vamos a emplear la variable \(NO2\) para el estudio estadístico ya que
+es el al provenir directamente de la combustión de los coches es el
+mejor indicador de tráfico urbano, por lo que la convierte en la
+variable idónea para estudiar la contaminación diaria dentro de una
+ciudad como Valencia. Además, como vimos en el análisis de datos
+faltantes, es uno de los contaminnates con la base de datos más limpias;
+esto es, menos valores periddos del portal municipal.
+
+Variables estadísticas las calculamos con \emph{na.rm}, pues como las
+ausencias son muy pocas, ignorar esos huecos en el cálculo no altera ni
+sesga el resultado final de las estadísticas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{media\_NO2    }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\#Media con mean() ignorando NA, celdas vacías}
+
+\NormalTok{mediana\_NO2  }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\#Mediana con median()}
+
+\NormalTok{minimo\_NO2   }\OtherTok{\textless{}{-}} \FunctionTok{min}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\#Mínimo con min()}
+
+\NormalTok{maximo\_NO2   }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\#Máximo con max()}
+
+\NormalTok{desv\_NO2 }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(datos\_limpios}\SpecialCharTok{$}\NormalTok{NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\#desviación típica con sd()}
+\end{Highlighting}
+\end{Shaded}
+
+Creamos una dataframe para visualizarlos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Consolidamos los resultados en un dataframe cuyas columnas serán Nombre d ela métrica y su correspondiente valor}
+
+\NormalTok{tabla\_estadisticos }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Metrica =} \FunctionTok{c}\NormalTok{(}\StringTok{"Mínimo"}\NormalTok{, }\StringTok{"Máximo"}\NormalTok{, }\StringTok{"Media"}\NormalTok{, }\StringTok{"Mediana"}\NormalTok{, }\StringTok{"Desviación Estándar"}\NormalTok{),}
+  \AttributeTok{Valor =} \FunctionTok{c}\NormalTok{(minimo\_NO2, maximo\_NO2, media\_NO2, mediana\_NO2, desv\_NO2)}
+\NormalTok{)}
+\FunctionTok{print}\NormalTok{(tabla\_estadisticos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Metrica     Valor
+## 1              Mínimo   0.00000
+## 2              Máximo 229.00000
+## 3               Media  22.93584
+## 4             Mediana  18.00000
+## 5 Desviación Estándar  18.65871
+\end{verbatim}
+
+La Mediana se sitúa en \(18.00\) \(\mu g/m^3\), lo que nos indica que el
+50\% de las horas registradas en Valencia presentan niveles de \(NO2\)
+bajos y seguros para la población. El hecho de que la Media sea
+significativamente más alta (\(22.93\) \(\mu g/m^3\)) es la evidencia
+matemática de la asimetríade la distribución ya que los picos de
+contaminación arrastran fuertemente el promedio hacia valores elevados,
+como habíamos observado en el boxplot..
+
+La Desviación Estándar de \(18.66\) \(\mu g/m^3\) refleja una alta
+variabilidad en los datos. Al ser un valor casi idéntico a la mediana,
+nos señala que la concentración de este gas cambia drásticamente en la
+ciudad, oscilando de forma habitual entre momentos de atmósfera
+totalmente limpia (Mínimo de \(0.0\)) y episodios severos de polución
+atmosférica urbana (Máximo de \(229.0\) \(\mu g/m^3\)).
+
+\paragraph{Análisis Visual}\label{anuxe1lisis-visual}
+
+Aplicando la cuarta R \textbf{Revelación (Data visualization)}
+(diapositiva 18 ref 1 bib) y la sintaxis por capas de la librería
+\textbf{ggplot2}, representaremos la distribución real del \(NO_2\)
+mediante un histograma combinado con su curva de densidad. Esto nos
+permitirá validar visualmente los estadísticos calculados en el paso
+anterior.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Cargamos la librería ggplot2}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\#Inicializamos el objeto gráfico definiendo el set de datos y aes()}
+\NormalTok{grafico }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ datos\_limpios, }\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ NO2))}
+
+\CommentTok{\#Construimos el histograma adaptado combinando frecuencia y curva de densidad}
+
+\NormalTok{grafico\_hist\_no2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ datos\_limpios, }\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ NO2)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}
+    \AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{120}\NormalTok{, }\AttributeTok{by =} \DecValTok{5}\NormalTok{),}
+    \AttributeTok{fill =} \StringTok{"blue"}\NormalTok{,}
+    \AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_density}\NormalTok{(}
+    \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{after\_stat}\NormalTok{(count }\SpecialCharTok{*} \DecValTok{5}\NormalTok{)), }\CommentTok{\# Multiplicamos por el ancho del bin (by=5) para cuadrar la escala}
+    \AttributeTok{color =} \StringTok{"green"}\NormalTok{,}
+    \AttributeTok{linewidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Histograma de la variable NO2 en Valencia"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Concentración de NO2 (ug/m3)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Frecuencia"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_classic}\NormalTok{()}
+
+\CommentTok{\#Mostramos el gráfico en el informe Rmd}
+\NormalTok{grafico\_hist\_no2}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{ProyectoAED_files/figure-latex/unnamed-chunk-7-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Guardamos el resultado en la carpeta results}
+\FunctionTok{ggsave}\NormalTok{(}\AttributeTok{filename =} \StringTok{"../results/Histograma\_NO2.pdf"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ grafico\_hist\_no2)}
+\end{Highlighting}
+\end{Shaded}
+
+Este gráfico es el ejemplo perfecto de la asimetría mencionada
+anteriormente maracda por el sesgo a la derecha.
+
+El histograma se dispara brutalmente hacia arriba (pico verde vertical)
+alrededor del valor 18, que es exactamente la mediana que calculamos en
+el dataframe. Ahí es donde se concentra la inmensa mayoría de los
+449.026 datos. Por otro lado, a partir de 50, las barras azules se
+vuelven casi invisibles y la línea verde se arrastra pegada al eje x
+hasta pasar de 200. Esos son los famosos outliers o picos de
+contaminación extrema de los que hablábamos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Creamos también el gráfico de violín segmentando por la columna estación}
+\NormalTok{violin\_estaciones }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ datos\_limpios,}
+  \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Estación,}\AttributeTok{y =}\NormalTok{ NO2, }\AttributeTok{fill =}\NormalTok{ Estación)) }\SpecialCharTok{+} \FunctionTok{geom\_violin}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Distribución de concentraciones de NO2 por estación"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Estación de medición"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"NO2 (ug/m3)"}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{theme\_classic}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{, }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{) }\CommentTok{\#Inclinamos pa que sea más legible}
+\NormalTok{  )}
+
+\CommentTok{\#Mostramos el gráfico en pantalla}
+\NormalTok{violin\_estaciones}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{ProyectoAED_files/figure-latex/unnamed-chunk-8-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Guardamos}
+\FunctionTok{ggsave}\NormalTok{(}\AttributeTok{filename =} \StringTok{"../results/Violin\_Estaciones\_NO2.pdf"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ violin\_estaciones)}
+\end{Highlighting}
+\end{Shaded}
+
+El gráfico de violines revela de manera muy directa cómo cambia la
+contaminación según el punto de medición de la ciudad, permitiendo
+extraer tres conclusiones:
+
+\begin{itemize}
+\item
+  Las estaciones urbanas con mucho tráfico directo, como \emph{Pista
+  Silla}, \emph{Bulevard Sud} o \emph{Avda. Francia}, muestran violines
+  con más estirados hacia arriba y líneas verticales muy altas. Esto
+  indica que en estas zonas los picos extremos de contaminación son muy
+  frecuentes debido a la circulación de vehículos.
+\item
+  Puntos como \emph{Politécnico} o \emph{Viveros} tienen su masa
+  principal concentrada muy abajo, lo que confirma que las zonas
+  universitarias o ajardinadas respiran un aire notablemente más limpio.
+  El caso de \emph{L'it antic Túria} es llamativo porque su forma es muy
+  achatada y redondeada, lo que demuestra un comportamiento del aire muy
+  constante y protegido de grandes picos.
+\item
+  Las líneas totalmente planas en \emph{Ellería Meteo} y \emph{Nazaret
+  Meteo} delatan que esas casetas son exclusivamente meteorológicas y no
+  registran datos de NO2 (valores cercanos a cero o vacíos), lo que
+  confirma visualmente las limitaciones instrumentales que detectamos en
+  el análisis de datos NA.
+\end{itemize}
+
+\subsection{Análisis bivariante}\label{anuxe1lisis-bivariante}
+
+\subsection{Análisis temporal}\label{anuxe1lisis-temporal}
+
+\subsection{Discusión}\label{discusiuxf3n}
+
+\subsection{Conclusiones}\label{conclusiones}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace{6pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% optional
+
+% Only for the journal Methods and Protocols:
+% If you wish to submit a video article, please do so with any other supplementary material.
+% \supplementary{The following supporting information can be downloaded at: \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title. A supporting video article is available at doi: link.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+
+%% Only for journal Encyclopedia
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+\input{"appendix.tex"}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{adjustwidth}{-\extralength}{0cm}
+
+%\printendnotes[custom] % Un-comment to print a list of endnotes
+
+
+\reftitle{References}
+\bibliography{mybibfile.bib}
+
+% If authors have biography, please use the format below
+%\section*{Short Biography of Authors}
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author1.pdf}}}
+%{\textbf{Firstname Lastname} Biography of first author}
+%
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author2.jpg}}}
+%{\textbf{Firstname Lastname} Biography of second author}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for journal Sci
+%\reviewreports{\\
+%Reviewer 1 comments and authors’ response\\
+%Reviewer 2 comments and authors’ response\\
+%Reviewer 3 comments and authors’ response
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\PublishersNote{}
+\end{adjustwidth}
+
+
+\end{document}

@@ -1,14 +1,14 @@
 ---
 title: "Análisis exploratorio de la calidad del aire en València"
 author:
-  - name: "Noa Martín Hodar"
+  - name: "Jose Luis, Marcos "
     affil: "1"
 affiliation:
   - num: 1
     address: |
       Máster en Ciencia de Datos
-      Universidad o centro de estudios
-      València, España
+      Universitat de
+      València
     email: correo@ejemplo.com
 authorcitation: |
   Apellido, N.
@@ -18,11 +18,11 @@ journal: notspecified
 type: article
 status: submit
 simplesummary: |
-  Proyecto académico de análisis exploratorio de datos de calidad del aire en València.
+  Proyecto de la asignatura Análisis Exploratorio de Datos (AED) sobre la calidad del aire en Valencia.
 abstract: |
-  Resumen pendiente de redactar cuando se hayan completado los análisis.
+  Resumen 
 keywords: |
-  calidad del aire; València; NO2; PM10; O3; análisis exploratorio
+  calidad del aire; contaminantes; NO2; PM10; O3; análisis exploratorio
 bibliography: mybibfile.bib
 appendix: appendix.tex
 endnotes: false
@@ -52,11 +52,17 @@ knitr::opts_chunk$set(
 
 # Introducción
 
-## Objetivo del proyecto
+El proyecto nace con el propósito de abordar un problema real de tratamiento de datos, aplicando de manera práctica los conocimientos adquiridos a lo largo de la asignatura de Análisis Exploratorio de Datos (AED). Para este análisis, hemos seleccionado dos conjuntos de datos públicos y oficiales. Por un lado, el registro de *calidad_aire.csv*, obtenido directamente a través del portal de datos abiertos del Ayuntamiento de Valencia. 
 
-El objetivo es realizar un análisis exploratorio de la calidad del aire en los 19 distritos de València, utilizando inicialmente el fichero "calidad_aire.csv" descargado del portal de datos abiertos del Ayuntamiento de Valencia....
+Por otro lado, *padron.csv* ...
 
-## Preguntas de investigación
+# Objetivo del proyecto
+
+El objetivo es realizar un análisis exploratorio de la calidad del aire en los distritos de la ciudad de Valencia, combinando datos abiertos de contaminación atmosférica (NO2, PM10, O3) con información demográfica. Logrando así responder a cinco preguntas sobre la distribución espacial de los contaminantes, su relación con la densidad de población y su evolución temporal.
+
+# Preguntas de investigación
+
+Antes de manipular la información, realizamos un primer acercamiento visual y estructural de los archivos para formular las preguntas clave que guiarán nuestro proyecto:
 
 1. ¿Cómo se distribuyen los niveles de NO2, PM10 y O3 entre las estaciones de medición? ¿Hay diferencias entre distritos?
 
@@ -68,17 +74,29 @@ El objetivo es realizar un análisis exploratorio de la calidad del aire en los 
 
 5. ¿Se puede predecir si una estación superará el umbral diario de NO2 de la OMS a partir de variables meteorológicas y temporales?
 
-# Datos
+# Fuentes de datos 
 
-## Fuentes de datos previstas
+Utilizaremos registros sobre contaminantes y meteorología del portal de datos abiertos del Ayuntamiento de Valencia, información sobre la ubicación y el distrito de cada estación de medida y datos de población por distrito del Padrón Municipal:
 
-Se prevé utilizar registros horarios de contaminantes y meteorología del Portal de Datos Abiertos del Ayuntamiento de València, información sobre la ubicación y el distrito de cada estación de medida, datos de población por distrito del Padrón Municipal e información sobre intensidad de tráfico de las espiras electromagnéticas. En esta primera versión se trabaja con `calidad_aire.csv`; ...
+* calidad_aire.csv
+* padron.csv
 
-# calidad_aire.csv
+Este proyecto se aborda bajo el enfoque de un **Análisis Exploratorio de Datos (AED)**. Siguiendo las diapositivas de (Referencia 1 de la bib), nuestro objetivo no es confirmar una hipótesis preestablecida (Análisis Confirmatorio), sino explorar de forma abierta *datasets* para descubrir patrones ocultos, identificar estructuras de interés y generar nuevas preguntas sobre el comportamiento ambiental de la ciudad, así como responder a las ya planteadas.
 
-## Importación del fichero
+El formato elegido es CSV, un tipo de documento en formato abierto para representar datos en formato de tabla. Las columnas se separan por comas (o punto y
+coma) y las filas por saltos de línea.
 
-El fichero se lee con separador de punto y coma. Para evitar depender de una ruta absoluta del ordenador, el código busca `calidad_aire.csv` en la carpeta del proyecto y, después, dentro de `data/`.
+## Fichero calidad_aire.csv
+
+Comenzamos trabajando con el archivo de texto **calidad_aire.csv**
+
+### Importación y acondicionamiento:
+
+El objetivo de este primer bloque es realizar una inspección global para detectar qué elementos debemos corregir.
+
+El archivo original se considera **Raw Data** debido a que contiene inconsistencias de formato (como la inserción de la letra "T" en las cadenas temporales). Mediante este proceso de acondicionamiento, transformaremos el archivo en un dataset **Technically Correct Data**, asegurando que R interprete cada variable bajo su tipo correspondiente.
+
+El fichero se lee con separador de punto y coma. Para evitar depender de una ruta absoluta del ordenador, el código busca *calidad_aire.csv* en la carpeta del proyecto y, después, dentro de la carpeta *data*.
 
 ```{r importacion}
 
@@ -91,26 +109,124 @@ fichero <- "calidad_aire.csv"
 datos <- read.csv(fichero, sep = ";", fileEncoding = "UTF-8")
 ```
 
-## Conversión de la fecha y hora
 
-El archivo calidad_aire.csv trae la fecha con una letra “T” en medio (ej.:2020-01-01T00:00:00). R necesita interpretarla como una fecha real y no como un texto plano para poder hacer gráficos temporales después. Por lo que convertiremos la columna “Fecha” a formato fecha-hora real con as.POSIXct:
+#### Exploración inicial
+
+Ejecutamos las funciones de inspección básicas (*str()*, *head()*, *tail()* y *summary()*) para estudiar estado inicial del dataset.
+
+Este paso nos permitirá verificar la transición de nuestros datos hacia el estado de **Technically Correct Data** (diapositiva 12 ref 1 de la bib):
+
+```{r estructura-datos}
+
+#Inspeccionamos estructura interna de las variables
+str(datos)
+
+#Número de filas y columnas en total
+dim(datos)
+
+#Observamos la columna Fecha correctamente convertida a tipo POSIXct.
+
+#Inpeccionamos las primera filas, por defecto son 6
+head(datos)
+
+#Inspeccionamos las 6 últimas filas
+tail(datos)
+
+#Visualizamos el resumen estadística preliminar
+summary(datos)
+```
+Al interpretar los resultados en consola de estas funciones, extraemos tres conclusiones inmediatas sobre nuestros datos:
+
+1.  **Dimensión del sataset:** El set cuenta con **449,026 observaciones y 27 variables**. 
+     * Observaciones (filas): 449.026 en total.
+     * Variables (columnas): 27 en total.
+ 
+Al ser un volumen tan grande, confirmamos que el enfoque de este proyecto debe ser un **Análisis Exploratorio de Datos (AED)** asistido por R, buscando patrones en lugar de aplicar análisis confirmatorio.
+
+2.  **Inconsistencia en tipos de datos:** 
+    *   La columna "Fecha" se ha importado como texto plano (chr) y contiene una letra "T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real.
+    *   Las variables cualitativas "Día.de.la.semana", "Hora" y "Estación" también figuran como texto (chr). Si las dejamos así, no podremos agrupar los contaminantes por días o zonas en los análisis univariantes y bivariantes.
+    
+3.  **Anomalías en Summary():** La función *summary()* nos revela que compuestos como el Benceno (C6H6) o el Ruido tienen cerca de 400.000 **valores perdidos (NAs)**, que existen picos extremos de polución (mientras el 75% del NOx está por debajo de 48, su máximo se dispara a 987) y que la variable Radiación tiene un mínimo físico imposible de -7.0.
+
+Para corregir los errores detectados en la previasualización y transformar los datos en un dataframe "Técnicamente Correcto", aplicamos dos soluciones inmediatas sobre las columnas:
+
+#### Conversión de la fecha y hora
+
+Transformamos la columna "Fecha" para eliminar el obstáculo de la letra "T" intermedia (ej.:2020-01-01T00:00:00), permitiendo que R la interprete como una variable cronológica real (POSIXct) para los futuros gráficos temporales, en lugar de textxo plano:
 
 ```{r conversion-fecha}
 datos$Fecha <- as.POSIXct(datos$Fecha, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 
 ```
+ 
+Para comprender la importancia crítica de transformar los datos de **Raw Data** (texto plano) a **Technically Correct Data**, contrastamos gráficamente el comportamiento de R ante ambos formatos. Representaremos la evolución del dióxido de nitrógeno (NO2) en la estación de "Avda. Francia" durante las primeras horas registradas en el dataset.
 
-## Estructura del conjunto de datos
+```{r}
+#Creamos el vector de NO2
+no2_valores <- c(45, 35, 6.3, 5)
 
-Se revisa la estructura del conjunto de datos para comprobar los tipos de las variables y el número de observaciones y columnas.
+#Vector en formato texto plano 
+fechas_texto <- c("2016-07-31 13:00:00", "2018-06-23 12:00:00", "2020-01-01 00:00:00", "2020-02-01 00:00:00")
 
-```{r estructura-datos}
-str(datos)
-#La estructura del dataset cuenta con 449.026 observaciones y 27 variables.
-#Observamos la columna Fecha correctamente convertida a tipo POSIXct.
+#Vector en formato fecha real
+fechas_reales <- as.POSIXct(fechas_texto, format="%Y-%m-%d %H:%M:%S", tz="UTC")
+
+#Configuramos la pantalla para ver ambos gráficos uno al lado del otro
+par(mfrow = c(1, 2))
+
+#Gráfica en formato texto (oculta los huecos reales)
+#Para forzar a R a pintar el texto debemos convertir el vector fechas_texto a tipo factor. Así R le asigna internamente una posición numérica (1, 2, 3, 4) a cada texto.
+plot(1:4, no2_valores, 
+     type = "b", 
+     pch = 19, 
+     col = "darkred", 
+     xaxt = "n", # Ocultamos el eje numérico 1, 2, 3, 4
+     main = "Gráfico A: Fechas como Texto (Falso Continuo)", 
+     xlab = "Fecha (Texto plano)", 
+     ylab = "NO2 (ug/m3)")
+axis(1, at = 1:4, labels = fechas_texto, cex.axis = 0.7)
+
+#Gráfica en formato fecha real (revela los saltos temporales)
+
+plot(fechas_reales, no2_valores, 
+     type = "b", 
+     pch = 19,
+     col = "darkblue", 
+     main = "Gráfico B: Fechas como POSIXct", 
+     xlab = "Línea temporal real", 
+     ylab = "NO2 (ug/m3)")
+#Restauramos los parámetros de la pantalla por defecto
+par(mfrow = c(1, 1))
+
 ```
 
-## Primera revisión de los valores perdidos
+
+#### Conversión de texto a variables categóricas (Factores)
+    
+Pasamos las columnas de agrupación a tipo *factor*. Esto optimiza la memoria de R y nos habilita para segmentar y comparar estadísticos (como las medianas o medias de contaminación) según la estación meteorológica o la franja horaria.
+
+```{r}
+
+datos$Día.de.la.semana <- as.factor(datos$Día.de.la.semana)
+datos$Hora             <- as.factor(datos$Hora)
+datos$Estación         <- as.factor(datos$Estación)
+
+#Verificamos las transformaciones
+
+str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
+
+```
+Con este acondicionamiento finalizado, el set de datos ya está estructurado correctamente. Todos los estadísticos descriptivos preliminares que nos ha arrojado el *summary()* (las medianas, cuartiles y máximos de cada contaminante) los analizaremos en profundidad más adelante, específicamente en el apartado de **Análisis Univariante**, una vez hayamos saneado los valores atípicos.
+
+
+### Análisis de datos perdidos e imputación:
+
+Aquí abordamos el principio de **Resistencia** del AED, evaluando cómo las imperfecciones y ausencias de datos pueden comprometer la estabilidad y fiabilidad de nuestros posteriores cálculos estadísticos.
+
+Para solucionar las ausencias antes de la caracterización de variables, realizaremos un proceso de **Transformación de instancias e imputación** basado en la naturaleza y el volumen de cada variable:
+
+
 
 Calculamos número de valores ausentes por columna :
 
@@ -125,28 +241,186 @@ Al analizar la integridad de los datos, lo primero que destaca es que las column
 
 En cuanto a las variables contaminantes se observa una clara diferencia en su disponibilidad,indicio claro de las limitaciones instrumentales, ya que las casetas meteorológicas más sencillas miden menos parámetros que las estaciones mejor equipadas:
 
-* Por un lado, los contaminantes principales como el NO2, el PM10 y el O3, junto con las variables meteorológicas, muestran una cantidad de datos muy robusta y una disponibilidad alta, lo que nos da una base sólida para realizar un análisis estadístico
+* Por un lado, los contaminantes principales como el $NO_2$, el $PM_{10}$ y el $O_3$, junto con las variables meteorológicas, muestran una cantidad de datos muy robusta y una disponibilidad alta, lo que nos da una base sólida para realizar un análisis estadístico
 
-* Por otro lado, compuestos más específicos como el benceno C6H6, el tolueno C7H8, el xileno C8H10o el ruido presentan ausencias masivas con cientos de miles de datos perdidos.
+* Por otro lado, compuestos más específicos como el benceno $C_6H_6$, el tolueno $C_7H_8$, el xileno $C_8H_{10}$ o el ruido presentan ausencias masivas con cientos de miles de datos perdidos.
 
-Factor que hemos considerado a la hora de seleccionar las variables definitivas para nuestro estudio.
+Para solucionar las ausencias antes de la caracterización de variables, realizaremos un proceso de **Transformación de instancias e imputación** basado en la naturaleza y el volumen de cada variable:
 
-# Acondicionamiento de los datos
+A continuación, ejecutamos el siguiente código para limpiar el dataset y consolidar nuestro conjunto de datos definitivos:
 
-# Análisis de datos perdidos e imputación
+```{r}
 
-# Detección de valores atípicos
+#Eliminamos las columnas con pérdidas masivas (Feature Selection)
+variables_descartadas <- c("C6H6", "C7H8", "C8H10", "Ruido", "NH3", "PM1")
+datos_limpios <- datos[, !(names(datos) %in% variables_descartadas)]
 
-# Análisis univariante
+#Imputamos con la mediana de NO2 omitiendo los NA
+mediana_no2 <- median(datos_limpios$NO2, na.rm = TRUE)
 
-# Análisis bivariante
+#Reemplazamos los NA por dicha mediana transformando así las instancias
+datos_limpios$NO2[is.na(datos_limpios$NO2)] <- mediana_no2
 
-# Análisis temporal
+#Verificamos que la columna NO2 ya no tiene nulos
+sum(is.na(datos_limpios$NO2))
+```
 
-# Modelo predictivo
+Con esta transformación, garantizamos la continuidad de las instancias, dejando el set preparado para la detección de anomalías (*outliers*).
 
-# Discusión
+### Detección de valores atípicos (*Outliers*):
 
-# Conclusiones finales
+Siguiendo los principios del Análisis Exploratorio de Datos, la búsqueda de anomalías se centra en identificar valores fuera de rango o registros que distorsionen las distribuciones de probabilidad. Para abordarlos de manera resistente, aplicamos dos estrategias:
 
-# Aportaciones adicionales
+1.  **Limpieza de errores físicos (Filtro directo):** Valores como la Radiación negativa ($-7.0$) son físicamente imposibles. Los eliminaremos sustituyéndolos por NA o filtrándolos directamente.
+
+2.  **Identificación estadística de picos (Criterio del Boxplot):** Para los contaminantes como el $NO_2$, consideramos *outliers* aquellos valores que superan el límite del rango intercuartílico ($1.5 \times IQR$). No los borraremos, ya que en calidad del aire representan episodios críticos de contaminación que el proyecto debe estudiar.
+
+Ejecutamos el análisis visual y el filtrado de las inconsistencias físicas:
+
+```{r}
+
+#Corregimos el error físico de la Radiación sustituyendo los valores negativos por la mediana de la variable:
+mediana_rad <- median(datos_limpios$Radiación, na.rm = TRUE)
+datos_limpios$Radiación[datos_limpios$Radiación < 0] <- mediana_rad
+
+#Boxplot del NO2 para detectar outliers
+boxplot(datos_limpios$NO2, 
+        main = "Boxplot y Outliers de NO2", 
+        ylab = "Concentración (ug/m3)", 
+        col = "turquoise", 
+        horizontal = TRUE)
+
+#Vemos el boxplot mejor recortando eje 
+boxplot(datos_limpios$NO2, 
+        main = "Distribución y Outliers de NO2", 
+        xlab = "Concentración (ug/m3)", 
+        col = "turquoise", 
+        horizontal = TRUE,
+        ylim = c(0, 60)) 
+
+```
+Al observar el *boxplot* de la distribución del $NO_2$, podemos extraer tres conclusiones para el análisis exploratorio:
+
+*   **Asimetría hacia la derecha:** La caja azul y la línea negra central (la mediana) y los cuartiles se concentran entre los 10 y los 30 $\mu g/m^3$. Esto demuestra que la mayor parte del tiempo la ciudad de Valencia goza de niveles de dióxido de nitrógeno bajos y seguros.
+Al alargarse el bigote derecho y la sucesión de puntos mucho más que el izquierdo, el gráfico revela una distribución con asimetría indicio de que los valores bajos y moderados son lo habitual en el registro atmosférico de la ciudad, mientras que las concentraciones muy elevadas son fenómenos excepcionales.
+
+*   **Presencia masiva de outliers:** A partir de aproximadamente los 55 $\mu \ g/m^3$ (el límite del bigote derecho), se observa una densa línea negra continua formada por cientos de puntos individuales que se extiende hasta superar los 200 $\mu \ g/m^3$. Estadísticamente son *outliers*, pero no son errores de medición; representan episodios reales de alta contaminación (horas punta de tráfico, retenciones o condiciones meteorológicas que impiden la dispersión del aire).
+
+*   **Justificación de la mediana:** El gráfico expone visualmente el grave peligro de utilizar la media como método de imputación, debido a la franja derecha de outliers, una media aritmética se vería forzamadamente arrastrada hacia datos altos, ofreciendo un valor irreal de la contaminación promedio. El Boxplot justifica la decisión de utilizar la mediana (representada por la línea central de la caja) garantizando que los procesos de imputación y análisis univariante posteriores no se vean sesgados por los picos de contaminación.
+
+Con la eliminación de los errores de rango (radiación) y la identificación de los picos de contaminación, transformamos definitivamente el set de datos en **Consistent Data**. A partir de este momento, los datos están listos para ser analizados mediante estadísticos descriptivos.
+
+### Análisis univariante
+
+#### Estadísticos descriptivos (Mediana, Media, Moda, Desviación estándar, Varianza, Máximos y Mínimos) caracterizar variables
+
+Vamos a emplear la variable $NO2$ para el estudio estadístico ya que es el al provenir directamente de la combustión de los coches es el mejor indicador  de tráfico urbano, por lo que la convierte en la variable idónea para estudiar la contaminación diaria dentro de una ciudad como Valencia.
+Además, como vimos en el análisis de datos faltantes, es uno de los contaminnates con la base de datos más limpias; esto es, menos valores periddos del portal municipal.
+
+Variables estadísticas las calculamos con *na.rm*, pues como las ausencias son muy pocas, ignorar esos huecos en el cálculo no altera ni sesga el resultado final de las estadísticas:
+
+```{r}
+
+media_NO2    <- mean(datos_limpios$NO2, na.rm = TRUE) #Media con mean() ignorando NA, celdas vacías
+
+mediana_NO2  <- median(datos_limpios$NO2, na.rm = TRUE) #Mediana con median()
+
+minimo_NO2   <- min(datos_limpios$NO2, na.rm = TRUE) #Mínimo con min()
+
+maximo_NO2   <- max(datos_limpios$NO2, na.rm = TRUE) #Máximo con max()
+
+desv_NO2 <- sd(datos_limpios$NO2, na.rm = TRUE) #desviación típica con sd()
+
+```
+
+Creamos una dataframe para visualizarlos:
+
+```{r}
+#Consolidamos los resultados en un dataframe cuyas columnas serán Nombre d ela métrica y su correspondiente valor
+
+tabla_estadisticos <- data.frame(
+  Metrica = c("Mínimo", "Máximo", "Media", "Mediana", "Desviación Estándar"),
+  Valor = c(minimo_NO2, maximo_NO2, media_NO2, mediana_NO2, desv_NO2)
+)
+print(tabla_estadisticos)
+```
+La Mediana se sitúa en $18.00$ $\mu g/m^3$, lo que nos indica que el 50% de las horas registradas en Valencia presentan niveles de $NO2$ bajos y seguros para la población. El hecho de que la Media sea significativamente más alta ($22.93$ $\mu g/m^3$) es la evidencia matemática de la asimetríade la distribución ya que los picos de contaminación arrastran fuertemente el promedio hacia valores elevados, como habíamos observado en el boxplot..
+
+La Desviación Estándar de $18.66$ $\mu g/m^3$ refleja una alta variabilidad en los datos. Al ser un valor casi idéntico a la mediana, nos señala que la concentración de este gas cambia drásticamente en la ciudad, oscilando de forma habitual entre momentos de atmósfera totalmente limpia (Mínimo de $0.0$) y episodios severos de polución atmosférica urbana (Máximo de $229.0$ $\mu g/m^3$).
+
+#### Análisis Visual 
+
+Aplicando la cuarta R **Revelación (Data visualization)** (diapositiva 18 ref 1 bib) y la sintaxis por capas de la librería **ggplot2**, representaremos la distribución real del $NO_2$ mediante un histograma combinado con su curva de densidad. Esto nos permitirá validar visualmente los estadísticos calculados en el paso anterior.
+
+```{r}
+#Cargamos la librería ggplot2
+library(ggplot2)
+
+#Inicializamos el objeto gráfico definiendo el set de datos y aes()
+grafico <- ggplot(data = datos_limpios, mapping = aes(x = NO2))
+
+#Construimos el histograma adaptado combinando frecuencia y curva de densidad
+
+grafico_hist_no2 <- ggplot(data = datos_limpios, mapping = aes(x = NO2)) +
+  geom_histogram(
+    breaks = seq(0, 120, by = 5),
+    fill = "blue",
+    alpha = 0.5,
+    color = "red") +
+  geom_density(
+    aes(y = after_stat(count * 5)), # Multiplicamos por el ancho del bin (by=5) para cuadrar la escala
+    color = "green",
+    linewidth = 1) +
+  labs(
+    title = "Histograma de la variable NO2 en Valencia",
+    x = "Concentración de NO2 (ug/m3)",
+    y = "Frecuencia") + theme_classic()
+
+#Mostramos el gráfico en el informe Rmd
+grafico_hist_no2
+
+#Guardamos el resultado en la carpeta results
+ggsave(filename = "../results/Histograma_NO2.pdf", plot = grafico_hist_no2)
+
+
+```
+
+Este gráfico es el ejemplo perfecto de la asimetría mencionada anteriormente maracda por el sesgo a la derecha.
+
+El histograma se dispara brutalmente hacia arriba (pico verde vertical) alrededor del valor 18, que es exactamente la mediana que calculamos en el dataframe. Ahí es donde se concentra la inmensa mayoría de los 449.026 datos.
+Por otro lado, a partir de 50, las barras azules se vuelven casi invisibles y la línea verde se arrastra pegada al eje x hasta pasar de 200. Esos son los famosos outliers o picos de contaminación extrema de los que hablábamos.
+
+```{r}
+#Creamos también el gráfico de violín segmentando por la columna estación
+violin_estaciones <- ggplot(data = datos_limpios,
+  mapping = aes(x = Estación,y = NO2, fill = Estación)) + geom_violin() +
+  labs(
+    title = "Distribución de concentraciones de NO2 por estación",
+    x = "Estación de medición",
+    y = "NO2 (ug/m3)") +theme_classic() +
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1) #Inclinamos pa que sea más legible
+  )
+
+#Mostramos el gráfico en pantalla
+violin_estaciones
+
+#Guardamos
+ggsave(filename = "../results/Violin_Estaciones_NO2.pdf", plot = violin_estaciones)
+```
+El gráfico de violines revela de manera muy directa cómo cambia la contaminación según el punto de medición de la ciudad, permitiendo extraer tres conclusiones:
+
+* Las estaciones urbanas con mucho tráfico directo, como *Pista Silla*, *Bulevard Sud* o *Avda. Francia*, muestran violines con más estirados hacia arriba y líneas verticales muy altas. Esto indica que en estas zonas los picos extremos de contaminación son muy frecuentes debido a la circulación de vehículos.
+
+* Puntos como *Politécnico* o *Viveros* tienen su masa principal concentrada muy abajo, lo que confirma que las zonas universitarias o ajardinadas respiran un aire notablemente más limpio. El caso de *L'it antic Túria* es llamativo porque su forma es muy achatada y redondeada, lo que demuestra un comportamiento del aire muy constante y protegido de grandes picos.
+
+* Las líneas totalmente planas en *Ellería Meteo* y *Nazaret Meteo* delatan que esas casetas son exclusivamente meteorológicas y no registran datos de NO2 (valores cercanos a cero o vacíos), lo que confirma visualmente las limitaciones instrumentales que detectamos en el análisis de datos NA.
+
+## Análisis bivariante
+
+## Análisis temporal
+
+## Discusión
+
+## Conclusiones 
