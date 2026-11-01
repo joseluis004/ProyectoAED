@@ -116,6 +116,22 @@ Al examinar los resultados de esta exploración inicial observamos que el conjun
 
 * El *summary* también refleja una anomalía física puntual, la variable "Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
 
+```{r fig.height=3.5, fig.width=6.5}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Visualizamos el porcentaje de NAs por estación y variable mediante un mapa de calor
+datos %>%
+  group_by(Estación) %>%                                    # nulos por estación
+  summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%  # % de NAs por variable
+  pivot_longer(-Estación, names_to = "Variable", values_to = "Porcentaje_Nulos") %>%  # formato largo para ggplot
+  ggplot(aes(Variable, Estación, fill = Porcentaje_Nulos)) +
+  geom_tile() +                                             # mapa de calor
+  scale_fill_gradient(low = "lightgreen", high = "red") +   # verde  a rojo
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  # etiquetas X en vertical
+```
+
 Una vez detectadas estas deficiencias en el formato bruto, aplicamos las herramientas de las librerías lubridate y dplyr para corregir los dos primeros puntos anteriores, corregir el formato de la columna "Fecha" y convertir "Día.de.la.semana", "Hora" y "Estación" a factor:
 
 ```{r,results='hide'}
