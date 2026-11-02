@@ -51,10 +51,9 @@ knitr::opts_chunk$set(
 
 # Introducción
 
-Este proyecto aborda un problema real de análisis de datos ambientales dentro de la asignatura de *Análisis Exploratorio de Datos* (AED) del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo, utilizamos el registro oficial ("*Datos horarios de calidad del aire desde 2016*") del portal de datos abiertos del Ayuntamiento de València, procesado bajo el nombre de *calidad_aire.csv*.   
+Este proyecto aborda un problema real de análisis de datos ambientales dentro de la asignatura de *Análisis Exploratorio de Datos* (AED) del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo, utilizamos el registro oficial ("*Datos horarios de calidad del aire desde 2016*") del portal de datos abiertos del Ayuntamiento de València, procesado bajo el nombre de *calidad_aire.csv*.
 
-Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisiones de origen antrópico y las variables meteorológicas condicionan la concentración de contaminantes, emplearemos el análisis exploratorio como herramienta para transformar los datos brutos en información interpretable, para así evaluar la calidad del aire en la ciudad de València. 
-
+Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisiones de origen antrópico y las variables meteorológicas condicionan la concentración de contaminantes, emplearemos el análisis exploratorio como herramienta para transformar los datos brutos en información interpretable, para así evaluar la calidad del aire en la ciudad de València.
 
 # Objetivo del proyecto
 
@@ -62,10 +61,9 @@ El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos
 
 Para guiar el análisis exploratorio y dar validez física a los resultados, el proyecto busca responder las siguientes preguntas de investigación:
 
-* ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2, O_3, SO_2$) entre las estaciones de medición de la ciudad?
+- ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2, O_3, SO_2$) entre las estaciones de medición de la ciudad?
 
-* ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
-
+- ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
 
 # Preparación y acondicionamiento de datos
 
@@ -106,15 +104,16 @@ summary(datos)
 colnames(datos)
 
 ```
+
 Al examinar los resultados de esta exploración inicial observamos que el conjunto cuenta con 449.026 observaciones (filas) y 27 variables (columnas):
 
-* La columna "Fecha" se ha importado como texto plano (*chr*) e incluye una letra "T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real. 
+- La columna "Fecha" se ha importado como texto plano (*chr*) e incluye una letra "T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real.
 
-* Variables cualitativas como "Día.de.la.semana", "Hora" y "Estación" figuran como texto plano (*chr*), convertirlas a factores es indispensable para que R las trate como variables categóricas permitiendo así que los gráficos operen de manera eficiente posteriormente.
+- Variables cualitativas como "Día.de.la.semana", "Hora" y "Estación" figuran como texto plano (*chr*), convertirlas a factores es indispensable para que R las trate como variables categóricas permitiendo así que los gráficos operen de manera eficiente posteriormente.
 
-* En el *summary* observamos que las variables con mayor número de *NAs* son ("C6H6" con 402.660, "C7H8" con 402.240 y el "C8H10" con 402.087).Muy cerca se sitúan el "NH3" con 401.307 y la variable "Ruido" con 397.324.
+- En el *summary* observamos que las variables con mayor número de *NAs* son ("C6H6" con 402.660, "C7H8" con 402.240 y el "C8H10" con 402.087).Muy cerca se sitúan el "NH3" con 401.307 y la variable "Ruido" con 397.324.
 
-* El *summary* también refleja una anomalía física puntual, la variable "Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
+- El *summary* también refleja una anomalía física puntual, la variable "Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
 
 ```{r fig.height=3.5, fig.width=6.5}
 library(dplyr)
@@ -157,7 +156,7 @@ str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
 
 Continuamos corrigiendo las observaciones anteriores. Recordamos que los contaminantes mencionados anteriormente como el benceno, tolueno y xileno, presentan pérdidas masivas de datos ($>400.000 NAs$), esto valida la decisión de descartar las columnas prácticamente vacías ya que mantenerlas carece de rigor físico y entorpece el análisis exploratorio.
 
-Sin embargo, los contaminantes principales  ("NO2", "O3" y "SO2") y las variables meteorológicas ("Temperatura", "Humedad.Relativa", "Presión", "Precipitación") cuentan con una completitud altísima, registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos paquete *dplyr*, concretamente aplicamos *select()* para conservar exclusivamente estas variables de interés de tal manera que la dimensión resultante será 449026x16:
+Sin embargo, los contaminantes principales ("NO2", "O3" y "SO2") y las variables meteorológicas ("Temperatura", "Humedad.Relativa", "Presión", "Precipitación") cuentan con una completitud altísima, registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos paquete *dplyr*, concretamente aplicamos *select()* para conservar exclusivamente estas variables de interés de tal manera que la dimensión resultante será 449026x16:
 
 ```{r,results='hide'}
 # Seleccionamos las variables de interés y filtramos
@@ -198,7 +197,7 @@ El recuento revela que las columnas "Fecha", "Hora", "Día.de.la.semana" y "Esta
 
 Así mismo, los contaminantes principales (NO2, O3, SO2, y NOx) acumulan un volumen ligeramente alto de ausencias (oscilando entre 96.232 NAs en el NO2 y 124.888 NAs en el SO2), así como las columnas de partículas en suspensión (PM2.5 PM10) registrando el número de NAs más elevado, 226.614 y 226.609 respectivamente.
 
-Descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación. 
+Descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación.
 
 Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de forma local mediante el argumento *na.rm = TRUE*, operando así únicamente con los registros reales disponibles sin alterar la dinámica atmosférica.
 
@@ -206,10 +205,85 @@ Con un volumen final de 449.026 observaciones y 16 variables, el dataset queda e
 
 # Análisis visual de datos
 
-### Análisis univariante
+# Análisis temporal
 
-### Análisis temporal y estacionalidad
+Esta sección responde a la pregunta *¿cómo evolucionan los contaminantes a lo largo del tiempo y se observa estacionalidad?* Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los datos horarios originales (`datos`), calculando las medias con `na.rm = TRUE`, es decir, sin rellenar los valores perdidos.
 
-### Identificación de períodos críticos
+```{r temporal-prep}
+library(dplyr); library(tidyr); library(lubridate); library(ggplot2)
+
+# Variables de calendario con lubridate poniendo lunes como primer día de la semana
+datos <- datos %>%
+  mutate(
+    año       = year(Fecha), # extraemos año, mes y día de la semana de la fecha
+    mes        = month(Fecha, label = TRUE, abbr = TRUE),
+    dow        = wday(Fecha, week_start = 1),
+    fin_semana = dow >= 6, # definimos fin de semana como sábado y domingo
+    hora_num   = hour(hms(Hora)) # extraemos unicamente el numero de la hora
+  )
+```
+
+```{r}
+# # Definimos los periodos de estado de alarma para 2019, 2020 y 2021
+en_alarma_2020 <- datos$Fecha >= as.Date("2020-03-14") & datos$Fecha <= as.Date("2020-06-21")
+en_alarma_2021 <- datos$Fecha >= as.Date("2021-03-14") & datos$Fecha <= as.Date("2021-06-21")
+en_alarma_2019 <- datos$Fecha >= as.Date("2019-03-14") & datos$Fecha <= as.Date("2019-06-21")
+
+# Calculamos la media de NO2 para cada período
+no2_2019   <- mean(datos$NO2[en_alarma_2019], na.rm = TRUE)
+no2_2020   <- mean(datos$NO2[en_alarma_2020], na.rm = TRUE)
+no2_2021   <- mean(datos$NO2[en_alarma_2021], na.rm = TRUE)
+
+# Calculamos la variación porcentual de NO2 entre los años
+var_alarma_2019 <- abs(round(100 * (no2_2020 - no2_2019) / no2_2019, 1))
+var_alarma_2021 <- abs(round(100 * (no2_2021 - no2_2020) / no2_2020, 1))
+
+cat("El No2 un año antes del inicio del estado de alarma fue un", var_alarma_2019, "% mas que durante el estado de alarma, y un ", var_alarma_2021, "% menos que un año después del inicio del estado de alarma.")
+```
+
+## Serie diaria y estado de alarma
+
+Las líneas discontinuas naranjas delimitan el estado de alarma por la COVID-19 en España (14 de marzo al 21 de junio de 2020). La curva roja es un ajuste suavizado (`geom_smooth`) de la media diaria de todas las estaciones.
+
+```{r fig.height=3.5, fig.width=6.5}
+# Graficamos la evolución diaria del NO2 con suavizado y líneas verticales para el estado de alarma
+datos %>%
+  group_by(Fecha) %>% # Agrupamos por fecha para calcular la media diaria
+  summarise(no2_global = mean(NO2, na.rm = TRUE)) %>% # Calculamos la media diaria de NO2 ignorando los NAs
+  ggplot(aes(x = Fecha, y = no2_global)) +
+  geom_line(alpha = 0.3) +
+  geom_smooth(method = "loess", span = 0.15, colour = "firebrick", se = FALSE) +
+  geom_vline(xintercept = as.Date(c("2020-03-14", "2020-06-21")),
+             linetype = "dashed", colour = "orange") +
+  labs(title = "Evolución diaria del NO2 (media de las estaciones)",
+       x = NULL, y = "NO2 (µg/m³)")
+```
+
+Se puede observar que la concentración de NO2 disminuyó drásticamente durante el estado de alarma, lo que refleja la reducción de la actividad humana y del tráfico de vehículos. La línea roja suavizada muestra claramente esta tendencia, con un pico antes del confinamiento y una caída significativa durante el período señalado por las líneas discontinuas naranjas.
+
+## Ciclo horario: laborables frente a fines de semana
+
+```{r fig.width=9, fig.height=3.5}
+# Calcular el ciclo horario de NO2 y O3 para días laborables y fines de semana
+ciclo_hora <- datos %>%
+  group_by(hora_num, fin_semana) %>%  # Agrupamos por hora y tipo de día (laborable o fin de semana)
+  summarise(NO2 = mean(NO2, na.rm = TRUE),  # Calculamos la media de NO2 y O3, ignorando los NAs
+            O3  = mean(O3,  na.rm = TRUE)) %>%
+  pivot_longer(c(NO2, O3), names_to = "contaminante", values_to = "media") # Pasamos a formato largo para facilitar la visualización
+
+# Graficar el ciclo horario de NO2 y O3
+ggplot(ciclo_hora, aes(x = hora_num, y = media, colour = fin_semana)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ contaminante, scales = "free_y") +
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Ciclo horario medio de NO2 y O3",
+       x = "Hora del día (h)", y = "Media (µg/m³)", colour = "Fin de semana") +
+  theme_bw() +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(size = 7))
+```
+
+El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más bajos los fines de semana. El O3, al formarse con luz solar, alcanza su máximo a mediodía y cae de noche. Además, el O3 sube los fines de semana porque la menor emisión de NO2 permite que se acumule.
 
 # Discusión y conclusiones
