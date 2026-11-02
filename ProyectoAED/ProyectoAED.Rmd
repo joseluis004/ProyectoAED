@@ -51,10 +51,9 @@ knitr::opts_chunk$set(
 
 # Introducción
 
-Este proyecto aborda un problema real de análisis de datos ambientales dentro de la asignatura de *Análisis Exploratorio de Datos* (AED) del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo, utilizamos el registro oficial ("*Datos horarios de calidad del aire desde 2016*") del portal de datos abiertos del Ayuntamiento de València, procesado bajo el nombre de *calidad_aire.csv*.   
+Este proyecto aborda un problema real de análisis de datos ambientales dentro de la asignatura de *Análisis Exploratorio de Datos* (AED) del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo, utilizamos el registro oficial ("*Datos horarios de calidad del aire desde 2016*") del portal de datos abiertos del Ayuntamiento de València, procesado bajo el nombre de *calidad_aire.csv*.
 
-Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisiones de origen antrópico y las variables meteorológicas condicionan la concentración de contaminantes, emplearemos el análisis exploratorio como herramienta para transformar los datos brutos en información interpretable, para así evaluar la calidad del aire en la ciudad de València. 
-
+Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisiones de origen antrópico y las variables meteorológicas condicionan la concentración de contaminantes, emplearemos el análisis exploratorio como herramienta para transformar los datos brutos en información interpretable, para así evaluar la calidad del aire en la ciudad de València.
 
 # Objetivo del proyecto
 
@@ -62,10 +61,9 @@ El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos
 
 Para guiar el análisis exploratorio y dar validez física a los resultados, el proyecto busca responder las siguientes preguntas de investigación:
 
-* ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2, O_3, SO_2$) entre las estaciones de medición de la ciudad?
+- ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2, O_3, SO_2$) entre las estaciones de medición de la ciudad?
 
-* ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
-
+- ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
 
 # Preparación y acondicionamiento de datos
 
@@ -106,15 +104,16 @@ summary(datos)
 colnames(datos)
 
 ```
+
 Al examinar los resultados de esta exploración inicial observamos que el conjunto cuenta con 449.026 observaciones (filas) y 27 variables (columnas):
 
-* La columna "Fecha" se ha importado como texto plano (*chr*) e incluye una letra "T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real. 
+- La columna "Fecha" se ha importado como texto plano (*chr*) e incluye una letra "T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real.
 
-* Variables cualitativas como "Día.de.la.semana", "Hora" y "Estación" figuran como texto plano (*chr*), convertirlas a factores es indispensable para que R las trate como variables categóricas permitiendo así que los gráficos operen de manera eficiente posteriormente.
+- Variables cualitativas como "Día.de.la.semana", "Hora" y "Estación" figuran como texto plano (*chr*), convertirlas a factores es indispensable para que R las trate como variables categóricas permitiendo así que los gráficos operen de manera eficiente posteriormente.
 
-* En el *summary* observamos que las variables con mayor número de *NAs* son ("C6H6" con 402.660, "C7H8" con 402.240 y el "C8H10" con 402.087).Muy cerca se sitúan el "NH3" con 401.307 y la variable "Ruido" con 397.324.
+- En el *summary* observamos que las variables con mayor número de *NAs* son ("C6H6" con 402.660, "C7H8" con 402.240 y el "C8H10" con 402.087).Muy cerca se sitúan el "NH3" con 401.307 y la variable "Ruido" con 397.324.
 
-* El *summary* también refleja una anomalía física puntual, la variable "Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
+- El *summary* también refleja una anomalía física puntual, la variable "Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
 
 ```{r fig.height=3.5, fig.width=6.5}
 library(dplyr)
@@ -157,7 +156,7 @@ str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
 
 Continuamos corrigiendo las observaciones anteriores. Recordamos que los contaminantes mencionados anteriormente como el benceno, tolueno y xileno, presentan pérdidas masivas de datos ($>400.000 NAs$), esto valida la decisión de descartar las columnas prácticamente vacías ya que mantenerlas carece de rigor físico y entorpece el análisis exploratorio.
 
-Sin embargo, los contaminantes principales  ("NO2", "O3" y "SO2") y las variables meteorológicas ("Temperatura", "Humedad.Relativa", "Presión", "Precipitación") cuentan con una completitud altísima, registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos paquete *dplyr*, concretamente aplicamos *select()* para conservar exclusivamente estas variables de interés de tal manera que la dimensión resultante será 449026x16:
+Sin embargo, los contaminantes principales ("NO2", "O3" y "SO2") y las variables meteorológicas ("Temperatura", "Humedad.Relativa", "Presión", "Precipitación") cuentan con una completitud altísima, registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos paquete *dplyr*, concretamente aplicamos *select()* para conservar exclusivamente estas variables de interés de tal manera que la dimensión resultante será 449026x16:
 
 ```{r,results='hide'}
 # Seleccionamos las variables de interés y filtramos
@@ -198,11 +197,106 @@ El recuento revela que las columnas "Fecha", "Hora", "Día.de.la.semana" y "Esta
 
 Así mismo, los contaminantes principales (NO2, O3, SO2, y NOx) acumulan un volumen ligeramente alto de ausencias (oscilando entre 96.232 NAs en el NO2 y 124.888 NAs en el SO2), así como las columnas de partículas en suspensión (PM2.5 PM10) registrando el número de NAs más elevado, 226.614 y 226.609 respectivamente.
 
-Descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación. 
+Descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación.
 
 Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de forma local mediante el argumento *na.rm = TRUE*, operando así únicamente con los registros reales disponibles sin alterar la dinámica atmosférica.
 
 Con un volumen final de 449.026 observaciones y 16 variables, el dataset queda estructurado en un formato sólido (*Technically Correct Data*) para iniciar la fase de Análisis Visual donde daremos respuesta a las preguntas de investigación planteadas.
+
+# Distribución de los principales contaminantes entre las estaciones de medición
+
+Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$, $SO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia? 
+
+## Análisis de estadísticos
+
+Para comenzar, podemos realizar un resumen estadístico de estos contaminantes, en función de cada una de las estaciones. Comenzamos analizando los estadísticos por estaciones correspondientes al dióxido de nitrógeno ($NO_{2}$):
+
+```{r}
+resumen_estaciones_NO2 <- datos_filtrados %>%
+  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
+                           "Valencia Centro"))) %>% 
+  group_by(Estación) %>%
+  summarise(observaciones = sum(!is.na(NO2)),
+            mín = min(NO2, na.rm=TRUE),
+            q25 = quantile(NO2, 0.25, na.rm=TRUE),
+            media = mean(NO2, na.rm=TRUE),
+            mediana = median(NO2, na.rm=TRUE),
+            std = sd(NO2, na.rm=TRUE),
+            q75 = quantile(NO2, 0.75, na.rm=TRUE),
+            máx = max(NO2, na.rm=TRUE))
+
+resumen_estaciones_NO2
+```
+
+Destacamaos valores bajos tanto en media como en mediana para las estaciones de `Molí del Sol` y `Politécnico`, así como un valor máximo bajo para `Puerto llit antic Túria`. También cabe destacar los picos de concentración de este contaminante que se han alcanzado en las estaciones de `Avda. Francia` y `Bulevard Sud`. Visualizamos a continuación los estadísticos correspondientes al dióxido de azufre ($SO_{2}$):
+
+```{r}
+resumen_estaciones_SO2 <- datos_filtrados %>%
+  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
+                           "Valencia Centro"))) %>% 
+  group_by(Estación) %>%
+  summarise(observaciones = sum(!is.na(SO2)),
+            mín = min(SO2, na.rm=TRUE),
+            q25 = quantile(SO2, 0.25, na.rm=TRUE),
+            media = mean(SO2, na.rm=TRUE),
+            mediana = median(SO2, na.rm=TRUE),
+            std = sd(SO2, na.rm=TRUE),
+            q75 = quantile(SO2, 0.75, na.rm=TRUE),
+            máx = max(SO2, na.rm=TRUE))
+
+resumen_estaciones_SO2
+```
+
+Rápidamente nos damos cuenta de que el valor máximo de dióxido de azufre medido en la estación de `Puerto Moll Trans. Ponent` es más de 100 unidades mayor que el segundo valor máximo observado, luego se debe tratar de un outlier, posiblemente por algún error en la medición. Reemplazamos dicho valor por la mediana de dicha estación:
+
+```{r}
+datos_filtrados$SO2[which.max(datos_filtrados$SO2)] <- 
+  median(datos_filtrados["Estación" == "Puerto Moll Trans. Ponent", "SO2"],
+         na.rm=TRUE)
+```
+
+Por último, visualizamos los estadísticos correspondientes al ozono ($O_{3}$):
+
+```{r}
+resumen_estaciones_O3 <- datos_filtrados %>%
+  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
+                           "Valencia Centro"))) %>% 
+  group_by(Estación) %>%
+  summarise(observaciones = sum(!is.na(O3)),
+            mín = min(O3, na.rm=TRUE),
+            q25 = quantile(O3, 0.25, na.rm=TRUE),
+            media = mean(O3, na.rm=TRUE),
+            mediana = median(O3, na.rm=TRUE),
+            std = sd(O3, na.rm=TRUE),
+            q75 = quantile(O3, 0.75, na.rm=TRUE),
+            máx = max(O3, na.rm=TRUE))
+
+resumen_estaciones_O3
+```
+
+Observamos que, en general, las concentraciones de ozono no difieren demasiado de unas estaciones a otras.
+
+## Visualización de los contaminantes
+
+Pasamos ahora a visualizar gráficamente como se distribuyen los distintos contaminantes por estación:
+
+```{r}
+datos_filtrados %>% 
+  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
+                           "Valencia Centro"))) %>%
+  select(Estación, NO2, SO2, O3) %>%
+  gather(key="Contaminante", value="Concentración", NO2, SO2, O3) %>%
+  ggplot(aes(x = Estación, y = Concentración)) +
+    geom_boxplot(fill = "steelblue", alpha = 0.7, 
+                 outlier.alpha = 0.3, na.rm = TRUE) +
+    facet_wrap(~Contaminante, scales = "free_y") +
+    labs(title = "Distribución de contaminantes por estación",
+         x = "Estación", y = expression("Concentración ("*mu*"g/m"^3*")")) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45,hjust = 1))
+```
+
+
 
 # Análisis visual de datos
 
