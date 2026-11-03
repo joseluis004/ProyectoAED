@@ -205,16 +205,18 @@ Con un volumen final de 449.026 observaciones y 16 variables, el dataset queda e
 
 # Distribución de los principales contaminantes entre las estaciones de medición
 
-Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$, $SO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia? 
+Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia?
 
 ## Análisis de estadísticos
 
 Para comenzar, podemos realizar un resumen estadístico de estos contaminantes, en función de cada una de las estaciones. Comenzamos analizando los estadísticos por estaciones correspondientes al dióxido de nitrógeno ($NO_{2}$):
 
 ```{r}
+estaciones_descartadas <- c("Consellería Meteo", "Nazaret Meteo", 
+                            "Valencia Centro")
+
 resumen_estaciones_NO2 <- datos_filtrados %>%
-  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
-                           "Valencia Centro"))) %>% 
+  filter(!(Estación %in% estaciones_descartadas)) %>% 
   group_by(Estación) %>%
   summarise(observaciones = sum(!is.na(NO2)),
             mín = min(NO2, na.rm=TRUE),
@@ -228,39 +230,14 @@ resumen_estaciones_NO2 <- datos_filtrados %>%
 resumen_estaciones_NO2
 ```
 
-Destacamaos valores bajos tanto en media como en mediana para las estaciones de `Molí del Sol` y `Politécnico`, así como un valor máximo bajo para `Puerto llit antic Túria`. También cabe destacar los picos de concentración de este contaminante que se han alcanzado en las estaciones de `Avda. Francia` y `Bulevard Sud`. Visualizamos a continuación los estadísticos correspondientes al dióxido de azufre ($SO_{2}$):
+Destacamaos valores bajos tanto en media como en mediana para las estaciones de `Molí del Sol` y `Politécnico`, así como un valor máximo bajo para `Puerto llit antic Túria`. También cabe destacar los picos de concentración de este contaminante que se han alcanzado en las estaciones de `Avda. Francia` y `Bulevard Sud`. Además, observamos que todas las medias se encuentran por encima de las medianas, por lo que la distribución de $NO_{2}$ presenta una asimetría positiva. 
 
-```{r}
-resumen_estaciones_SO2 <- datos_filtrados %>%
-  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
-                           "Valencia Centro"))) %>% 
-  group_by(Estación) %>%
-  summarise(observaciones = sum(!is.na(SO2)),
-            mín = min(SO2, na.rm=TRUE),
-            q25 = quantile(SO2, 0.25, na.rm=TRUE),
-            media = mean(SO2, na.rm=TRUE),
-            mediana = median(SO2, na.rm=TRUE),
-            std = sd(SO2, na.rm=TRUE),
-            q75 = quantile(SO2, 0.75, na.rm=TRUE),
-            máx = max(SO2, na.rm=TRUE))
 
-resumen_estaciones_SO2
-```
-
-Rápidamente nos damos cuenta de que el valor máximo de dióxido de azufre medido en la estación de `Puerto Moll Trans. Ponent` es más de 100 unidades mayor que el segundo valor máximo observado, luego se debe tratar de un outlier, posiblemente por algún error en la medición. Reemplazamos dicho valor por la mediana de dicha estación:
-
-```{r}
-datos_filtrados$SO2[which.max(datos_filtrados$SO2)] <- 
-  median(datos_filtrados["Estación" == "Puerto Moll Trans. Ponent", "SO2"],
-         na.rm=TRUE)
-```
-
-Por último, visualizamos los estadísticos correspondientes al ozono ($O_{3}$):
+Visualizamos a continuación los estadísticos correspondientes al ozono ($O_{3}$):
 
 ```{r}
 resumen_estaciones_O3 <- datos_filtrados %>%
-  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
-                           "Valencia Centro"))) %>% 
+  filter(!(Estación %in% estaciones_descartadas)) %>% 
   group_by(Estación) %>%
   summarise(observaciones = sum(!is.na(O3)),
             mín = min(O3, na.rm=TRUE),
@@ -274,7 +251,7 @@ resumen_estaciones_O3 <- datos_filtrados %>%
 resumen_estaciones_O3
 ```
 
-Observamos que, en general, las concentraciones de ozono no difieren demasiado de unas estaciones a otras.
+Observamos que, en general, las concentraciones de ozono no difieren demasiado de unas estaciones a otras. A diferencia de lo observado con el dióxido de nitrógeno, los valores de las medias y medianas son prácticamente iguales.
 
 ## Visualización de los contaminantes
 
@@ -282,20 +259,42 @@ Pasamos ahora a visualizar gráficamente como se distribuyen los distintos conta
 
 ```{r}
 datos_filtrados %>% 
-  filter(!(Estación %in% c("Consellería Meteo", "Nazaret Meteo",
-                           "Valencia Centro"))) %>%
-  select(Estación, NO2, SO2, O3) %>%
-  gather(key="Contaminante", value="Concentración", NO2, SO2, O3) %>%
+  filter(!(Estación %in% estaciones_descartadas)) %>%
+  select(Estación, NO2, O3) %>%
+  gather(key="Contaminante", value="Concentración", NO2, O3) %>%
   ggplot(aes(x = Estación, y = Concentración)) +
     geom_boxplot(fill = "steelblue", alpha = 0.7, 
                  outlier.alpha = 0.3, na.rm = TRUE) +
-    facet_wrap(~Contaminante, scales = "free_y") +
+    facet_wrap(~Contaminante) +
     labs(title = "Distribución de contaminantes por estación",
          x = "Estación", y = expression("Concentración ("*mu*"g/m"^3*")")) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45,hjust = 1))
 ```
 
+Comentaremos que podemos observar en este gráfico:
+
+* En primer lugar, vemos que, en cada estación, el $NO_{2}$ presenta concentraciones centrales inferiores al $O_{3}$. Además el rango intercuartílico del $NO_{2}$ es menor que el del $0_{3}$, luego sus valores centrales se encuentran más concentradas. Sin embargo, el $NO_{2}$ muestra un mayor número de valores atípicos y alcanza picos de concentración más altos, en general, que los del $O_{3}$. Estos valores representan episodios de concentración de los contaminantes muy elevados.
+
+* **Distribución del $NO_{2}$ por estación**: observamos que todas las estaciones presentan distribuciones asimétricas a la derecha; luego, aunque la mayor parte de las mediciones se concentra en valores bajos, existen periodos puntuales donde las concentraciones de $NO_{2}$ alcanzan valores muy altos. Destacamaos también que:
+
+** `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
+
+** `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos.
+
+** Las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
+
+* **Distribución del $0_{3}$ por estación**: observamos distribuciones menos asimétricas que en el caso del $NO_{2}$, aunque la mayor parte de las mediciones se concentran en valores más altos. Destacamos también:
+
+** `Puerto Moll Trans. Ponent` presenta la concentración mediana más elevada, mientras que `Puerto Valencia` presenta la concentración mediana más baja.
+
+** Las cajas están, en general, centradas respecto a la mediana, por lo que parece que el $O_{3}$ presenta una distribución más equilibrada de sus valores centrales.
+
+* Por último, es interesante destacar que las estaciones que presentan mayores concentraciones de $NO_{2}$ no necesariamente presentan mayores concentraciones de $O_{3}$, y viceversa. Por ejemplo
+
+** `Politécnico` presenta una de las concentraciones medianas más bajas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más altas.
+
+** `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
 
 
 # Análisis visual de datos
