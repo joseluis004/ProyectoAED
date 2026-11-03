@@ -278,26 +278,23 @@ Comentaremos que podemos observar en este gráfico:
 
 * **Distribución del $NO_{2}$ por estación**: observamos que todas las estaciones presentan distribuciones asimétricas a la derecha; luego, aunque la mayor parte de las mediciones se concentra en valores bajos, existen periodos puntuales donde las concentraciones de $NO_{2}$ alcanzan valores muy altos. Destacamaos también que:
 
-** `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
+    * `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
 
-** `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos.
+    * `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos.
 
-** Las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
+    * Las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
 
 * **Distribución del $0_{3}$ por estación**: observamos distribuciones menos asimétricas que en el caso del $NO_{2}$, aunque la mayor parte de las mediciones se concentran en valores más altos. Destacamos también:
 
-** `Puerto Moll Trans. Ponent` presenta la concentración mediana más elevada, mientras que `Puerto Valencia` presenta la concentración mediana más baja.
+    * `Puerto Moll Trans. Ponent` presenta la concentración mediana más elevada, mientras que `Puerto Valencia` presenta la concentración mediana más baja.
 
-** Las cajas están, en general, centradas respecto a la mediana, por lo que parece que el $O_{3}$ presenta una distribución más equilibrada de sus valores centrales.
+    * Las cajas están, en general, centradas respecto a la mediana, por lo que parece que el $O_{3}$ presenta una distribución más equilibrada de sus valores centrales.
 
 * Por último, es interesante destacar que las estaciones que presentan mayores concentraciones de $NO_{2}$ no necesariamente presentan mayores concentraciones de $O_{3}$, y viceversa. Por ejemplo
 
-** `Politécnico` presenta una de las concentraciones medianas más bajas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más altas.
+    * `Politécnico` presenta una de las concentraciones medianas más bajas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más altas.
 
-** `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
-
-
-# Análisis visual de datos
+    * `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
 
 # Análisis temporal
 
