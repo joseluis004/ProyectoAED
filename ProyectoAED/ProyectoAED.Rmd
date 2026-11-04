@@ -61,7 +61,7 @@ El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos
 
 Para guiar el análisis exploratorio y dar validez física a los resultados, el proyecto busca responder las siguientes preguntas de investigación:
 
-- ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2, O_3, SO_2$) entre las estaciones de medición de la ciudad?
+- ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2$ y $O_3$) entre las estaciones de medición de la ciudad?
 
 - ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
 
