@@ -67,7 +67,7 @@ Para guiar el análisis exploratorio y dar validez física a los resultados, el 
 
 # Preparación y acondicionamiento de datos
 
-### Fuente de datos, importación y conversión:
+## Fuente de datos, importación y conversión:
 
 El análisis parte del registro oficial "*Datos horarios de calidad del aire desde 2016*", obtenido del portal de datos abiertos del Ayuntamiento de Valencia. El formato elegido es CSV de tal manera que podamos representar los datos en una tabla, donde las columnas se separan punto y coma y las filas por saltos de línea. El archivo se procesa bajo el nombre de *calidad_aire.csv*.
 
@@ -152,7 +152,7 @@ datos <- datos %>%
 str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
 ```
 
-### Selección de variables y filtrado
+## Selección de variables y filtrado
 
 Continuamos corrigiendo las observaciones anteriores. Recordamos que los contaminantes mencionados anteriormente como el benceno, tolueno y xileno, presentan pérdidas masivas de datos ($>400.000 NAs$), esto valida la decisión de descartar las columnas prácticamente vacías ya que mantenerlas carece de rigor físico y entorpece el análisis exploratorio.
 
@@ -172,7 +172,7 @@ datos_filtrados <- datos %>%
 dim(datos_filtrados)
 ```
 
-### Valores perdidos NAs e imputación:
+## Valores perdidos NAs e imputación:
 
 Aunque hayamos seleccionado las variables de interés, el conjunto de datos aún presenta NAs en los contaminantes principales y meteorológicos, además de la anomalía física detectada en la radiación. Ambos deben resolverse antes de proceder con la visualización.
 
