@@ -58,7 +58,7 @@ Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisione
 
 # Objetivo del proyecto
 
-El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos de la calidad del aire en Valencia, focalizándonos en los contaminantes principales con mayor registro ($NO_2, O_3, SO_2$) y en las variables meteorológicas (temperatura, presión, radiación y humedad). Para ello, realizaremos un proceso de depuración, transformación (Data Wrangling) y visualización de datos en R, de tal manera que logremos caracterizar el comportamiento estadístico del sistema atmosférico.
+El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos de la calidad del aire en Valencia, focalizándonos en los contaminantes principales con mayor registro ($NO_2$, $O_3$) y en las variables meteorológicas (temperatura, presión, radiación y humedad). Para ello, realizaremos un proceso de depuración, transformación (Data Wrangling) y visualización de datos en R, de tal manera que logremos caracterizar el comportamiento estadístico del sistema atmosférico.
 
 Para guiar el análisis exploratorio y dar validez física a los resultados, el proyecto busca responder las siguientes preguntas de investigación:
 
