@@ -295,6 +295,30 @@ Comentaremos que podemos observar en este gráfico:
 
     * `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
 
+Corroboramos cuantitativamente este comportamiento con el cálculo de la correlación lineal de Pearson entre el $NO_2$ y el $0_3$, verificando cómo arroja un coeficiente negativo de -0.6 que confirma la relación inversa existente entre ambos contaminantes.
+```{r}
+# Calculamos la correlación lineal de pearson entre el NO2 y O3
+#empleando el dataset filtrado y omitiendo los valores perdidos con use="complete.obs"
+cor(datos_filtrados$NO2, datos_filtrados$O3, use = "complete.obs", method = "pearson")
+```
+
+```{r,warning=FALSE}
+
+datos_filtrados %>% #Partimos de los datos limpios
+  slice_sample(n = 10000) %>%  # Seleccionamos una muestra aleatoria para evitar el bloqueo
+                               #no afecta a la distribución real, 
+  ggplot(aes(x = NO2, y = O3)) +  #Inicializamos el gráfico asignando NO2 al eje x y el 03 al Y
+  geom_point(alpha = 0.2, color = "steelblue") +  #Dibujamos nube puntos
+  geom_smooth(method = "loess", color = "firebrick", se = FALSE) + 
+  coord_cartesian(ylim = c(0, max(datos_filtrados$O3, na.rm = TRUE))) + #Limitamos el eje Y para que empiece en 0
+  labs(title = "Relación inversa entre NO2 y O3",
+       x = expression(NO2 ~ (mu * g / m^3)),
+       y = expression(O3 ~ (mu * g / m^3))) +
+  theme_minimal()
+```
+
+El diagrama de dispersión evidencia la relación inversa entre ambos mostrando que las mayores concentraciones de $NO_2$ van asociadas a valores reducidos de $O_3$. Hemos usado method = "loess" en lugar de "lm" para capturar la curvatura real de la relación.
+
 # Análisis temporal
 
 Esta sección responde a la pregunta *¿cómo evolucionan los contaminantes a lo largo del tiempo y se observa estacionalidad?* Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los datos horarios originales (`datos`), calculando las medias con `na.rm = TRUE`, es decir, sin rellenar los valores perdidos.
