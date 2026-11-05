@@ -195,63 +195,33 @@ dim(datos_filtrados)
 
 El recuento revela que las columnas ``Fecha", ``Hora", ``Día.de.la.semana" y ``Estación" presentan completitud absoluta (0 NAs). Las variables meteorológicas muestran una alta completitud, destacando la ``Presión" (13.753 NAs), la "Precipitación" (14.525 NAs), la ``Radiación" (16.380 NAs) y la ``Temperatura" (16.827 NAs).
 
-Así mismo, los contaminantes principales (NO2, O3, SO2, y NOx) acumulan un volumen ligeramente alto de ausencias (oscilando entre 96.232 NAs en el NO2 y 124.888 NAs en el SO2), así como las columnas de partículas en suspensión (PM2.5 PM10) registrando el número de NAs más elevado, 226.614 y 226.609 respectivamente.
+Asimismo, los contaminantes que serán objeto central de nuestro estudio, $NO_{2}$ y $O_{3}$, acumulan un volumen ligeramente alto de ausencias, 96232 y 122897 respectivamente. Sin embargo, a la luz de lo observado en el gráfico ..., vemos que las estaciones `Consellería Meteo` y `Nazaret Meteo` presentan un 100% de valores ausentes para estos contaminantes, así como que `Valencia Centro` presenta un 100% de valores ausentes para el $O_{3}$. Por ello, decidimos eliminar estás estaciones del conjunto de datos.
 
-Descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación.
+```{r}
+estaciones_descartadas <- c("Valencia Centro", "Consellería Meteo",
+                            "Nazaret Meteo")
+
+# Eliminamos las observaciones correspondientes a las estaciones descartadas
+datos_filtrados <- datos_filtrados %>%
+  filter(!(Estación %in% estaciones_descartadas))
+
+# Comprobamos cuantos NAs tenemos ahora
+colSums(is.na(datos_filtrados[, c("NO2", "O3")]))
+
+# Vemos la dimensión del conjunto de datos
+dim(datos_filtrados)
+```
+
+
+Para los valores ausentes restantes, descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación.
 
 Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de forma local mediante el argumento *na.rm = TRUE*, operando así únicamente con los registros reales disponibles sin alterar la dinámica atmosférica.
 
-Con un volumen final de 449.026 observaciones y 16 variables, el dataset queda estructurado en un formato sólido (*Technically Correct Data*) para iniciar la fase de Análisis Visual donde daremos respuesta a las preguntas de investigación planteadas.
+Con un volumen final de 350.712 observaciones y 16 variables, el dataset queda estructurado en un formato sólido (*Technically Correct Data*) para iniciar la fase de Análisis Visual donde daremos respuesta a las preguntas de investigación planteadas.
 
 # Distribución de los principales contaminantes entre las estaciones de medición
 
 Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia?
-
-## Análisis de estadísticos
-
-Para comenzar, podemos realizar un resumen estadístico de estos contaminantes, en función de cada una de las estaciones. Comenzamos analizando los estadísticos por estaciones correspondientes al dióxido de nitrógeno ($NO_{2}$), pero previamente descartamos aquellas estaciones que presentan un volumen vasto de valores faltantes:
-
-```{r}
-estaciones_descartadas <- c("Consellería Meteo", "Nazaret Meteo", 
-                            "Valencia Centro")
-
-resumen_estaciones_NO2 <- datos_filtrados %>%
-  filter(!(Estación %in% estaciones_descartadas)) %>% 
-  group_by(Estación) %>%
-  summarise(observaciones = sum(!is.na(NO2)),
-            mín = min(NO2, na.rm=TRUE),
-            q25 = quantile(NO2, 0.25, na.rm=TRUE),
-            media = mean(NO2, na.rm=TRUE),
-            mediana = median(NO2, na.rm=TRUE),
-            std = sd(NO2, na.rm=TRUE),
-            q75 = quantile(NO2, 0.75, na.rm=TRUE),
-            máx = max(NO2, na.rm=TRUE))
-
-resumen_estaciones_NO2
-```
-
-Destacamaos valores bajos tanto en media como en mediana para las estaciones de `Molí del Sol` y `Politécnico`, así como un valor máximo bajo para `Puerto llit antic Túria`. También cabe destacar los picos de concentración de este contaminante que se han alcanzado en las estaciones de `Avda. Francia` y `Bulevard Sud`. Además, observamos que todas las medias se encuentran por encima de las medianas, por lo que la distribución de $NO_{2}$ presenta una asimetría positiva. 
-
-
-Visualizamos a continuación los estadísticos correspondientes al ozono ($O_{3}$):
-
-```{r}
-resumen_estaciones_O3 <- datos_filtrados %>%
-  filter(!(Estación %in% estaciones_descartadas)) %>% 
-  group_by(Estación) %>%
-  summarise(observaciones = sum(!is.na(O3)),
-            mín = min(O3, na.rm=TRUE),
-            q25 = quantile(O3, 0.25, na.rm=TRUE),
-            media = mean(O3, na.rm=TRUE),
-            mediana = median(O3, na.rm=TRUE),
-            std = sd(O3, na.rm=TRUE),
-            q75 = quantile(O3, 0.75, na.rm=TRUE),
-            máx = max(O3, na.rm=TRUE))
-
-resumen_estaciones_O3
-```
-
-Observamos que, en general, las concentraciones de ozono no difieren demasiado de unas estaciones a otras. A diferencia de lo observado con el dióxido de nitrógeno, los valores de las medias y medianas son prácticamente iguales.
 
 ## Visualización de los contaminantes
 
