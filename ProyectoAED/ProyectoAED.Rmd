@@ -36,9 +36,10 @@ output:
 
 ```{r configuracion, include=FALSE}
 knitr::opts_chunk$set(
-  echo=TRUE,
-  message = FALSE,
-  warning = FALSE
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 6, fig.height = 4,
+  fig.align = "left",
+  out.width = "95%"
 )
 ```
 
@@ -345,6 +346,33 @@ datos %>%
 ```
 
 Se puede observar que la concentración de NO2 disminuyó drásticamente durante el estado de alarma, lo que refleja la reducción de la actividad humana y del tráfico de vehículos. La línea roja suavizada muestra claramente esta tendencia, con un pico antes del confinamiento y una caída significativa durante el período señalado por las líneas discontinuas naranjas.
+
+## Tendencia y estacionalidad anual
+
+```{r fig.width=9, fig.height=3}
+# Descomposición de la serie temporal de NO2 y O3 en tendencia y estacionalidad
+descomp <- datos_filtrados %>%
+  pivot_longer(c(NO2, O3), names_to = "contaminante", values_to = "valor") %>%  # formato largo
+  group_by(contaminante, Fecha) %>%                                              # por contaminante y día
+  summarise(valor = mean(valor, na.rm = TRUE)) %>%                               # media diaria
+  group_by(contaminante, semana = week(Fecha)) %>%                               # por semana del año
+  mutate(m = mean(valor, na.rm = TRUE)) %>%                                      # perfil semanal
+  group_by(contaminante) %>%                                                     # de nuevo por contaminante
+  mutate(Estacionalidad = m - mean(unique(m)), Tendencia = valor - Estacionalidad) %>%  # estacionalidad centrada y tendencia
+  pivot_longer(c(Tendencia, Estacionalidad), names_to = "componente", values_to = "y") %>%  # un componente por fila
+  mutate(componente = factor(componente, c("Tendencia", "Estacionalidad")))      # orden de las facetas
+
+# Gráfico de tendencia y estacionalidad de NO2 y O3
+ggplot(descomp, aes(Fecha, y, colour = contaminante)) +
+  geom_smooth(data = filter(descomp, componente == "Tendencia"), method = "loess", span = 0.5, se = FALSE) +  # tendencia suavizada con LOESS
+  geom_line(data = filter(descomp, componente == "Estacionalidad")) +            # estacionalidad sin suavizar
+  facet_wrap(componente ~ contaminante, ncol = 2, scales = "free_y") +           # una faceta por componente y contaminante, escala libre
+  scale_colour_manual(values = c(NO2 = "firebrick", O3 = "steelblue")) +         # colores de cada contaminante
+  labs(title = "Tendencia y estacionalidad de NO2 y O3", x = NULL, y = "µg/m³") +
+  theme_bw() + theme(legend.position = "none")                                   # sin leyenda: el color ya se ve en cada faceta
+```
+
+A partir de la descomposición STL se observan patrones opuestos. En la tendencia, el $NO_2$ desciende desde 2016, con una caída acusada en 2020 que se estabiliza después en valores mínimos, mientras que el $O_3$ muestra un ligero ascenso, coherente con la menor destrucción de ozono al haber menos $NOx$. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno por el mayor tráfico y la peor dispersión, y el $O_3$ en primavera y verano por la mayor radiación solar. El aspecto en dientes de sierra indica que el modelo, pese a ajustarse con frecuencia anual, captura también parte del ciclo diario de la serie horaria.
 
 ## Ciclo horario: laborables frente a fines de semana
 
