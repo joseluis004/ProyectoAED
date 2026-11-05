@@ -165,7 +165,7 @@ datos_filtrados <- datos %>%
     NO, NO2, NOx, O3, SO2, PM2.5, PM10,
     Temperatura, Humedad.relativa, Presión, Radiación, Precipitación
   ) %>%
-  filter(!is.na(Fecha)) # Aseguramos coherencia temporal eliminando nulos críticos en fecha
+  filter(!is.na(Fecha)) #Descartando los na
 
 # Verificamos las dimensiones resultantes del dataset depurado
 dim(datos_filtrados)
@@ -208,7 +208,7 @@ Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se
 
 ## Análisis de estadísticos
 
-Para comenzar, podemos realizar un resumen estadístico de estos contaminantes, en función de cada una de las estaciones. Comenzamos analizando los estadísticos por estaciones correspondientes al dióxido de nitrógeno ($NO_{2}$):
+Para comenzar, podemos realizar un resumen estadístico de estos contaminantes, en función de cada una de las estaciones. Comenzamos analizando los estadísticos por estaciones correspondientes al dióxido de nitrógeno ($NO_{2}$), pero previamente descartamos aquellas estaciones que presentan un volumen vasto de valores faltantes:
 
 ```{r}
 estaciones_descartadas <- c("Consellería Meteo", "Nazaret Meteo", 
