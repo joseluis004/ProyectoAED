@@ -118,8 +118,7 @@ En la exploración inicial del conjunto de 449.026 observaciones (filas) y 27 va
 Una vez detectadas estas deficiencias en el formato bruto, aplicamos las herramientas de las librerías lubridate y dplyr para corregir los dos primeros puntos anteriores, corregir el formato de la columna ``Fecha" y convertir ``Día.de.la.semana", ``Hora" y ``Estación" a factor:
 
 ```{r,results='hide'}
-#Cargamos librerías
-library(lubridate)
+#Cargamos librería
 library(dplyr)
 
 #Convertimos la columna Fecha a formato POSIXct 
@@ -141,7 +140,6 @@ str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
 Continuamos corrigiendo las observaciones anteriores. Comparando las variables (``C6H6", ``C7H8" y ``C8H10" ) del penúltimo que disponen de mayor número de NAs ($>400.000 NAs$) con las 449.026 observaciones en total, decidimos descartarlas ya que están prácticamente vacías y mantenerlas carece de rigor físico y entorpece el análisis exploratorio. Para reforzar visualmente la decisión tomada mapeamos el porcentaje de NAs, donde el predominio del color rojo confirma la inviabilidad de mantener dichas columnas:
 
 ```{r fig.height=3.5, fig.width=6.5}
-library(dplyr)
 library(tidyr)
 library(ggplot2)
 
