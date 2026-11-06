@@ -434,7 +434,8 @@ datos_atipicos <- datos_alargados %>%
 Cuántos valores atípicos se han detectado:
 
 ```{r}
-datos_atipicos %>% count(Contaminante, Estación)
+datos_atipicos %>% group_by(Contaminante, Estación) %>% 
+  summarise(atipicos = n(), .groups="drop_last")
 ```
 
 Representamos el número de observaciones atípicas según la hora
