@@ -409,4 +409,50 @@ ggplot(ciclo_hora, aes(x = hora_num, y = media, colour = fin_semana)) +
 
 El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más bajos los fines de semana. El O3, al formarse con luz solar, alcanza su máximo a mediodía y cae de noche. Además, el O3 sube los fines de semana porque la menor emisión de NO2 permite que se acumule.
 
+# Discusión outliers
+
+Comenzamos obteniendo los valores atípicos:
+
+```{r}
+datos_alargados <- datos_filtrados %>%
+  select(Fecha, Hora, Día.de.la.semana, Estación, NO2, O3) %>%
+  pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración")
+
+limites <- datos_alargados %>%
+  group_by(Estación, Contaminante) %>%
+  summarise(Q1 = quantile(Concentración, 0.25, na.rm=TRUE),
+            Q3 = quantile(Concentración, 0.75, na.rm=TRUE),
+            IQR = Q3 - Q1,
+            .groups="drop") %>%
+  mutate(Lim_inf = Q1 - 1.5 * IQR, Lim_sup = Q3 + 1.5 * IQR)
+
+datos_atipicos <- datos_alargados %>%
+  left_join(limites, by=c("Estación", "Contaminante")) %>%
+  filter(!is.na(Concentración) & (Concentración < Lim_inf | Concentración > Lim_sup))
+```
+
+Cuántos valores atípicos se han detectado:
+
+```{r}
+datos_atipicos %>% count(Contaminante, Estación)
+```
+
+Representamos el número de observaciones atípicas según la hora
+
+```{r}
+datos_atipicos$Hora <- factor(datos_atipicos$Hora,
+                              levels = paste0(0:23, ":00:00"))
+
+datos_atipicos %>% count(Contaminante, Hora) %>%
+  ggplot(aes(x=Hora, y=n)) + 
+  geom_col(fill = "steelblue") + 
+  facet_wrap(~Contaminante, scales="free_y") +
+  labs(title="Valores atípicos según la hora", x="Hora", y="Número de observaciones") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  
+```
+
+Como ya vimos en la distirbución de los contaminantes por horas, los valores atípicos del $NO_{2}$ se concentran en las horas de mayor tráfico (7-9h y 19-22h), mientras que los valores atípicos de $0_{3}$, al formarse con la luz solar, alcanza su máximo en las horas de mayor incisión de esta, y decrece en las horas en que se pone el sol.
+
 # Discusión y conclusiones
