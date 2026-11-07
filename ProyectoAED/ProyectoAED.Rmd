@@ -225,21 +225,12 @@ datos_filtrados %>% select(NO2, O3) %>%
 
 ## Distribución del $\mathbf{NO_{2}}$ por estación
 
-Aunque, en general, la forma de la distribución parece no variar mucho entre estaciones, podemos resaltar algunas diferencias significativas:
-
-  - `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
-
-  - `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos.
-
-  - Las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
+Aunque, en general, la forma de la distribución parece no variar mucho entre estaciones, podemos resaltar algunas diferencias significativas. `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
+De forma opuesta, `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos. Destaca también que las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
 
 ## Distribución del $\mathbf{O_{3}}$ por estación
 
-De nuevo, destacamos algunas diferencias significativas entre estaciones:
-
-  - `Puerto Moll Trans. Ponent` presenta la concentración mediana más elevada, mientras que `Puerto Valencia` presenta la concentración mediana más baja.
-
-  - Las cajas están, en general, centradas respecto a la mediana, por lo que parece que el $O_{3}$ presenta una distribución más equilibrada de sus valores centrales.
+De nuevo, pese a la similitud de las distribuciones entre estaciones, destacamos algunas diferencias. `Puerto Moll Trans` presenta la concentración mediana más elevada, mientras que `Puerto Valencia` presenta la concentración mediana más baja. En oposición a lo que sucedía con el $NO_{2}$, las cajas están, en general, centradas respecto a la mediana, por lo que parece que el $O_{3}$ presenta una distribución más equilibrada de sus valores centrales.
 
 Por último, es interesante destacar que las estaciones que presentan mayores concentraciones de $NO_{2}$ no necesariamente presentan mayores concentraciones de $O_{3}$, y viceversa. Por ejemplo:
 
