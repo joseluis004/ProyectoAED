@@ -192,9 +192,10 @@ datos_filtrados %>%
           })
 ```
 Hay tres obseravciones clave:
-  - $N0_2$ y $O_3$ presentan una relación inversa (-0,64). Cuando las medias diarias de $N0_2$ son mayores, las de $O_3$ tienden a ser menores.
-  - $N0_2$ está muy correlacionado con $NO$ (0,92) y $NO_x$ (0,98) indicando que presentan comportamientos monótonos muy similares por lo que $NO_2$ puede servirnos como representante de interés para estudiar este grupo.
-  - El $O_3$ presenta una correlación positiva con la radiación, una relación que retomaremos al estudiar su comportamiento estacional.
+
+- $N0_2$ y $O_3$ presentan una relación inversa (-0,64). Cuando las medias diarias de $N0_2$ son mayores, las de $O_3$ tienden a ser menores.
+- $N0_2$ está muy correlacionado con $NO$ (0,92) y $NO_x$ (0,98) indicando que presentan comportamientos monótonos muy similares por lo que $NO_2$ puede servirnos como representante de interés para estudiar este grupo.
+- El $O_3$ presenta una correlación positiva con la radiación, una relación que retomaremos al estudiar su comportamiento estacional.
 
 Estos resultados nos permiten centrar el análisis posterior en $N0_2$ y $O_3$, dos contaminantes con comportamientos diferenciados y una relación inversa apreciable. Eso sí, correlación no significa causalidad. La matriz orienta nuestro análisis, pero no demuestra por sí sola los mecanismos físicos que hay detrás.
 
