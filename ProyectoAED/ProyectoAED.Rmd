@@ -164,7 +164,7 @@ Finalmente, obtenemos un conjunto acondicionado de 350.712 observaciones y 16 va
 
 Calculamos correlaciones de Spearman sobre las medias diarias de las variables numéricas, agrupando las mediciones de las estaciones por día.
 
-```{r fig.width=6, fig.height=6}
+```{r fig.width=10, fig.height=5}
 # Definimos una paleta de colores para la correlación
 paleta <- col_numeric(palette = c("firebrick", "white", "steelblue"), domain = c(-1, 1))
 
@@ -173,13 +173,13 @@ datos_filtrados %>%
   group_by(dia = floor_date(Fecha, "day")) %>%                            
   summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
   select(-dia) %>%
-  pairs(gap = 0, xaxt = "n", yaxt = "n", cex.labels = 0.5,                                   
+  pairs(gap = 0, xaxt = "n", yaxt = "n", cex.labels = 0.7,                                   
         lower.panel = function(x, y, ...) points(x, y, pch = 16, cex = 0.5),
         upper.panel = function(x, y, ...) {
           correlacion <- cor(x, y, method = "spearman", use = "complete.obs")        
           coords <- par("usr")
           rect(coords[1], coords[3], coords[2], coords[4], col = paleta(correlacion))
-          text(mean(coords[1:2]), mean(coords[3:4]), round(correlacion,2))
+          text(mean(coords[1:2]), mean(coords[3:4]), round(correlacion,2), font = 2)
           })
 ```
 
@@ -211,7 +211,7 @@ datos_filtrados %>% select(Estación, NO2, O3) %>%
 
 En primer lugar, vemos que, en cada estación, el $NO_{2}$ presenta concentraciones centrales inferiores al $O_{3}$. Además el rango intercuartílico del $NO_{2}$ es menor que el del $O_{3}$, luego sus valores centrales se encuentran más concentrados. Sin embargo, el $NO_{2}$ muestra un mayor número de valores atípicos y alcanza picos de concentración más altos, en general, que los del $O_{3}$. Resaltar también que el $NO_{2}$ presenta una marcada asimetría hacia la derecha, mientras que el $O_{3}$ presenta una menor asimetría. Todos estos detalles los podemos visualizar mejor comparando sus histogramas.
 
-```{r, fig.width=3.5, fig.height=2}
+```{r, fig.width=5, fig.height=2}
 datos_filtrados %>% select(NO2, O3) %>%
   pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración") %>%
   ggplot(aes(Concentración)) +
@@ -259,8 +259,7 @@ datos <- datos %>%
   mutate(
     año       = year(Fecha), # extraemos año, mes y día de la semana de la fecha
     mes        = month(Fecha, label = TRUE, abbr = TRUE),
-    dow        = wday(Fecha, week_start = 1),
-    fin_semana = dow >= 6, # definimos fin de semana como sábado y domingo
+    fin_semana = wday(Fecha, week_start = 1) >= 6, # definimos fin de semana como sábado y domingo
     hora_num   = hour(hms(Hora)) # extraemos unicamente el numero de la hora
   )
 ```
@@ -287,7 +286,7 @@ cat("El No2 un año antes del inicio del estado de alarma fue un", var_alarma_20
 
 Las líneas discontinuas naranjas delimitan el estado de alarma por la COVID-19 en España (14 de marzo al 21 de junio de 2020). La curva roja es un ajuste suavizado (`geom_smooth`) de la media diaria de todas las estaciones.
 
-```{r fig.height=3.5, fig.width=6.5}
+```{r fig.height=3, fig.width=8}
 # Graficamos la evolución diaria del NO2 con suavizado y líneas verticales para el estado de alarma
 datos %>%
   group_by(Fecha) %>% # Agrupamos por fecha para calcular la media diaria
@@ -336,21 +335,18 @@ A partir de la descomposición STL se observan patrones opuestos. En la tendenci
 # Calcular el ciclo horario de NO2 y O3 para días laborables y fines de semana
 ciclo_hora <- datos %>%
   group_by(hora_num, fin_semana) %>%  # Agrupamos por hora y tipo de día (laborable o fin de semana)
-  summarise(NO2 = mean(NO2, na.rm = TRUE),  # Calculamos la media de NO2 y O3, ignorando los NAs
-            O3  = mean(O3,  na.rm = TRUE)) %>%
-  pivot_longer(c(NO2, O3), names_to = "contaminante", values_to = "media") # Pasamos a formato largo para facilitar la visualización
+  summarise(NO2 = mean(NO2, na.rm = TRUE), O3 = mean(O3, na.rm = TRUE)) %>%  # Media de NO2 y O3, ignorando NAs
+  pivot_longer(c(NO2, O3), names_to = "contaminante", values_to = "media")  # Formato largo para visualizar
 
 # Graficar el ciclo horario de NO2 y O3
 ggplot(ciclo_hora, aes(x = hora_num, y = media, colour = fin_semana)) +
-  geom_line() +
-  geom_point() +
+  geom_line() + geom_point() +
   facet_wrap(~ contaminante, scales = "free_y") +
   scale_x_continuous(breaks = 0:23) +
-  labs(title = "Ciclo horario medio de NO2 y O3",
-       x = "Hora del día (h)", y = "Media (µg/m³)", colour = "Fin de semana") +
+  labs(title = "Ciclo horario medio de NO2 y O3", x = "Hora del día (h)",
+       y = "Media (µg/m³)", colour = "Fin de semana") +
   theme_bw() +
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(size = 7))
+  theme(legend.position = "bottom", axis.text.x = element_text(size = 7))
 ```
 
 El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más bajos los fines de semana. El O3, al formarse con luz solar, alcanza su máximo a mediodía y cae de noche. Además, el O3 sube los fines de semana porque la menor emisión de NO2 permite que se acumule.
