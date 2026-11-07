@@ -59,89 +59,55 @@ library(lubridate)
 library(scales)
 ```
 
+# Introducción y objetivos
 
-# Introducción
+Este proyecto aborda un análisis exploratorio de datos (AED) de la calidad del aire en la ciudad de Valencia. Para ello, utilizamos los registros horarios oficiales del portal de datos abiertos del Ayuntamiento (*Datos horarios de calidad del aire desde 2016*), procesados bajo el nombre de *calidad_aire.csv*.
 
-Este proyecto aborda un problema real de análisis de datos ambientales dentro de la asignatura de *Análisis Exploratorio de Datos* (AED) del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo, utilizamos el registro oficial ("*Datos horarios de calidad del aire desde 2016*") del portal de datos abiertos del Ayuntamiento de València, procesado bajo el nombre de *calidad_aire.csv*.
+Sabiendo que la atmósfera es un sistema dinámico condicionado por factores antrópicos y meteorológicos, el objetivo es transformar los datos brutos (*Raw Data*) en información interpretable (*Technically Correct Data*) mediante un proceso de depuración, transformación y visualización de datos en *R*. De tal manera que podamos estudiar el comportamiento de los contaminantes y su relación con variables meteorlógicas.
 
-Sabiendo que la atmósfera funciona como un sistema dinámico donde las emisiones de origen antrópico y las variables meteorológicas condicionan la concentración de contaminantes, emplearemos el análisis exploratorio como herramienta para transformar los datos brutos en información interpretable, para así evaluar la calidad del aire en la ciudad de València.
+Para orientar el estudio, el proyecto se guía en torno a dos preguntas clave:
 
-# Objetivo del proyecto
+- ¿Cómo se distribuyen las concentraciones de ($NO_2$ y $O_3$) entre las estaciones de medición?
 
-El objetivo de este proyecto es llevar a cabo un análisis exploratorio de datos de la calidad del aire en Valencia, focalizándonos en los contaminantes principales con mayor registro ($NO_2$, $O_3$) y en las variables meteorológicas (temperatura, presión, radiación y humedad). Para ello, realizaremos un proceso de depuración, transformación (Data Wrangling) y visualización de datos en R, de tal manera que logremos caracterizar el comportamiento estadístico del sistema atmosférico.
-
-Para guiar el análisis exploratorio y dar validez física a los resultados, el proyecto busca responder las siguientes preguntas de investigación:
-
-- ¿Cómo se distribuyen los niveles de los principales contaminantes ($NO_2$ y $O_3$) entre las estaciones de medición de la ciudad?
-
-- ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa estacionalidad?
+- ¿Cómo evolucionan ambos contaminantes a lo largo del tiempo?¿Presentan estacionalidad?
 
 # Preparación y acondicionamiento de datos
 
-## Fuente de datos, importación y conversión:
+## Conversión y selección de variables:
 
-El análisis parte del registro oficial "*Datos horarios de calidad del aire desde 2016*", obtenido del portal de datos abiertos del Ayuntamiento de Valencia. El formato elegido es CSV de tal manera que podamos representar los datos en una tabla, donde las columnas se separan punto y coma y las filas por saltos de línea. El archivo se procesa bajo el nombre de *calidad_aire.csv*.
-
-Según la teoría tratada, datos recién importados se consideran *Raw Data* y contienen inconsistencias que impiden un análisis directo. Por ello, el proceso de acondicionamiento exige transformar el conjunto en un formato *Technically Correct Data*.
-
-El primer paso es importarlos desde la carpeta *data* mediante una ruta relativa que evite dependencias absolutas del equipo:
+Tras descargar en formato *csv* e importar el archivo en *R* inspeccionamos su estructura, de tal amnera que obetenmos 449.026 observaciones y 27 variables.
 
 ```{r,results='hide'}
 #Importamos los datos usando una ruta relativa 
 datos <- read.csv("calidad_aire.csv", sep = ";", fileEncoding = "UTF-8")
-```
-
-Para estudiar la estructura inicial del conjunto de datos y verificar su volumen, ejecutamos las funciones de inspección básicas (*str()*, *head()*, *tail()* y *summary()*):
-
-```{r,results='hide'}
 #Número total de filas y columnas
 dim(datos)
-
-#Inspeccionamos la estructura interna de las variables
+#Inspeccionamos la estructura de las variables
 str(datos)
-
-#Visualizamos las primeras y últimas filas
-head(datos)
-tail(datos)
-
-#Resumen estadístico
-summary(datos)
-
-#Nombre de las variables
-colnames(datos)
-
 ```
+Detectamos que la variable `Fecha` aparece como una cadena de caracteres, al igual que `Día.de.la.semana`, `Hora` y `Estación`, aunque estas últimas representan variables categóricas. 
 
-En la exploración inicial del conjunto de 449.026 observaciones (filas) y 27 variables (columnas) observamos que:
-
-- La columna `Fecha" se ha importado como texto plano (*chr*) e incluye una letra`T" intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como una línea de tiempo real.
-
-- Variables cualitativas como `Día.de.la.semana",`Hora" y "Estación" figuran como texto plano (*chr*), convertirlas a factores es indispensable para que R las trate como variables categóricas permitiendo así que los gráficos operen de manera eficiente posteriormente.
-
-- En el *summary* observamos que las variables con mayor número de *NAs* son (`C6H6" con 402.660,`C7H8" con 402.240 y el `C8H10" con 402.087). Muy cerca se sitúa el`NH3" con 401.307 y el \`\`Ruido" con 397.324.
-
-- El *summary* también refleja una anomalía física puntual, la variable \`\`Radiación" muestra un valor mínimo negativo imposible de -7.0, requiriendo una corrección.
-
-Una vez detectadas estas deficiencias en el formato bruto, aplicamos las herramientas de las librerías lubridate y dplyr para corregir los dos primeros puntos anteriores, corregir el formato de la columna `Fecha" y convertir`Día.de.la.semana", `Hora" y`Estación" a factor:
+Para corregirlo, convertimos Fecha a formato *POSIXct* y las tres variables cualitativas a factores. De esta manera, *R* puede interpretar correctamente la información temporal y categórica.
 
 ```{r,results='hide'}
 #Convertimos la columna Fecha a formato POSIXct 
 datos$Fecha <- as.POSIXct(datos$Fecha, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 
 #Convertimos variables cualitativas a factores para facilitar el filtrado y agrupación
-datos <- datos %>%
-  mutate(
-    Estación = as.factor(Estación),
-    Día.de.la.semana = as.factor(Día.de.la.semana),
-    Hora = as.factor(Hora))
-
-#Verificamos las transformaciones
-str(datos[c("Fecha", "Día.de.la.semana", "Hora", "Estación")])
+datos <- mutate(datos,
+  Estación = as.factor(Estación),
+  Día.de.la.semana = as.factor(Día.de.la.semana),
+  Hora = as.factor(Hora))
 ```
 
-## Selección de variables y filtrado
+Una vez corregidos los formatos, estudiamos la completitud de las variables mediante el resumen estadístico.
 
-Continuamos corrigiendo las observaciones anteriores. Comparando las variables (`C6H6",`C7H8" y \`\`C8H10" ) del penúltimo que disponen de mayor número de NAs ($>400.000 NAs$) con las 449.026 observaciones en total, decidimos descartarlas ya que están prácticamente vacías y mantenerlas carece de rigor físico y entorpece el análisis exploratorio. Para reforzar visualmente la decisión tomada mapeamos el porcentaje de NAs, donde el predominio del color rojo confirma la inviabilidad de mantener dichas columnas:
+```{r,results='hide'}
+summary(datos)
+```
+Observamos que variables como C6H6, C7H8 y C8H10 están prácticamente vacías, pues presentan más de 400.000 valores ausentes sobre las 449.026 observaciones iniciales. También destacan NH3 y Ruido, con cifras similares. Mantener estas variables aportaría muy poca información útil para el análisis exploratorio.
+
+El mapa de calor permite visualizar cómo se distribuyen estas ausencias entre las distintas estaciones y variables, identificando también problemas de disponibilidad específicos de algunas estaciones.
 
 ```{r fig.height=3.5, fig.width=6.5}
 # Visualizamos el porcentaje de NAs por estación y variable mediante un mapa de calor
@@ -154,55 +120,39 @@ datos %>%
   scale_fill_gradient(low = "lightgreen", high = "red", name="Porcenjate Nulos") +   # verde  a rojo
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))  # etiquetas X en vertical
 ```
-
-Sin embargo, los contaminantes principales ("NO2", "O3" y "SO2") y las variables meteorológicas (`Temperatura",`Humedad.Relativa", `Presión",`Precipitación") cuentan con una completitud altísima, registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos paquete *dplyr*, concretamente aplicamos *select()* para conservar exclusivamente estas variables de interés de tal manera que la dimensión resultante será 449026x16:
+Seleccionamos 16 variables para continuar trabajando: las variables temporales y Estación, los contaminantes candidatos y las variables meteorológicas. Dejamos fuera las otras 11 variables ya que presentan un elevado porcentaje de ausencias; además, no forman parte del objetivo de nuestro estudio.
 
 ```{r,results='hide'}
-# Seleccionamos las variables de interés y filtramos
-datos_filtrados <- datos %>%
-  select(
-    Fecha, Hora, Día.de.la.semana, Estación,
-    NO, NO2, NOx, O3, SO2, PM2.5, PM10,
-    Temperatura, Humedad.relativa, Presión, Radiación, Precipitación
-  ) %>%
-  filter(!is.na(Fecha)) #Descartando los na
+# Seleccionamos las variables de interés
+datos_filtrados <- select(datos, Fecha, Hora, Día.de.la.semana, Estación, NO, NO2, NOx, O3, SO2, PM2.5, PM10, Temperatura, Humedad.relativa, Presión, Radiación, Precipitación)
 
 # Verificamos las dimensiones resultantes del dataset depurado
 dim(datos_filtrados)
 ```
 
-## Valores perdidos NAs e imputación:
+## Correción de anomalías y getsión de *NAs* .
 
-Aunque hayamos seleccionado las variables de interés, el conjunto de datos aún presenta NAs en los contaminantes principales y meteorológicos, además de la anomalía física detectada en la radiación. Ambos deben resolverse antes de proceder con la visualización.
-
-Por un lado, la \`\`Radiación" no puede registrar valores negativos, para solucionar esta inconsistencia sin descartar toda la observación, empleamos la gramática de *dplyr*, concretamente *mutate* para reasignar dicho valor anómalo a NA:
+Tras la selección, todavía debemos resolver algunas inconsistencias. En el *summary* detectamos un valor físicamente imposible de -7 en `Radiación`. En lugar de eliminar toda la fila, sustituimos únicamente ese valor por un NA, conservando el resto de mediciones.
 
 ```{r,results='hide'}
 #Convertimos en NA los valores negativos de Radiación
-datos_filtrados <- datos_filtrados %>%
-  mutate(Radiación = ifelse(Radiación < 0, NA, Radiación))
+datos_filtrados <- mutate(datos_filtrados, Radiación = ifelse(Radiación < 0, NA, Radiación))
 ```
 
-Por otro lado, es necesario cuantificar los NAs en las variables conservadas para decidir si aplicar una imputación o excluirlos con (na.rm = TRUE), evitando así sesgar los datos originales.
+Contabilizamos ahora los valores ausentes. Las variables temporales y Estación no presentan NAs, mientras que los contaminantes y algunas variables meteorológicas mantienen ausencias.
 
 ```{r,results='hide'}
 #Contabilizamos los NAs por columna
 colSums(is.na(datos_filtrados))
-
-dim(datos_filtrados)
 ```
-
-El recuento revela que las columnas `Fecha",`Hora", `Día.de.la.semana" y`Estación" presentan completitud absoluta (0 NAs). Las variables meteorológicas muestran una alta completitud, destacando la `Presión" (13.753 NAs), la "Precipitación" (14.525 NAs), la`Radiación" (16.380 NAs) y la \`\`Temperatura" (16.827 NAs).
-
-Asimismo, los contaminantes que serán objeto central de nuestro estudio, $NO_{2}$ y $O_{3}$, acumulan un volumen ligeramente alto de ausencias, 96232 y 122897 respectivamente. Sin embargo, a la luz de lo observado en el gráfico de porcentajes de valores nulos por variable y estación, vemos que las estaciones `Consellería Meteo` y `Nazaret Meteo` presentan un 100% de valores ausentes para estos contaminantes, así como que `Valencia Centro` presenta un 100% de valores ausentes para el $O_{3}$. Por ello, decidimos eliminar estás estaciones del conjunto de datos.
+En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 % de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
 
 ```{r}
-estaciones_descartadas <- c("Valencia Centro", "Consellería Meteo",
-                            "Nazaret Meteo")
 
 # Eliminamos las observaciones correspondientes a las estaciones descartadas
-datos_filtrados <- datos_filtrados %>%
-  filter(!(Estación %in% estaciones_descartadas))
+#conservaNndo únicamente las filas cuya estación no esté en la lista:
+estaciones_descartadas <- c("Valencia Centro", "Consellería Meteo", "Nazaret Meteo")
+datos_filtrados <- filter(datos_filtrados, !(Estación %in% estaciones_descartadas))
 
 # Comprobamos cuantos NAs tenemos ahora
 colSums(is.na(datos_filtrados[, c("NO2", "O3")]))
@@ -211,19 +161,23 @@ colSums(is.na(datos_filtrados[, c("NO2", "O3")]))
 dim(datos_filtrados)
 ```
 
-Para los valores ausentes restantes, descartamos la eliminación de filas, pues destruiría la continuidad de la serie temporal. También prescindimos de la imputación masiva mediante medias o medianas, ya que rellenar miles de huecos con un valor constante reduciría artificialmente la varianza y suavizaría los picos reales de contaminación.
+Tras este filtrado, los valores ausentes se reducen a 24.788 en $N0_2$ y 24.583 en $O_3$.
 
-Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de forma local mediante el argumento *na.rm = TRUE*, operando así únicamente con los registros reales disponibles sin alterar la dinámica atmosférica.
+Para gestionar los NAs restantes, descartamos tanto la eliminación indiscriminada de filas, que supondría perder observaciones y continuidad temporal, como la imputación masiva mediante medias o medianas, que podría reducir artificialmente la variabilidad y suavizar los picos reales de contaminación.
 
-Con un volumen final de 350.712 observaciones y 16 variables, el dataset queda estructurado en un formato sólido (*Technically Correct Data*) para iniciar la fase de Análisis Visual donde daremos respuesta a las preguntas de investigación planteadas.
+Por tanto, conservamos los valores ausentes y los gestionamos localmente mediante *na.rm = TRUE*, utilizando únicamente las mediciones disponibles.
+
+Finalmente, obtenemos un conjunto acondicionado de 350.712 observaciones y 16 variables,
 
 # Matriz de correlación entre contaminantes y variables meteorológicas
+
+Calculamos correlaciones de Spearman sobre las medias diarias de las variables numéricas, agrupando las mediciones de las estaciones por día.
 
 ```{r fig.width=6, fig.height=6}
 # Definimos una paleta de colores para la correlación
 paleta <- col_numeric(palette = c("firebrick", "white", "steelblue"), domain = c(-1, 1))
 
-# Calculamos la correlación de Spearman entre los contaminantes y las variables meteorológicas
+# calculamos primero las medias diarias de las variables y representamos sus relaciones por pares 
 datos_filtrados %>%
   group_by(dia = floor_date(Fecha, "day")) %>%                            
   summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
@@ -237,6 +191,13 @@ datos_filtrados %>%
           text(mean(coords[1:2]), mean(coords[3:4]), round(correlacion,2))
           })
 ```
+Hay tres obseravciones clave:
+- $N0_2$ y $O_3$ presentan una relación inversa (−0,64). Cuando las medias diarias de $N0_2$ son mayores, las de $O_3$ tienden a ser menores.
+- $N0_2$ está muy correlacionado con $NO$ (0,92) y $NO_x$ (0.98) indicando que presentan comportamientos monótonos muy similares por lo que $NO_2$ puede servirnos como representante de interés para estudiar este grupo.
+- El $O_3$ presenta una correlación positiva con la radiación, una relación que retomaremos al estudiar su comportamiento estacional.
+
+Estos resultados nos permiten centrar el análisis posterior en $N0_2$ y $O_3$, dos contaminantes con comportamientos diferenciados y una relación inversa apreciable. Eso sí, correlación no significa causalidad. La matriz orienta nuestro análisis, pero no demuestra por sí sola los mecanismos físicos que hay detrás.
+
 
 # Distribución de los principales contaminantes entre las estaciones de medición
 
