@@ -56,6 +56,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2) 
 library(lubridate)
+library(scales)
 ```
 
 
@@ -215,6 +216,27 @@ Para los valores ausentes restantes, descartamos la eliminación de filas, pues 
 Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de forma local mediante el argumento *na.rm = TRUE*, operando así únicamente con los registros reales disponibles sin alterar la dinámica atmosférica.
 
 Con un volumen final de 350.712 observaciones y 16 variables, el dataset queda estructurado en un formato sólido (*Technically Correct Data*) para iniciar la fase de Análisis Visual donde daremos respuesta a las preguntas de investigación planteadas.
+
+# Matriz de correlación entre contaminantes y variables meteorológicas
+
+```{r fig.width=6, fig.height=6}
+# Definimos una paleta de colores para la correlación
+paleta <- col_numeric(palette = c("firebrick", "white", "steelblue"), domain = c(-1, 1))
+
+# Calculamos la correlación de Spearman entre los contaminantes y las variables meteorológicas
+datos_filtrados %>%
+  group_by(dia = floor_date(Fecha, "day")) %>%                            
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
+  select(-dia) %>%
+  pairs(gap = 0, xaxt = "n", yaxt = "n", cex.labels = 0.5,                                   
+        lower.panel = function(x, y, ...) points(x, y, pch = 16, cex = 0.5),
+        upper.panel = function(x, y, ...) {
+          correlacion <- cor(x, y, method = "spearman", use = "complete.obs")        
+          coords <- par("usr")
+          rect(coords[1], coords[3], coords[2], coords[4], col = paleta(correlacion))
+          text(mean(coords[1:2]), mean(coords[3:4]), round(correlacion,2))
+          })
+```
 
 # Distribución de los principales contaminantes entre las estaciones de medición
 
