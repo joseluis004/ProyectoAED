@@ -145,7 +145,7 @@ Contabilizamos ahora los valores ausentes. Las variables temporales y Estación 
 #Contabilizamos los NAs por columna
 colSums(is.na(datos_filtrados))
 ```
-En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 % de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
+En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 \% de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
 
 ```{r}
 
