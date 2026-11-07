@@ -134,7 +134,7 @@ València; \href{mailto:correo@ejemplo.com}{\nolinkurl{correo@ejemplo.com}}\\
 
 
 % Keywords
-\keyword{calidad del aire; contaminantes; NO2; PM10; O3; análisis
+\keyword{calidad del aire; contaminantes; NO2; O3; análisis
 exploratorio}
 
 % The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
@@ -250,129 +250,63 @@ exploratorio}
 \tableofcontents
 \clearpage
 
-\section{Introducción}\label{introducciuxf3n}
+\section{Introducción y objetivos}\label{introducciuxf3n-y-objetivos}
 
-Este proyecto aborda un problema real de análisis de datos ambientales
-dentro de la asignatura de \emph{Análisis Exploratorio de Datos} (AED)
-del Máster en Ciencia de Datos de la UV. Para llevarlo a cabo,
-utilizamos el registro oficial (``\emph{Datos horarios de calidad del
-aire desde 2016}'') del portal de datos abiertos del Ayuntamiento de
-València, procesado bajo el nombre de \emph{calidad\_aire.csv}.
+Este proyecto aborda un análisis exploratorio de datos (AED) de la
+calidad del aire en la ciudad de Valencia. Para ello, utilizamos los
+registros horarios oficiales del portal de datos abiertos del
+Ayuntamiento (\emph{Datos horarios de calidad del aire desde 2016}),
+procesados bajo el nombre de \emph{calidad\_aire.csv}.
 
-Sabiendo que la atmósfera funciona como un sistema dinámico donde las
-emisiones de origen antrópico y las variables meteorológicas condicionan
-la concentración de contaminantes, emplearemos el análisis exploratorio
-como herramienta para transformar los datos brutos en información
-interpretable, para así evaluar la calidad del aire en la ciudad de
-València.
+Sabiendo que la atmósfera es un sistema dinámico condicionado por
+factores antrópicos y meteorológicos, el objetivo es transformar los
+datos brutos (\emph{Raw Data}) en información interpretable
+(\emph{Technically Correct Data}) mediante un proceso de depuración,
+transformación y visualización de datos en \emph{R}. De tal manera que
+podamos estudiar el comportamiento de los contaminantes y su relación
+con variables meteorlógicas.
 
-\section{Objetivo del proyecto}\label{objetivo-del-proyecto}
-
-El objetivo de este proyecto es llevar a cabo un análisis exploratorio
-de datos de la calidad del aire en Valencia, focalizándonos en los
-contaminantes principales con mayor registro (\(NO_2\), \(O_3\)) y en
-las variables meteorológicas (temperatura, presión, radiación y
-humedad). Para ello, realizaremos un proceso de depuración,
-transformación (Data Wrangling) y visualización de datos en R, de tal
-manera que logremos caracterizar el comportamiento estadístico del
-sistema atmosférico.
-
-Para guiar el análisis exploratorio y dar validez física a los
-resultados, el proyecto busca responder las siguientes preguntas de
-investigación:
+Para orientar el estudio, el proyecto se guía en torno a dos preguntas
+clave:
 
 \begin{itemize}
 \item
-  ¿Cómo se distribuyen los niveles de los principales contaminantes
-  (\(NO_2\) y \(O_3\)) entre las estaciones de medición de la ciudad?
+  ¿Cómo se distribuyen las concentraciones de (\(NO_2\) y \(O_3\)) entre
+  las estaciones de medición?
 \item
-  ¿Cómo evolucionan los contaminantes a lo largo del tiempo?,¿se observa
+  ¿Cómo evolucionan ambos contaminantes a lo largo del tiempo?¿Presentan
   estacionalidad?
 \end{itemize}
 
 \section{Preparación y acondicionamiento de
 datos}\label{preparaciuxf3n-y-acondicionamiento-de-datos}
 
-\subsection{Fuente de datos, importación y
-conversión:}\label{fuente-de-datos-importaciuxf3n-y-conversiuxf3n}
+\subsection{Conversión y selección de
+variables:}\label{conversiuxf3n-y-selecciuxf3n-de-variables}
 
-El análisis parte del registro oficial ``\emph{Datos horarios de calidad
-del aire desde 2016}'', obtenido del portal de datos abiertos del
-Ayuntamiento de Valencia. El formato elegido es CSV de tal manera que
-podamos representar los datos en una tabla, donde las columnas se
-separan punto y coma y las filas por saltos de línea. El archivo se
-procesa bajo el nombre de \emph{calidad\_aire.csv}.
-
-Según la teoría tratada, datos recién importados se consideran \emph{Raw
-Data} y contienen inconsistencias que impiden un análisis directo. Por
-ello, el proceso de acondicionamiento exige transformar el conjunto en
-un formato \emph{Technically Correct Data}.
-
-El primer paso es importarlos desde la carpeta \emph{data} mediante una
-ruta relativa que evite dependencias absolutas del equipo:
+Tras descargar en formato \emph{csv} e importar el archivo en \emph{R}
+inspeccionamos su estructura, de tal amnera que obetenmos 449.026
+observaciones y 27 variables.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#Importamos los datos usando una ruta relativa }
 \NormalTok{datos }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"calidad\_aire.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{fileEncoding =} \StringTok{"UTF{-}8"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Para estudiar la estructura inicial del conjunto de datos y verificar su
-volumen, ejecutamos las funciones de inspección básicas (\emph{str()},
-\emph{head()}, \emph{tail()} y \emph{summary()}):
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{\#Número total de filas y columnas}
 \FunctionTok{dim}\NormalTok{(datos)}
-
-\CommentTok{\#Inspeccionamos la estructura interna de las variables}
+\CommentTok{\#Inspeccionamos la estructura de las variables}
 \FunctionTok{str}\NormalTok{(datos)}
-
-\CommentTok{\#Visualizamos las primeras y últimas filas}
-\FunctionTok{head}\NormalTok{(datos)}
-\FunctionTok{tail}\NormalTok{(datos)}
-
-\CommentTok{\#Resumen estadístico}
-\FunctionTok{summary}\NormalTok{(datos)}
-
-\CommentTok{\#Nombre de las variables}
-\FunctionTok{colnames}\NormalTok{(datos)}
 \end{Highlighting}
 \end{Shaded}
 
-En la exploración inicial del conjunto de 449.026 observaciones (filas)
-y 27 variables (columnas) observamos que:
+Detectamos que la variable \texttt{Fecha} aparece como una cadena de
+caracteres, al igual que \texttt{Día.de.la.semana}, \texttt{Hora} y
+\texttt{Estación}, aunque estas últimas representan variables
+categóricas.
 
-\begin{itemize}
-\item
-  La columna
-  \texttt{Fecha"\ se\ ha\ importado\ como\ texto\ plano\ (*chr*)\ e\ incluye\ una\ letra}T''
-  intermedia (ej. 2020-01-01T00:00:00), lo que impide a R tratarla como
-  una línea de tiempo real.
-\item
-  Variables cualitativas como \texttt{Día.de.la.semana",}Hora'' y
-  ``Estación'' figuran como texto plano (\emph{chr}), convertirlas a
-  factores es indispensable para que R las trate como variables
-  categóricas permitiendo así que los gráficos operen de manera
-  eficiente posteriormente.
-\item
-  En el \emph{summary} observamos que las variables con mayor número de
-  \emph{NAs} son (\texttt{C6H6"\ con\ 402.660,}C7H8'' con 402.240 y el
-  \texttt{C8H10"\ con\ 402.087).\ Muy\ cerca\ se\ sitúa\ el}NH3'' con
-  401.307 y el ``Ruido'' con 397.324.
-\item
-  El \emph{summary} también refleja una anomalía física puntual, la
-  variable ``Radiación'' muestra un valor mínimo negativo imposible de
-  -7.0, requiriendo una corrección.
-\end{itemize}
-
-Una vez detectadas estas deficiencias en el formato bruto, aplicamos las
-herramientas de las librerías lubridate y dplyr para corregir los dos
-primeros puntos anteriores, corregir el formato de la columna
-\texttt{Fecha"\ y\ convertir}Día.de.la.semana'',
-\texttt{Hora"\ y}Estación'' a factor:
+Para corregirlo, convertimos Fecha a formato \emph{POSIXct} y las tres
+variables cualitativas a factores. De esta manera, \emph{R} puede
+interpretar correctamente la información temporal y categórica.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -380,28 +314,31 @@ primeros puntos anteriores, corregir el formato de la columna
 \NormalTok{datos}\SpecialCharTok{$}\NormalTok{Fecha }\OtherTok{\textless{}{-}} \FunctionTok{as.POSIXct}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Fecha, }\AttributeTok{format =} \StringTok{"\%Y{-}\%m{-}\%dT\%H:\%M:\%S"}\NormalTok{, }\AttributeTok{tz =} \StringTok{"UTC"}\NormalTok{)}
 
 \CommentTok{\#Convertimos variables cualitativas a factores para facilitar el filtrado y agrupación}
-\NormalTok{datos }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-\NormalTok{    Estación }\OtherTok{=} \FunctionTok{as.factor}\NormalTok{(Estación),}
-\NormalTok{    Día}\AttributeTok{.de.la.semana =} \FunctionTok{as.factor}\NormalTok{(Día.de.la.semana),}
-    \AttributeTok{Hora =} \FunctionTok{as.factor}\NormalTok{(Hora))}
-
-\CommentTok{\#Verificamos las transformaciones}
-\FunctionTok{str}\NormalTok{(datos[}\FunctionTok{c}\NormalTok{(}\StringTok{"Fecha"}\NormalTok{, }\StringTok{"Día.de.la.semana"}\NormalTok{, }\StringTok{"Hora"}\NormalTok{, }\StringTok{"Estación"}\NormalTok{)])}
+\NormalTok{datos }\OtherTok{\textless{}{-}} \FunctionTok{mutate}\NormalTok{(datos,}
+\NormalTok{  Estación }\OtherTok{=} \FunctionTok{as.factor}\NormalTok{(Estación),}
+\NormalTok{  Día}\AttributeTok{.de.la.semana =} \FunctionTok{as.factor}\NormalTok{(Día.de.la.semana),}
+  \AttributeTok{Hora =} \FunctionTok{as.factor}\NormalTok{(Hora))}
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Selección de variables y
-filtrado}\label{selecciuxf3n-de-variables-y-filtrado}
+Una vez corregidos los formatos, estudiamos la completitud de las
+variables mediante el resumen estadístico.
 
-Continuamos corrigiendo las observaciones anteriores. Comparando las
-variables (\texttt{C6H6",}C7H8'' y ``C8H10'' ) del penúltimo que
-disponen de mayor número de NAs (\(>400.000 NAs\)) con las 449.026
-observaciones en total, decidimos descartarlas ya que están
-prácticamente vacías y mantenerlas carece de rigor físico y entorpece el
-análisis exploratorio. Para reforzar visualmente la decisión tomada
-mapeamos el porcentaje de NAs, donde el predominio del color rojo
-confirma la inviabilidad de mantener dichas columnas:
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+Observamos que variables como C6H6, C7H8 y C8H10 están prácticamente
+vacías, pues presentan más de 400.000 valores ausentes sobre las 449.026
+observaciones iniciales. También destacan NH3 y Ruido, con cifras
+similares. Mantener estas variables aportaría muy poca información útil
+para el análisis exploratorio.
+
+El mapa de calor permite visualizar cómo se distribuyen estas ausencias
+entre las distintas estaciones y variables, identificando también
+problemas de disponibilidad específicos de algunas estaciones.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -419,137 +356,92 @@ confirma la inviabilidad de mantener dichas columnas:
 
 \begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-5-1} \end{flushleft}
 
-Sin embargo, los contaminantes principales (``NO2'', ``O3'' y ``SO2'') y
-las variables meteorológicas (\texttt{Temperatura",}Humedad.Relativa'',
-\texttt{Presión",}Precipitación'') cuentan con una completitud altísima,
-registrando apenas entre 13,000 y 16,000 NAs. Por ello, empleamos
-paquete \emph{dplyr}, concretamente aplicamos \emph{select()} para
-conservar exclusivamente estas variables de interés de tal manera que la
-dimensión resultante será 449026x16:
+Seleccionamos 16 variables para continuar trabajando: las variables
+temporales y Estación, los contaminantes candidatos y las variables
+meteorológicas. Dejamos fuera las otras 11 variables ya que presentan un
+elevado porcentaje de ausencias; además, no forman parte del objetivo de
+nuestro estudio.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Seleccionamos las variables de interés y filtramos}
-\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(}
-\NormalTok{    Fecha, Hora, Día.de.la.semana, Estación,}
-\NormalTok{    NO, NO2, NOx, O3, SO2, PM2}\FloatTok{.5}\NormalTok{, PM10,}
-\NormalTok{    Temperatura, Humedad.relativa, Presión, Radiación, Precipitación}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Fecha)) }\CommentTok{\#Descartando los na}
+\CommentTok{\# Seleccionamos las variables de interés}
+\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}} \FunctionTok{select}\NormalTok{(datos, Fecha, Hora, Día.de.la.semana, Estación, NO, NO2, NOx, O3, SO2, PM2}\FloatTok{.5}\NormalTok{, PM10, Temperatura, Humedad.relativa, Presión, Radiación, Precipitación)}
 
 \CommentTok{\# Verificamos las dimensiones resultantes del dataset depurado}
 \FunctionTok{dim}\NormalTok{(datos\_filtrados)}
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Valores perdidos NAs e
-imputación:}\label{valores-perdidos-nas-e-imputaciuxf3n}
+\subsection{\texorpdfstring{Correción de anomalías y getsión de
+\emph{NAs}
+.}{Correción de anomalías y getsión de NAs .}}\label{correciuxf3n-de-anomaluxedas-y-getsiuxf3n-de-nas-.}
 
-Aunque hayamos seleccionado las variables de interés, el conjunto de
-datos aún presenta NAs en los contaminantes principales y
-meteorológicos, además de la anomalía física detectada en la radiación.
-Ambos deben resolverse antes de proceder con la visualización.
-
-Por un lado, la ``Radiación'' no puede registrar valores negativos, para
-solucionar esta inconsistencia sin descartar toda la observación,
-empleamos la gramática de \emph{dplyr}, concretamente \emph{mutate} para
-reasignar dicho valor anómalo a NA:
+Tras la selección, todavía debemos resolver algunas inconsistencias. En
+el \emph{summary} detectamos un valor físicamente imposible de -7 en
+\texttt{Radiación}. En lugar de eliminar toda la fila, sustituimos
+únicamente ese valor por un NA, conservando el resto de mediciones.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#Convertimos en NA los valores negativos de Radiación}
-\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}}\NormalTok{ datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(Radiación }\OtherTok{=} \FunctionTok{ifelse}\NormalTok{(Radiación }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{, }\ConstantTok{NA}\NormalTok{, Radiación))}
+\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}} \FunctionTok{mutate}\NormalTok{(datos\_filtrados, Radiación }\OtherTok{=} \FunctionTok{ifelse}\NormalTok{(Radiación }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{, }\ConstantTok{NA}\NormalTok{, Radiación))}
 \end{Highlighting}
 \end{Shaded}
 
-Por otro lado, es necesario cuantificar los NAs en las variables
-conservadas para decidir si aplicar una imputación o excluirlos con
-(na.rm = TRUE), evitando así sesgar los datos originales.
+Contabilizamos ahora los valores ausentes. Las variables temporales y
+Estación no presentan NAs, mientras que los contaminantes y algunas
+variables meteorológicas mantienen ausencias.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#Contabilizamos los NAs por columna}
 \FunctionTok{colSums}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(datos\_filtrados))}
-
-\FunctionTok{dim}\NormalTok{(datos\_filtrados)}
 \end{Highlighting}
 \end{Shaded}
 
-El recuento revela que las columnas \texttt{Fecha",}Hora'',
-\texttt{Día.de.la.semana"\ y}Estación'' presentan completitud absoluta
-(0 NAs). Las variables meteorológicas muestran una alta completitud,
-destacando la
-\texttt{Presión"\ (13.753\ NAs),\ la\ "Precipitación"\ (14.525\ NAs),\ la}Radiación''
-(16.380 NAs) y la ``Temperatura'' (16.827 NAs).
-
-Asimismo, los contaminantes que serán objeto central de nuestro estudio,
-\(NO_{2}\) y \(O_{3}\), acumulan un volumen ligeramente alto de
-ausencias, 96232 y 122897 respectivamente. Sin embargo, a la luz de lo
-observado en el gráfico de porcentajes de valores nulos por variable y
-estación, vemos que las estaciones \texttt{Consellería\ Meteo} y
-\texttt{Nazaret\ Meteo} presentan un 100\% de valores ausentes para
-estos contaminantes, así como que \texttt{Valencia\ Centro} presenta un
-100\% de valores ausentes para el \(O_{3}\). Por ello, decidimos
-eliminar estás estaciones del conjunto de datos.
+En particular, el \(N0_2\) presenta 96.232 NAs y el \(O_3\), 122.897. Al
+volver al mapa de calor, observamos que \texttt{Consellería\ Meteo} y
+\texttt{Nazaret\ Meteo} presentan un 100 \% de ausencias en ambos
+contaminantes, mientras que \texttt{Valencia\ Centro} no registra
+ninguna medición de \(O_3\). Por ello, eliminamos todas las
+observaciones correspondientes a estas tres estaciones, pasando de
+449.026 a 350.712 filas y de 12 a 9 estaciones.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{estaciones\_descartadas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Valencia Centro"}\NormalTok{, }\StringTok{"Consellería Meteo"}\NormalTok{,}
-                            \StringTok{"Nazaret Meteo"}\NormalTok{)}
-
-\CommentTok{\# Eliminamos las observaciones correspondientes a las estaciones descartadas}
-\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}}\NormalTok{ datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\NormalTok{(Estación }\SpecialCharTok{\%in\%}\NormalTok{ estaciones\_descartadas))}
-
-\CommentTok{\# Comprobamos cuantos NAs tenemos ahora}
-\FunctionTok{colSums}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(datos\_filtrados[, }\FunctionTok{c}\NormalTok{(}\StringTok{"NO2"}\NormalTok{, }\StringTok{"O3"}\NormalTok{)]))}
+\NormalTok{estaciones\_descartadas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Valencia Centro"}\NormalTok{, }\StringTok{"Consellería Meteo"}\NormalTok{, }\StringTok{"Nazaret Meteo"}\NormalTok{)}
+\NormalTok{datos\_filtrados }\OtherTok{\textless{}{-}} \FunctionTok{filter}\NormalTok{(datos\_filtrados, }\SpecialCharTok{!}\NormalTok{(Estación }\SpecialCharTok{\%in\%}\NormalTok{ estaciones\_descartadas))}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-##   NO2    O3 
-## 24788 24583
-\end{verbatim}
+Tras este filtrado, los valores ausentes se reducen a 24.788 en \(N0_2\)
+y 24.583 en \(O_3\).
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Vemos la dimensión del conjunto de datos}
-\FunctionTok{dim}\NormalTok{(datos\_filtrados)}
-\end{Highlighting}
-\end{Shaded}
+Para gestionar los NAs restantes, descartamos tanto la eliminación
+indiscriminada de filas, que supondría perder observaciones y
+continuidad temporal, como la imputación masiva mediante medias o
+medianas, que podría reducir artificialmente la variabilidad y suavizar
+los picos reales de contaminación.
 
-\begin{verbatim}
-## [1] 350712     16
-\end{verbatim}
+Por tanto, conservamos los valores ausentes y los gestionamos localmente
+mediante \emph{na.rm = TRUE}, utilizando únicamente las mediciones
+disponibles.
 
-Para los valores ausentes restantes, descartamos la eliminación de
-filas, pues destruiría la continuidad de la serie temporal. También
-prescindimos de la imputación masiva mediante medias o medianas, ya que
-rellenar miles de huecos con un valor constante reduciría
-artificialmente la varianza y suavizaría los picos reales de
-contaminación.
-
-Por tanto, se opta por preservar los NAs en el dataset y gestionarlos de
-forma local mediante el argumento \emph{na.rm = TRUE}, operando así
-únicamente con los registros reales disponibles sin alterar la dinámica
-atmosférica.
-
-Con un volumen final de 350.712 observaciones y 16 variables, el dataset
-queda estructurado en un formato sólido (\emph{Technically Correct
-Data}) para iniciar la fase de Análisis Visual donde daremos respuesta a
-las preguntas de investigación planteadas.
+Finalmente, obtenemos un conjunto acondicionado de 350.712 observaciones
+y 16 variables,
 
 \section{Matriz de correlación entre contaminantes y variables
 meteorológicas}\label{matriz-de-correlaciuxf3n-entre-contaminantes-y-variables-meteoroluxf3gicas}
+
+Calculamos correlaciones de Spearman sobre las medias diarias de las
+variables numéricas, agrupando las mediciones de las estaciones por día.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Definimos una paleta de colores para la correlación}
 \NormalTok{paleta }\OtherTok{\textless{}{-}} \FunctionTok{col\_numeric}\NormalTok{(}\AttributeTok{palette =} \FunctionTok{c}\NormalTok{(}\StringTok{"firebrick"}\NormalTok{, }\StringTok{"white"}\NormalTok{, }\StringTok{"steelblue"}\NormalTok{), }\AttributeTok{domain =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
 
-\CommentTok{\# Calculamos la correlación de Spearman entre los contaminantes y las variables meteorológicas}
+\CommentTok{\# calculamos primero las medias diarias de las variables y representamos sus relaciones por pares }
 \NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{group\_by}\NormalTok{(}\AttributeTok{dia =} \FunctionTok{floor\_date}\NormalTok{(Fecha, }\StringTok{"day"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}                            
   \FunctionTok{summarise}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{mean}\NormalTok{(.x, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%}
@@ -567,6 +459,30 @@ meteorológicas}\label{matriz-de-correlaciuxf3n-entre-contaminantes-y-variables-
 
 \begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-10-1} \end{flushleft}
 
+Hay tres obseravciones clave:
+
+\begin{itemize}
+\tightlist
+\item
+  \(N0_2\) y \(O_3\) presentan una relación inversa (-0,64). Cuando las
+  medias diarias de \(N0_2\) son mayores, las de \(O_3\) tienden a ser
+  menores.
+\item
+  \(N0_2\) está muy correlacionado con \(NO\) (0,92) y \(NO_x\) (0,98)
+  indicando que presentan comportamientos monótonos muy similares por lo
+  que \(NO_2\) puede servirnos como representante de interés para
+  estudiar este grupo.
+\item
+  El \(O_3\) presenta una correlación positiva con la radiación, una
+  relación que retomaremos al estudiar su comportamiento estacional.
+\end{itemize}
+
+Estos resultados nos permiten centrar el análisis posterior en \(N0_2\)
+y \(O_3\), dos contaminantes con comportamientos diferenciados y una
+relación inversa apreciable. Eso sí, correlación no significa
+causalidad. La matriz orienta nuestro análisis, pero no demuestra por sí
+sola los mecanismos físicos que hay detrás.
+
 \section{Distribución de los principales contaminantes entre las
 estaciones de
 medición}\label{distribuciuxf3n-de-los-principales-contaminantes-entre-las-estaciones-de-mediciuxf3n}
@@ -579,18 +495,14 @@ estación usando un boxplot para cada contaminante:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{select}\NormalTok{(Estación, NO2, O3) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols=}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to=}\StringTok{"Contaminante"}\NormalTok{, }
-               \AttributeTok{values\_to=}\StringTok{"Concentración"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(Estación, NO2, O3) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols=}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to=}\StringTok{"Contaminante"}\NormalTok{, }\AttributeTok{values\_to=}\StringTok{"Concentración"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Estación, }\AttributeTok{y =}\NormalTok{ Concentración)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }
-                 \AttributeTok{outlier.alpha =} \FloatTok{0.3}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{outlier.alpha =} \FloatTok{0.3}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
     \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Contaminante) }\SpecialCharTok{+}
     \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribución de contaminantes por estación"}\NormalTok{,}
          \AttributeTok{x =} \StringTok{"Estación"}\NormalTok{, }\AttributeTok{y =} \FunctionTok{expression}\NormalTok{(}\StringTok{"Concentración ("}\SpecialCharTok{*}\NormalTok{mu}\SpecialCharTok{*}\StringTok{"g/m"}\SpecialCharTok{\^{}}\DecValTok{3}\SpecialCharTok{*}\StringTok{")"}\NormalTok{)) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
-    \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{,}\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+    \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{,}\AttributeTok{hjust =} \DecValTok{1}\NormalTok{, }\AttributeTok{size=}\DecValTok{6}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -611,16 +523,15 @@ estos detalles los podemos visualizar mejor comparando sus histogramas.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(NO2, O3) }\SpecialCharTok{\%\textgreater{}\%}       \CommentTok{\# Elegimos los contaminantes}
-  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols=}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to=}\StringTok{"Contaminante"}\NormalTok{,}
-               \AttributeTok{values\_to=}\StringTok{"Concentración"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(NO2, O3) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols=}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to=}\StringTok{"Contaminante"}\NormalTok{, }\AttributeTok{values\_to=}\StringTok{"Concentración"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Concentración)) }\SpecialCharTok{+}
     \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
     \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Contaminante) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Distribuciones de NO2 y O3"}\NormalTok{, }\AttributeTok{x=}\StringTok{"Concentraciones"}\NormalTok{,}
-         \AttributeTok{y=}\StringTok{"Frecuencias"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Distribuciones de NO2 y O3"}\NormalTok{, }\AttributeTok{x=}\StringTok{"Concentraciones"}\NormalTok{, }\AttributeTok{y=}\StringTok{"Frecuencias"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.title.x=}\FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{8}\NormalTok{), }\AttributeTok{axis.title.y=}\FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{8}\NormalTok{),}
+          \AttributeTok{plot.title=}\FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{10}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -680,41 +591,6 @@ Corroboramos cuantitativamente este comportamiento con el cálculo de la
 correlación lineal de Pearson entre el \(NO_2\) y el \(0_3\),
 verificando cómo arroja un coeficiente negativo de -0.6 que confirma la
 relación inversa existente entre ambos contaminantes.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Calculamos la correlación lineal de pearson entre el NO2 y O3}
-\CommentTok{\#empleando el dataset filtrado y omitiendo los valores perdidos con use="complete.obs"}
-\FunctionTok{cor}\NormalTok{(datos\_filtrados}\SpecialCharTok{$}\NormalTok{NO2, datos\_filtrados}\SpecialCharTok{$}\NormalTok{O3, }\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{, }\AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] -0.5992756
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\#Partimos de los datos limpios}
-  \FunctionTok{slice\_sample}\NormalTok{(}\AttributeTok{n =} \DecValTok{10000}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# Seleccionamos una muestra aleatoria para evitar el bloqueo}
-                               \CommentTok{\#no afecta a la distribución real, }
-  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ NO2, }\AttributeTok{y =}\NormalTok{ O3)) }\SpecialCharTok{+}  \CommentTok{\#Inicializamos el gráfico asignando NO2 al eje x y el 03 al Y}
-  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{color =} \StringTok{"steelblue"}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\#Dibujamos nube puntos}
-  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"loess"}\NormalTok{, }\AttributeTok{color =} \StringTok{"firebrick"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+} 
-  \FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(datos\_filtrados}\SpecialCharTok{$}\NormalTok{O3, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))) }\SpecialCharTok{+} \CommentTok{\#Limitamos el eje Y para que empiece en 0}
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Relación inversa entre NO2 y O3"}\NormalTok{,}
-       \AttributeTok{x =} \FunctionTok{expression}\NormalTok{(NO2 }\SpecialCharTok{\textasciitilde{}}\NormalTok{ (mu }\SpecialCharTok{*}\NormalTok{ g }\SpecialCharTok{/}\NormalTok{ m}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{)),}
-       \AttributeTok{y =} \FunctionTok{expression}\NormalTok{(O3 }\SpecialCharTok{\textasciitilde{}}\NormalTok{ (mu }\SpecialCharTok{*}\NormalTok{ g }\SpecialCharTok{/}\NormalTok{ m}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{))) }\SpecialCharTok{+}
-  \FunctionTok{theme\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-14-1} \end{flushleft}
-
-El diagrama de dispersión evidencia la relación inversa entre ambos
-mostrando que las mayores concentraciones de \(NO_2\) van asociadas a
-valores reducidos de \(O_3\). Hemos usado method = ``loess'' en lugar de
-``lm'' para capturar la curvatura real de la relación.
 
 \section{Análisis temporal}\label{anuxe1lisis-temporal}
 
@@ -788,7 +664,7 @@ todas las estaciones.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-16-1} \end{flushleft}
+\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-14-1} \end{flushleft}
 
 Se puede observar que la concentración de NO2 disminuyó drásticamente
 durante el estado de alarma, lo que refleja la reducción de la actividad
@@ -825,7 +701,7 @@ anual}\label{tendencia-y-estacionalidad-anual}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-17-1} \end{flushleft}
+\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-15-1} \end{flushleft}
 
 A partir de la descomposición STL se observan patrones opuestos. En la
 tendencia, el \(NO_2\) desciende desde 2016, con una caída acusada en
@@ -864,7 +740,7 @@ semana}\label{ciclo-horario-laborables-frente-a-fines-de-semana}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-18-1} \end{flushleft}
+\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-16-1} \end{flushleft}
 
 El gráfico revela tres patrones clave. El NO2 depende directamente del
 tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más
@@ -885,37 +761,31 @@ estaciones:
 \NormalTok{datos\_alargados }\OtherTok{\textless{}{-}}\NormalTok{ datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{select}\NormalTok{(Fecha, Hora, Día.de.la.semana, Estación, NO2, O3) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols=}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to=}\StringTok{"Contaminante"}\NormalTok{, }\AttributeTok{values\_to=}\StringTok{"Concentración"}\NormalTok{)}
-
 \CommentTok{\# Seleccionamos los límites por el criterio de boxplot}
-\NormalTok{limites }\OtherTok{\textless{}{-}}\NormalTok{ datos\_alargados }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(Estación, Contaminante) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Q1 =} \FunctionTok{quantile}\NormalTok{(Concentración, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{),}
-            \AttributeTok{Q3 =} \FunctionTok{quantile}\NormalTok{(Concentración, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{),}
-            \AttributeTok{IQR =}\NormalTok{ Q3 }\SpecialCharTok{{-}}\NormalTok{ Q1,}
-            \AttributeTok{.groups=}\StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Lim\_inf =}\NormalTok{ Q1 }\SpecialCharTok{{-}} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ IQR, }\AttributeTok{Lim\_sup =}\NormalTok{ Q3 }\SpecialCharTok{+} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ IQR)}
-
+\NormalTok{limites }\OtherTok{\textless{}{-}}\NormalTok{ datos\_alargados }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(Estación, Contaminante) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Q1 =} \FunctionTok{quantile}\NormalTok{(Concentración, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{), }
+            \AttributeTok{Q3 =} \FunctionTok{quantile}\NormalTok{(Concentración, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{), }\AttributeTok{IQR =}\NormalTok{ Q3 }\SpecialCharTok{{-}}\NormalTok{ Q1,}
+            \AttributeTok{.groups=}\StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Lim\_inf =}\NormalTok{ Q1 }\SpecialCharTok{{-}} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ IQR, }\AttributeTok{Lim\_sup =}\NormalTok{ Q3 }\SpecialCharTok{+} \FloatTok{1.5} \SpecialCharTok{*}\NormalTok{ IQR)}
 \CommentTok{\# Calculamos los valores atípicos por dicho criterio}
-\NormalTok{datos\_atipicos }\OtherTok{\textless{}{-}}\NormalTok{ datos\_alargados }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{datos\_atipicos }\OtherTok{\textless{}{-}}\NormalTok{ datos\_alargados }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{left\_join}\NormalTok{(limites, }\AttributeTok{by=}\FunctionTok{c}\NormalTok{(}\StringTok{"Estación"}\NormalTok{, }\StringTok{"Contaminante"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Concentración) }\SpecialCharTok{\&}\NormalTok{ (Concentración }\SpecialCharTok{\textless{}}\NormalTok{ Lim\_inf }\SpecialCharTok{|}\NormalTok{ Concentración }\SpecialCharTok{\textgreater{}}\NormalTok{ Lim\_sup))}
-
 \CommentTok{\# Ordenamos los niveles del factor hora para que el gráfico se vea bien}
-\NormalTok{datos\_atipicos}\SpecialCharTok{$}\NormalTok{Hora }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(datos\_atipicos}\SpecialCharTok{$}\NormalTok{Hora,}
-                              \AttributeTok{levels =} \FunctionTok{paste0}\NormalTok{(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{23}\NormalTok{, }\StringTok{":00:00"}\NormalTok{))}
-
+\NormalTok{datos\_atipicos}\SpecialCharTok{$}\NormalTok{Hora }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(datos\_atipicos}\SpecialCharTok{$}\NormalTok{Hora, }\AttributeTok{levels =} \FunctionTok{paste0}\NormalTok{(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{23}\NormalTok{, }\StringTok{":00:00"}\NormalTok{))}
 \CommentTok{\# Graficamos}
 \NormalTok{datos\_atipicos }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{count}\NormalTok{(Contaminante, Hora) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Hora, }\AttributeTok{y=}\NormalTok{n)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Hora, }\AttributeTok{y=}\NormalTok{n)) }\SpecialCharTok{+} \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{) }\SpecialCharTok{+} 
   \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Contaminante, }\AttributeTok{scales=}\StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
   \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Valores atípicos según la hora"}\NormalTok{, }\AttributeTok{x=}\StringTok{"Hora"}\NormalTok{, }\AttributeTok{y=}\StringTok{"Número de observaciones"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_discrete}\NormalTok{(}\AttributeTok{labels =} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{sub}\NormalTok{(}\StringTok{":.*"}\NormalTok{, }\StringTok{""}\NormalTok{, x)) }\SpecialCharTok{+}
   \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{))}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size=}\DecValTok{6}\NormalTok{),}
+        \AttributeTok{axis.title.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{8}\NormalTok{), }\AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{8}\NormalTok{),}
+        \AttributeTok{plot.title=}\FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size=}\DecValTok{10}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-19-1} \end{flushleft}
+\begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-17-1} \end{flushleft}
 
 Como ya hemos comentado, las concentraciones de \(NO_{2}\) están
 estrechamente relacionadas con el tráfico, por lo que es coherente que

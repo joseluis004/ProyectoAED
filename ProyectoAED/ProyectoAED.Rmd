@@ -22,7 +22,7 @@ simplesummary: |
 abstract: |
   Resumen 
 keywords: |
-  calidad del aire; contaminantes; NO2; PM10; O3; análisis exploratorio
+  calidad del aire; contaminantes; NO2; O3; análisis exploratorio
 bibliography: mybibfile.bib
 endnotes: false
 header-includes:
@@ -148,17 +148,8 @@ colSums(is.na(datos_filtrados))
 En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 \% de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
 
 ```{r}
-
-# Eliminamos las observaciones correspondientes a las estaciones descartadas
-#conservaNndo únicamente las filas cuya estación no esté en la lista:
 estaciones_descartadas <- c("Valencia Centro", "Consellería Meteo", "Nazaret Meteo")
 datos_filtrados <- filter(datos_filtrados, !(Estación %in% estaciones_descartadas))
-
-# Comprobamos cuantos NAs tenemos ahora
-colSums(is.na(datos_filtrados[, c("NO2", "O3")]))
-
-# Vemos la dimensión del conjunto de datos
-dim(datos_filtrados)
 ```
 
 Tras este filtrado, los valores ausentes se reducen a 24.788 en $N0_2$ y 24.583 en $O_3$.
@@ -191,6 +182,7 @@ datos_filtrados %>%
           text(mean(coords[1:2]), mean(coords[3:4]), round(correlacion,2))
           })
 ```
+
 Hay tres obseravciones clave:
 
 - $N0_2$ y $O_3$ presentan una relación inversa (-0,64). Cuando las medias diarias de $N0_2$ son mayores, las de $O_3$ tienden a ser menores.
@@ -204,36 +196,31 @@ Estos resultados nos permiten centrar el análisis posterior en $N0_2$ y $O_3$, 
 
 Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia? Para ello, visualizaremos como se distribuyen los distintos contaminantes por estación usando un boxplot para cada contaminante:
 
-```{r}
-datos_filtrados %>% 
-  select(Estación, NO2, O3) %>%
-  pivot_longer(cols=c(NO2, O3), names_to="Contaminante", 
-               values_to="Concentración") %>%
+```{r, fig.height=3.5}
+datos_filtrados %>% select(Estación, NO2, O3) %>%
+  pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración") %>%
   ggplot(aes(x = Estación, y = Concentración)) +
-    geom_boxplot(fill = "steelblue", alpha = 0.7, 
-                 outlier.alpha = 0.3, na.rm = TRUE) +
+    geom_boxplot(fill = "steelblue", alpha = 0.7, outlier.alpha = 0.3, na.rm = TRUE) +
     facet_wrap(~Contaminante) +
     labs(title = "Distribución de contaminantes por estación",
          x = "Estación", y = expression("Concentración ("*mu*"g/m"^3*")")) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45,hjust = 1))
+    theme_minimal() + theme(axis.text.x = element_text(angle = 45,hjust = 1, size=6))
 ```
 
 ## Comparación entre contaminantes
 
 En primer lugar, vemos que, en cada estación, el $NO_{2}$ presenta concentraciones centrales inferiores al $O_{3}$. Además el rango intercuartílico del $NO_{2}$ es menor que el del $O_{3}$, luego sus valores centrales se encuentran más concentrados. Sin embargo, el $NO_{2}$ muestra un mayor número de valores atípicos y alcanza picos de concentración más altos, en general, que los del $O_{3}$. Resaltar también que el $NO_{2}$ presenta una marcada asimetría hacia la derecha, mientras que el $O_{3}$ presenta una menor asimetría. Todos estos detalles los podemos visualizar mejor comparando sus histogramas.
 
-```{r}
-datos_filtrados %>%
-  select(NO2, O3) %>%       # Elegimos los contaminantes
-  pivot_longer(cols=c(NO2, O3), names_to="Contaminante",
-               values_to="Concentración") %>%
+```{r, fig.width=3.5, fig.height=2}
+datos_filtrados %>% select(NO2, O3) %>%
+  pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración") %>%
   ggplot(aes(Concentración)) +
     geom_histogram(fill = "steelblue", alpha = 0.7, na.rm = TRUE) +
     facet_wrap(~Contaminante) +
-    labs(title="Distribuciones de NO2 y O3", x="Concentraciones",
-         y="Frecuencias") +
-    theme_minimal()
+    labs(title="Distribuciones de NO2 y O3", x="Concentraciones", y="Frecuencias") +
+    theme_minimal() +
+    theme(axis.title.x=element_text(size=8), axis.title.y=element_text(size=8),
+          plot.title=element_text(size=10))
 ```
 
 ## Distribución del $\mathbf{NO_{2}}$ por estación
@@ -370,49 +357,39 @@ El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico
 
 # Discusión outliers
 
-Comenzamos obteniendo los valores atípicos:
+Ya que conocemos la distribución de los contaminantes $NO_{2}$ y $O_{3}$ por horas, visualizaremos como se distribuyen por horas los valores atípicos que aparecen en el boxplot de contaminantes por estaciones:
 
-```{r}
+```{r, fig.width=5, fig.height=2.5}
+# Convertimos la concentración y el tipo de contaminante en dos variables
 datos_alargados <- datos_filtrados %>%
   select(Fecha, Hora, Día.de.la.semana, Estación, NO2, O3) %>%
   pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración")
-
-limites <- datos_alargados %>%
-  group_by(Estación, Contaminante) %>%
-  summarise(Q1 = quantile(Concentración, 0.25, na.rm=TRUE),
-            Q3 = quantile(Concentración, 0.75, na.rm=TRUE),
-            IQR = Q3 - Q1,
-            .groups="drop") %>%
-  mutate(Lim_inf = Q1 - 1.5 * IQR, Lim_sup = Q3 + 1.5 * IQR)
-
-datos_atipicos <- datos_alargados %>%
+# Seleccionamos los límites por el criterio de boxplot
+limites <- datos_alargados %>% group_by(Estación, Contaminante) %>%
+  summarise(Q1 = quantile(Concentración, 0.25, na.rm=TRUE), 
+            Q3 = quantile(Concentración, 0.75, na.rm=TRUE), IQR = Q3 - Q1,
+            .groups="drop") %>% mutate(Lim_inf = Q1 - 1.5 * IQR, Lim_sup = Q3 + 1.5 * IQR)
+# Calculamos los valores atípicos por dicho criterio
+datos_atipicos <- datos_alargados %>% 
   left_join(limites, by=c("Estación", "Contaminante")) %>%
   filter(!is.na(Concentración) & (Concentración < Lim_inf | Concentración > Lim_sup))
-```
-
-Cuántos valores atípicos se han detectado:
-
-```{r}
-datos_atipicos %>% group_by(Contaminante, Estación) %>% 
-  summarise(atipicos = n(), .groups="drop_last")
-```
-
-Representamos el número de observaciones atípicas según la hora
-
-```{r}
-datos_atipicos$Hora <- factor(datos_atipicos$Hora,
-                              levels = paste0(0:23, ":00:00"))
-
+# Ordenamos los niveles del factor hora para que el gráfico se vea bien
+datos_atipicos$Hora <- factor(datos_atipicos$Hora, levels = paste0(0:23, ":00:00"))
+# Graficamos
 datos_atipicos %>% count(Contaminante, Hora) %>%
-  ggplot(aes(x=Hora, y=n)) + 
-  geom_col(fill = "steelblue") + 
+  ggplot(aes(x=Hora, y=n)) + geom_col(fill = "steelblue") + 
   facet_wrap(~Contaminante, scales="free_y") +
   labs(title="Valores atípicos según la hora", x="Hora", y="Número de observaciones") +
+  scale_x_discrete(labels = function(x) sub(":.*", "", x)) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size=6),
+        axis.title.x = element_text(size=8), axis.title.y = element_text(size=8),
+        plot.title=element_text(size=10))
 ```
 
-Como ya vimos en la distirbución de los contaminantes por horas, los valores atípicos del $NO_{2}$ se concentran en las horas de mayor tráfico (7-9h y 19-22h), mientras que los valores atípicos de $0_{3}$, al formarse con la luz solar, alcanza su máximo en las horas de mayor incisión de esta, y decrece en las horas en que se pone el sol.
+Como ya hemos comentado, las concentraciones de $NO_{2}$ están estrechamente relacionadas con el tráfico, por lo que es coherente que los niveles más altos de de $NO_{2}$ se concentren principalmente en horas punta de tráfico (7-9h y 19-21h). Por otro lado, la formación de $O_{3}$ depende de la radiación solar y de temperatura elevada, por lo que tampoco es sorprendente que los valores atípicos se encuentren concentrados principalmente alrededor del mediodía, y vayan decreciendo con la caída del sol.
+
+No obstante, este breve análisis sobre los valores atípicos detectados no debe entenderse como un criterio absoluto para determinar si son errores de medición o no, sino más bien como una primera aproximación a una discusión mucho más profunda. Si bien los valores detectados para el $O_{3}$ no estaban muy por encima, en general, de los bigotes; los valores detectados para el $NO_{2}$ alcanzaban concentraciones hasta más de 100 unidades por encima del límite superior. Por ello, sería también interesante estudiar en que estaciones se producen estos valores tan altos (si están localizadas en zonas con mucho o poco tráfico), en que día se produjeron, en que condiciones de temperatura y radiación, etc. Sin embargo, debido a la escasez de espacio, nos conformamos con dar una primera aproximación analizando la distribución de estos valores por horas.
+
 
 # Discusión y conclusiones
