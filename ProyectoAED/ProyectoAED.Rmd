@@ -431,13 +431,15 @@ El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico
 
 # Discusión outliers
 
-Comenzamos obteniendo los valores atípicos:
+Ya que conocemos la distribución de los contaminantes $NO_{2}$ y $O_{3}$ por horas, visualizaremos como se distribuyen por horas los valores atípicos que aparecen en el boxplot de contaminantes por estaciones:
 
 ```{r}
+# Convertimos la concentración y el tipo de contaminante en dos variables
 datos_alargados <- datos_filtrados %>%
   select(Fecha, Hora, Día.de.la.semana, Estación, NO2, O3) %>%
   pivot_longer(cols=c(NO2, O3), names_to="Contaminante", values_to="Concentración")
 
+# Seleccionamos los límites por el criterio de boxplot
 limites <- datos_alargados %>%
   group_by(Estación, Contaminante) %>%
   summarise(Q1 = quantile(Concentración, 0.25, na.rm=TRUE),
@@ -446,24 +448,16 @@ limites <- datos_alargados %>%
             .groups="drop") %>%
   mutate(Lim_inf = Q1 - 1.5 * IQR, Lim_sup = Q3 + 1.5 * IQR)
 
+# Calculamos los valores atípicos por dicho criterio
 datos_atipicos <- datos_alargados %>%
   left_join(limites, by=c("Estación", "Contaminante")) %>%
   filter(!is.na(Concentración) & (Concentración < Lim_inf | Concentración > Lim_sup))
-```
 
-Cuántos valores atípicos se han detectado:
-
-```{r}
-datos_atipicos %>% group_by(Contaminante, Estación) %>% 
-  summarise(atipicos = n(), .groups="drop_last")
-```
-
-Representamos el número de observaciones atípicas según la hora
-
-```{r}
+# Ordenamos los niveles del factor hora para que el gráfico se vea bien
 datos_atipicos$Hora <- factor(datos_atipicos$Hora,
                               levels = paste0(0:23, ":00:00"))
 
+# Graficamos
 datos_atipicos %>% count(Contaminante, Hora) %>%
   ggplot(aes(x=Hora, y=n)) + 
   geom_col(fill = "steelblue") + 
@@ -471,9 +465,10 @@ datos_atipicos %>% count(Contaminante, Hora) %>%
   labs(title="Valores atípicos según la hora", x="Hora", y="Número de observaciones") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-  
 ```
 
-Como ya vimos en la distirbución de los contaminantes por horas, los valores atípicos del $NO_{2}$ se concentran en las horas de mayor tráfico (7-9h y 19-22h), mientras que los valores atípicos de $0_{3}$, al formarse con la luz solar, alcanza su máximo en las horas de mayor incisión de esta, y decrece en las horas en que se pone el sol.
+Como ya hemos comentado, las concentraciones de $NO_{2}$ están estrechamente relacionadas con el tráfico, por lo que es coherente que los niveles más altos de de $NO_{2}$ se concentren principalmente en horas punta de tráfico (7-9h y 19-21h). Por otro lado, la formación de $O_{3}$ depende de la radiación solar y de temperatura elevada, por lo que tampoco es sorprendente que los valores atípicos se encuentren concentrados principalmente alrededor del mediodía, y vayan decreciendo con la caída del sol.
+
+No obstante, este breve análisis sobre los valores atípicos detectados no debe entenderse como un criterio absoluto para determinar si son errores de medición o no, sino más bien como una primera aproximación a una discusión mucho más profunda. Si bien los valores detectados para el $O_{3}$ no estaban muy por encima, en general, de los bigotes; los valores detectados para el $NO_{2}$ alcanzaban concentraciones hasta más de 100 unidades por encima del límite superior. Por ello, sería también interesante estudiar en que estaciones se producen estos valores tan altos (si están localizadas en zonas con mucho o poco tráfico), en que día se produjeron, en que condiciones de temperatura y radiación, etc. Sin embargo, debido a la escasez de espacio, nos conformamos con dar una primera aproximación analizando la distribución de estos valores por horas.
 
 # Discusión y conclusiones
