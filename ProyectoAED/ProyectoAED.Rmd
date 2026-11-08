@@ -1,28 +1,28 @@
 ---
 title: "Análisis exploratorio de la calidad del aire en València"
 author:
-  - name: "Jose Luis, Marcos "
+  - name: "Noa Martin Hodar, Marcos Ruiz Baidez, Jose Luis Pérez Sánchez"
     affil: "1"
 affiliation:
   - num: 1
     address: |
-      Máster en Ciencia de Datos
-      Universitat de
-      València
-    email: correo@ejemplo.com
+      Máster en Ciencia de Datos,
+      Universitat de València,
+      46100 Burjassot, València
+    email: jopesan7@alumni.uv.es
 authorcitation: |
-  Apellido, N.
+  Martin Hodar, N.; Ruiz Baidez, M.; Pérez Sánchez, J.L.
 correspondence: |
-  correo@ejemplo.com
+  José Luis Pérez Sánchez; jopesan7@alumni.uv.es
 journal: notspecified
 type: article
 status: submit
 simplesummary: |
   Proyecto de la asignatura Análisis Exploratorio de Datos (AED) sobre la calidad del aire en Valencia.
 abstract: |
-  Resumen 
+  Este trabajo presenta un análisis exploratorio de los datos horarios de calidad del aire de la ciudad de València entre 2016 y 2021, procedentes del portal de datos abiertos del Ayuntamiento. Tras depurar el conjunto inicial de 449.026 observaciones y 27 variables, mediante la conversión de tipos, la corrección de valores imposibles de radiación y el descarte de las variables casi vacías y de tres estaciones sin registros de los contaminantes principales, se obtuvo un conjunto de 350.712 observaciones y 16 variables. Las correlaciones de Spearman sobre medias diarias identificaron el $NO_2$ y el $O_3$ como los contaminantes principales, con una relación inversa apreciable, por lo que se estudió su distribución por estación, su evolución temporal, incluido el periodo del estado de alarma por la COVID-19, y su ciclo horario. Los resultados muestran una relación inversa entre $NO_2$ y $O_3$, coherente con el consumo de ozono por los óxidos de nitrógeno emitidos por el tráfico; una tendencia descendente del $NO_2$, con una caída marcada en 2020; una estacionalidad opuesta, con máximos de $NO_2$ en invierno y de $O_3$ en primavera y verano, coherente con su origen fotoquímico, ya que su formación se ve favorecida por la mayor radiación solar y las temperaturas más altas de estos meses; y un ciclo horario del $NO_2$ con picos en horas punta, más atenuado los fines de semana. Los valores atípicos se concentran en esas mismas franjas horarias. 
 keywords: |
-  calidad del aire; contaminantes; NO2; O3; análisis exploratorio
+  calidad del aire; NO2; O3; análisis exploratorio; preparación de datos; valores perdidos; correlación de Spearman; estacionalidad
 bibliography: mybibfile.bib
 endnotes: false
 header-includes:
@@ -85,7 +85,8 @@ dim(datos)
 #Inspeccionamos la estructura de las variables
 str(datos)
 ```
-Detectamos que la variable `Fecha` aparece como una cadena de caracteres, al igual que `Día.de.la.semana`, `Hora` y `Estación`, aunque estas últimas representan variables categóricas. 
+
+Detectamos que la variable `Fecha` aparece como una cadena de caracteres, al igual que `Día.de.la.semana`, `Hora` y `Estación`, aunque estas últimas representan variables categóricas.
 
 Para corregirlo, convertimos Fecha a formato *POSIXct* y las tres variables cualitativas a factores. De esta manera, *R* puede interpretar correctamente la información temporal y categórica.
 
@@ -105,6 +106,7 @@ Una vez corregidos los formatos, estudiamos la completitud de las variables medi
 ```{r,results='hide'}
 summary(datos)
 ```
+
 Observamos que variables como C6H6, C7H8 y C8H10 están prácticamente vacías, pues presentan más de 400.000 valores ausentes sobre las 449.026 observaciones iniciales. También destacan NH3 y Ruido, con cifras similares. Mantener estas variables aportaría muy poca información útil para el análisis exploratorio.
 
 El mapa de calor permite visualizar cómo se distribuyen estas ausencias entre las distintas estaciones y variables, identificando también problemas de disponibilidad específicos de algunas estaciones.
@@ -120,6 +122,7 @@ datos %>%
   scale_fill_gradient(low = "lightgreen", high = "red", name="Porcenjate Nulos") +   # verde  a rojo
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))  # etiquetas X en vertical
 ```
+
 Seleccionamos 16 variables para continuar trabajando: las variables temporales y Estación, los contaminantes candidatos y las variables meteorológicas. Dejamos fuera las otras 11 variables ya que presentan un elevado porcentaje de ausencias; además, no forman parte del objetivo de nuestro estudio.
 
 ```{r,results='hide'}
@@ -145,7 +148,8 @@ Contabilizamos ahora los valores ausentes. Las variables temporales y Estación 
 #Contabilizamos los NAs por columna
 colSums(is.na(datos_filtrados))
 ```
-En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 \% de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
+
+En particular, el $N0_2$ presenta 96.232 NAs y el $O_3$, 122.897. Al volver al mapa de calor, observamos que `Consellería Meteo` y `Nazaret Meteo` presentan un 100 % de ausencias en ambos contaminantes, mientras que `Valencia Centro` no registra ninguna medición de $O_3$. Por ello, eliminamos todas las observaciones correspondientes a estas tres estaciones, pasando de 449.026 a 350.712 filas y de 12 a 9 estaciones.
 
 ```{r}
 estaciones_descartadas <- c("Valencia Centro", "Consellería Meteo", "Nazaret Meteo")
@@ -191,7 +195,6 @@ Hay tres obseravciones clave:
 
 Estos resultados nos permiten centrar el análisis posterior en $N0_2$ y $O_3$, dos contaminantes con comportamientos diferenciados y una relación inversa apreciable. Eso sí, correlación no significa causalidad. La matriz orienta nuestro análisis, pero no demuestra por sí sola los mecanismos físicos que hay detrás.
 
-
 # Distribución de los principales contaminantes entre las estaciones de medición
 
 Nos centramos ahora en dar respuesta a la primera pregunta formulada: ¿Cómo se distribuyen los niveles de $NO_{2}$ y $O_{3}$ entre las distintas estaciones de medición de la ciudad de Valencia? Para ello, visualizaremos como se distribuyen los distintos contaminantes por estación usando un boxplot para cada contaminante:
@@ -225,8 +228,7 @@ datos_filtrados %>% select(NO2, O3) %>%
 
 ## Distribución del $\mathbf{NO_{2}}$ por estación
 
-Aunque, en general, la forma de la distribución parece no variar mucho entre estaciones, podemos resaltar algunas diferencias significativas. `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales.
-De forma opuesta, `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos. Destaca también que las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
+Aunque, en general, la forma de la distribución parece no variar mucho entre estaciones, podemos resaltar algunas diferencias significativas. `Pista de silla` presenta una de las concentraciones medianas más elevadas, así como la mayor dispersión de valores centrales. De forma opuesta, `Politécnico` presenta la concentración mediana más baja, así como los valores centrales menos dispersos. Destaca también que las estaciones de `Avda Francia` y `Bulevard Sud` presentan los mayores picos de concentración
 
 ## Distribución del $\mathbf{O_{3}}$ por estación
 
@@ -234,17 +236,17 @@ De nuevo, pese a la similitud de las distribuciones entre estaciones, destacamos
 
 Por último, es interesante destacar que las estaciones que presentan mayores concentraciones de $NO_{2}$ no necesariamente presentan mayores concentraciones de $O_{3}$, y viceversa. Por ejemplo:
 
-  - `Politécnico` presenta una de las concentraciones medianas más bajas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más altas.
+- `Politécnico` presenta una de las concentraciones medianas más bajas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más altas.
 
-  - `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
+- `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
 
-Corroboramos cuantitativamente este comportamiento con el cálculo de la correlación lineal de Pearson entre el $NO_2$ y el $0_3$, verificando cómo arroja un coeficiente negativo de -0.6 que confirma la relación inversa existente entre ambos contaminantes.
+Corroboramos cuantitativamente este comportamiento con el cálculo de la correlación de Spearman entre el $NO_2$ y el $0_3$, verificando cómo arroja un coeficiente negativo de -0.64 que confirma la relación inversa existente entre ambos contaminantes.
 
 # Análisis temporal
 
-Esta sección responde a la pregunta *¿cómo evolucionan los contaminantes a lo largo del tiempo y se observa estacionalidad?* Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los datos horarios originales (`datos`), calculando las medias con `na.rm = TRUE`, es decir, sin rellenar los valores perdidos.
+Esta sección responde a la pregunta ¿cómo evolucionan los contaminantes a lo largo del tiempo y se observa estacionalidad? Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los datos horarios originales (`datos`), calculando las medias con `na.rm = TRUE`, es decir, sin rellenar los valores perdidos.
 
-```{r temporal-prep}
+```{r}
 # Variables de calendario con lubridate poniendo lunes como primer día de la semana
 datos <- datos %>%
   mutate(
@@ -270,7 +272,7 @@ no2_2021   <- mean(datos$NO2[en_alarma_2021], na.rm = TRUE)
 var_alarma_2019 <- abs(round(100 * (no2_2020 - no2_2019) / no2_2019, 1))
 var_alarma_2021 <- abs(round(100 * (no2_2021 - no2_2020) / no2_2020, 1))
 
-cat("El No2 un año antes del inicio del estado de alarma fue un", var_alarma_2019, "% mas que durante el estado de alarma, y un ", var_alarma_2021, "% menos que un año después del inicio del estado de alarma.")
+cat("El No2 un año antes del inicio del estado de alarma fue un", var_alarma_2019, "% mas \n que durante el estado de alarma, y un ", var_alarma_2021, "% menos que un año después \n del inicio del estado de alarma.")
 ```
 
 ## Serie diaria y estado de alarma
@@ -291,7 +293,7 @@ datos %>%
        x = NULL, y = "NO2 (µg/m³)")
 ```
 
-Se puede observar que la concentración de NO2 disminuyó drásticamente durante el estado de alarma, lo que refleja la reducción de la actividad humana y del tráfico de vehículos. La línea roja suavizada muestra claramente esta tendencia, con un pico antes del confinamiento y una caída significativa durante el período señalado por las líneas discontinuas naranjas.
+Se puede observar que la concentración de $NO_2$ disminuyó drásticamente durante el estado de alarma, lo que refleja la reducción de la actividad humana y del tráfico de vehículos. La línea roja suavizada muestra claramente esta tendencia, con un pico antes del confinamiento y una caída significativa durante el período señalado por las líneas discontinuas naranjas.
 
 ## Tendencia y estacionalidad anual
 
@@ -318,7 +320,7 @@ ggplot(descomp, aes(Fecha, y, colour = contaminante)) +
   theme_bw() + theme(legend.position = "none")                                   # sin leyenda: el color ya se ve en cada faceta
 ```
 
-A partir de la descomposición STL se observan patrones opuestos. En la tendencia, el $NO_2$ desciende desde 2016, con una caída acusada en 2020 que se estabiliza después en valores mínimos, mientras que el $O_3$ muestra un ligero ascenso, coherente con la menor destrucción de ozono al haber menos $NOx$. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno por el mayor tráfico y la peor dispersión, y el $O_3$ en primavera y verano por la mayor radiación solar. El aspecto en dientes de sierra indica que el modelo, pese a ajustarse con frecuencia anual, captura también parte del ciclo diario de la serie horaria.
+Para estudiar la evolución de ambos contaminantes, separamos la serie diaria en estacionalidad, el patrón que se repite cada año, y tendencia, lo que queda al quitarlo (descomposición aditiva). La estacionalidad es la media de cada semana del año menos la media global, y la tendencia es la serie menos la estacionalidad, suavizada con LOESS. En la tendencia, el $NO_2$ se mantiene hasta mediados de 2017 y después desciende hasta un mínimo a finales de 2020, tras el cual se recupera ligeramente. El $O_3$ muestra el comportamiento contrario: asciende desde comienzos de 2017 hasta 2021, compatible con un menor consumo de ozono al haber menos $NO_x$. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno, lo que concuerda con un mayor tráfico y una peor dispersión, y el $O_3$ en primavera y verano, en línea con su origen fotoquímico. El aspecto irregular de la estacionalidad se debe a que el perfil semanal se estima con pocos años de datos.
 
 ## Ciclo horario: laborables frente a fines de semana
 
@@ -377,6 +379,5 @@ datos_atipicos %>% count(Contaminante, Hora) %>%
 Como ya hemos comentado, las concentraciones de $NO_{2}$ están estrechamente relacionadas con el tráfico, por lo que es coherente que los niveles más altos de de $NO_{2}$ se concentren principalmente en horas punta de tráfico (7-9h y 19-21h). Por otro lado, la formación de $O_{3}$ depende de la radiación solar y de temperatura elevada, por lo que tampoco es sorprendente que los valores atípicos se encuentren concentrados principalmente alrededor del mediodía, y vayan decreciendo con la caída del sol.
 
 No obstante, este breve análisis sobre los valores atípicos detectados no debe entenderse como un criterio absoluto para determinar si son errores de medición o no, sino más bien como una primera aproximación a una discusión mucho más profunda. Si bien los valores detectados para el $O_{3}$ no estaban muy por encima, en general, de los bigotes; los valores detectados para el $NO_{2}$ alcanzaban concentraciones hasta más de 100 unidades por encima del límite superior. Por ello, sería también interesante estudiar en que estaciones se producen estos valores tan altos (si están localizadas en zonas con mucho o poco tráfico), en que día se produjeron, en que condiciones de temperatura y radiación, etc. Sin embargo, debido a la escasez de espacio, nos conformamos con dar una primera aproximación analizando la distribución de estos valores por horas.
-
 
 # Discusión y conclusiones
