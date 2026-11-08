@@ -305,7 +305,7 @@ observaciones y 27 variables.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#Importamos los datos usando una ruta relativa }
-\NormalTok{datos }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"calidad\_aire.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{fileEncoding =} \StringTok{"UTF{-}8"}\NormalTok{)}
+\NormalTok{datos }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"data/calidad\_aire.csv"}\NormalTok{, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{, }\AttributeTok{fileEncoding =} \StringTok{"UTF{-}8"}\NormalTok{)}
 \CommentTok{\#Número total de filas y columnas}
 \FunctionTok{dim}\NormalTok{(datos)}
 \CommentTok{\#Inspeccionamos la estructura de las variables}
@@ -608,7 +608,7 @@ valores perdidos.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Variables de calendario con lubridate poniendo lunes como primer día de la semana}
-\NormalTok{datos }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{datos\_temporales }\OtherTok{\textless{}{-}}\NormalTok{ datos\_filtrados }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}
 \NormalTok{    año       }\OtherTok{=} \FunctionTok{year}\NormalTok{(Fecha), }\CommentTok{\# extraemos año, mes y día de la semana de la fecha}
     \AttributeTok{mes        =} \FunctionTok{month}\NormalTok{(Fecha, }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{),}
@@ -621,14 +621,14 @@ valores perdidos.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# \# Definimos los periodos de estado de alarma para 2019, 2020 y 2021}
-\NormalTok{en\_alarma\_2020 }\OtherTok{\textless{}{-}}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}06{-}21"}\NormalTok{)}
-\NormalTok{en\_alarma\_2021 }\OtherTok{\textless{}{-}}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2021{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2021{-}06{-}21"}\NormalTok{)}
-\NormalTok{en\_alarma\_2019 }\OtherTok{\textless{}{-}}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2019{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2019{-}06{-}21"}\NormalTok{)}
+\NormalTok{en\_alarma\_2020 }\OtherTok{\textless{}{-}}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}06{-}21"}\NormalTok{)}
+\NormalTok{en\_alarma\_2021 }\OtherTok{\textless{}{-}}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2021{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2021{-}06{-}21"}\NormalTok{)}
+\NormalTok{en\_alarma\_2019 }\OtherTok{\textless{}{-}}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textgreater{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2019{-}03{-}14"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ datos\_temporales}\SpecialCharTok{$}\NormalTok{Fecha }\SpecialCharTok{\textless{}=} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2019{-}06{-}21"}\NormalTok{)}
 
 \CommentTok{\# Calculamos la media de NO2 para cada período}
-\NormalTok{no2\_2019   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2019], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{no2\_2020   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2020], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{no2\_2021   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2021], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{no2\_2019   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos\_temporales}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2019], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{no2\_2020   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos\_temporales}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2020], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{no2\_2021   }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(datos\_temporales}\SpecialCharTok{$}\NormalTok{NO2[en\_alarma\_2021], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
 
 \CommentTok{\# Calculamos la variación porcentual de NO2 entre los años}
 \NormalTok{var\_alarma\_2019 }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ (no2\_2020 }\SpecialCharTok{{-}}\NormalTok{ no2\_2019) }\SpecialCharTok{/}\NormalTok{ no2\_2019, }\DecValTok{1}\NormalTok{))}
@@ -639,8 +639,8 @@ valores perdidos.
 \end{Shaded}
 
 \begin{verbatim}
-## El No2 un año antes del inicio del estado de alarma fue un 44.1 % mas 
-##  que durante el estado de alarma, y un  31.3 % menos que un año después 
+## El No2 un año antes del inicio del estado de alarma fue un 46.4 % mas 
+##  que durante el estado de alarma, y un  47.7 % menos que un año después 
 ##  del inicio del estado de alarma.
 \end{verbatim}
 
@@ -709,18 +709,18 @@ anual}\label{tendencia-y-estacionalidad-anual}
 
 Para estudiar la evolución de ambos contaminantes, separamos la serie
 diaria en estacionalidad, el patrón que se repite cada año, y tendencia,
-lo que queda al quitarlo (descomposición aditiva). La estacionalidad es
-la media de cada semana del año menos la media global, y la tendencia es
-la serie menos la estacionalidad, suavizada con LOESS. En la tendencia,
-el \(NO_2\) se mantiene hasta mediados de 2017 y después desciende hasta
-un mínimo a finales de 2020, tras el cual se recupera ligeramente. El
-\(O_3\) muestra el comportamiento contrario: asciende desde comienzos de
-2017 hasta 2021, compatible con un menor consumo de ozono al haber menos
-\(NO_x\). En la estacionalidad, el \(NO_2\) alcanza sus máximos en
-invierno, lo que concuerda con un mayor tráfico y una peor dispersión, y
-el \(O_3\) en primavera y verano, en línea con su origen fotoquímico. El
-aspecto irregular de la estacionalidad se debe a que el perfil semanal
-se estima con pocos años de datos.
+lo que queda al quitarlo. La estacionalidad es la media de cada semana
+del año menos la media global, y la tendencia es la serie menos la
+estacionalidad, suavizada con LOESS. En la tendencia, el \(NO_2\) se
+mantiene hasta mediados de 2017 y después desciende hasta un mínimo a
+finales de 2020, tras el cual se recupera ligeramente. El \(O_3\)
+muestra el comportamiento contrario: asciende desde comienzos de 2017
+hasta 2021, compatible con un menor consumo de ozono al haber menos
+\(NO_x\), ya que los óxidos de nitrógeno del tráfico reaccionan con el
+\(O_3\) y lo destruyen. En la estacionalidad, el \(NO_2\) alcanza sus
+máximos en invierno, lo que concuerda con un mayor tráfico, y el \(O_3\)
+en primavera y verano, en línea con su origen fotoquímico: no se emite
+directamente, sino que se forma cuando la radiación.
 
 \subsection{Ciclo horario: laborables frente a fines de
 semana}\label{ciclo-horario-laborables-frente-a-fines-de-semana}
@@ -728,7 +728,7 @@ semana}\label{ciclo-horario-laborables-frente-a-fines-de-semana}
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Calcular el ciclo horario de NO2 y O3 para días laborables y fines de semana}
-\NormalTok{ciclo\_hora }\OtherTok{\textless{}{-}}\NormalTok{ datos }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{ciclo\_hora }\OtherTok{\textless{}{-}}\NormalTok{ datos\_temporales }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{group\_by}\NormalTok{(hora\_num, fin\_semana) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# Agrupamos por hora y tipo de día (laborable o fin de semana)}
   \FunctionTok{summarise}\NormalTok{(}\AttributeTok{NO2 =} \FunctionTok{mean}\NormalTok{(NO2, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{O3 =} \FunctionTok{mean}\NormalTok{(O3, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# Media de NO2 y O3, ignorando NAs}
   \FunctionTok{pivot\_longer}\NormalTok{(}\FunctionTok{c}\NormalTok{(NO2, O3), }\AttributeTok{names\_to =} \StringTok{"contaminante"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"media"}\NormalTok{)  }\CommentTok{\# Formato largo para visualizar}
@@ -747,11 +747,12 @@ semana}\label{ciclo-horario-laborables-frente-a-fines-de-semana}
 
 \begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-17-1} \end{flushleft}
 
-El gráfico revela tres patrones clave. El NO2 depende directamente del
-tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más
-bajos los fines de semana. El O3, al formarse con luz solar, alcanza su
-máximo a mediodía y cae de noche. Además, el O3 sube los fines de semana
-porque la menor emisión de NO2 permite que se acumule.
+El gráfico revela tres patrones clave. El \(NO_2\) depende directamente
+del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más
+bajos los fines de semana. El \(O_3\), al formarse con luz solar,
+alcanza su máximo a mediodía y cae de noche. Además, el \(O_3\) sube los
+fines de semana porque la menor emisión de \(NO_2\) permite que se
+acumule.
 
 \section{Discusión outliers}\label{discusiuxf3n-outliers}
 

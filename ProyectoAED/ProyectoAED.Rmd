@@ -79,7 +79,7 @@ Tras descargar en formato *csv* e importar el archivo en *R* inspeccionamos su e
 
 ```{r,results='hide'}
 #Importamos los datos usando una ruta relativa 
-datos <- read.csv("calidad_aire.csv", sep = ";", fileEncoding = "UTF-8")
+datos <- read.csv("data/calidad_aire.csv", sep = ";", fileEncoding = "UTF-8")
 #Número total de filas y columnas
 dim(datos)
 #Inspeccionamos la estructura de las variables
@@ -248,7 +248,7 @@ Esta sección responde a la pregunta ¿cómo evolucionan los contaminantes a lo 
 
 ```{r}
 # Variables de calendario con lubridate poniendo lunes como primer día de la semana
-datos <- datos %>%
+datos_temporales <- datos_filtrados %>%
   mutate(
     año       = year(Fecha), # extraemos año, mes y día de la semana de la fecha
     mes        = month(Fecha, label = TRUE, abbr = TRUE),
@@ -259,14 +259,14 @@ datos <- datos %>%
 
 ```{r}
 # # Definimos los periodos de estado de alarma para 2019, 2020 y 2021
-en_alarma_2020 <- datos$Fecha >= as.Date("2020-03-14") & datos$Fecha <= as.Date("2020-06-21")
-en_alarma_2021 <- datos$Fecha >= as.Date("2021-03-14") & datos$Fecha <= as.Date("2021-06-21")
-en_alarma_2019 <- datos$Fecha >= as.Date("2019-03-14") & datos$Fecha <= as.Date("2019-06-21")
+en_alarma_2020 <- datos_temporales$Fecha >= as.Date("2020-03-14") & datos_temporales$Fecha <= as.Date("2020-06-21")
+en_alarma_2021 <- datos_temporales$Fecha >= as.Date("2021-03-14") & datos_temporales$Fecha <= as.Date("2021-06-21")
+en_alarma_2019 <- datos_temporales$Fecha >= as.Date("2019-03-14") & datos_temporales$Fecha <= as.Date("2019-06-21")
 
 # Calculamos la media de NO2 para cada período
-no2_2019   <- mean(datos$NO2[en_alarma_2019], na.rm = TRUE)
-no2_2020   <- mean(datos$NO2[en_alarma_2020], na.rm = TRUE)
-no2_2021   <- mean(datos$NO2[en_alarma_2021], na.rm = TRUE)
+no2_2019   <- mean(datos_temporales$NO2[en_alarma_2019], na.rm = TRUE)
+no2_2020   <- mean(datos_temporales$NO2[en_alarma_2020], na.rm = TRUE)
+no2_2021   <- mean(datos_temporales$NO2[en_alarma_2021], na.rm = TRUE)
 
 # Calculamos la variación porcentual de NO2 entre los años
 var_alarma_2019 <- abs(round(100 * (no2_2020 - no2_2019) / no2_2019, 1))
@@ -320,13 +320,13 @@ ggplot(descomp, aes(Fecha, y, colour = contaminante)) +
   theme_bw() + theme(legend.position = "none")                                   # sin leyenda: el color ya se ve en cada faceta
 ```
 
-Para estudiar la evolución de ambos contaminantes, separamos la serie diaria en estacionalidad, el patrón que se repite cada año, y tendencia, lo que queda al quitarlo (descomposición aditiva). La estacionalidad es la media de cada semana del año menos la media global, y la tendencia es la serie menos la estacionalidad, suavizada con LOESS. En la tendencia, el $NO_2$ se mantiene hasta mediados de 2017 y después desciende hasta un mínimo a finales de 2020, tras el cual se recupera ligeramente. El $O_3$ muestra el comportamiento contrario: asciende desde comienzos de 2017 hasta 2021, compatible con un menor consumo de ozono al haber menos $NO_x$. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno, lo que concuerda con un mayor tráfico y una peor dispersión, y el $O_3$ en primavera y verano, en línea con su origen fotoquímico. El aspecto irregular de la estacionalidad se debe a que el perfil semanal se estima con pocos años de datos.
+Para estudiar la evolución de ambos contaminantes, separamos la serie diaria en estacionalidad, el patrón que se repite cada año, y tendencia, lo que queda al quitarlo. La estacionalidad es la media de cada semana del año menos la media global, y la tendencia es la serie menos la estacionalidad, suavizada con LOESS. En la tendencia, el $NO_2$ se mantiene hasta mediados de 2017 y después desciende hasta un mínimo a finales de 2020, tras el cual se recupera ligeramente. El $O_3$ muestra el comportamiento contrario: asciende desde comienzos de 2017 hasta 2021, compatible con un menor consumo de ozono al haber menos $NO_x$, ya que los óxidos de nitrógeno del tráfico reaccionan con el $O_3$ y lo destruyen. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno, lo que concuerda con un mayor tráfico, y el $O_3$ en primavera y verano, en línea con su origen fotoquímico: no se emite directamente, sino que se forma cuando la radiación.
 
 ## Ciclo horario: laborables frente a fines de semana
 
 ```{r fig.width=9, fig.height=3.5}
 # Calcular el ciclo horario de NO2 y O3 para días laborables y fines de semana
-ciclo_hora <- datos %>%
+ciclo_hora <- datos_temporales %>%
   group_by(hora_num, fin_semana) %>%  # Agrupamos por hora y tipo de día (laborable o fin de semana)
   summarise(NO2 = mean(NO2, na.rm = TRUE), O3 = mean(O3, na.rm = TRUE)) %>%  # Media de NO2 y O3, ignorando NAs
   pivot_longer(c(NO2, O3), names_to = "contaminante", values_to = "media")  # Formato largo para visualizar
@@ -342,7 +342,7 @@ ggplot(ciclo_hora, aes(x = hora_num, y = media, colour = fin_semana)) +
   theme(legend.position = "bottom", axis.text.x = element_text(size = 7))
 ```
 
-El gráfico revela tres patrones clave. El NO2 depende directamente del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más bajos los fines de semana. El O3, al formarse con luz solar, alcanza su máximo a mediodía y cae de noche. Además, el O3 sube los fines de semana porque la menor emisión de NO2 permite que se acumule.
+El gráfico revela tres patrones clave. El $NO_2$ depende directamente del tráfico, con dos picos en horas punta (7-9h y 19-21h) y niveles más bajos los fines de semana. El $O_3$, al formarse con luz solar, alcanza su máximo a mediodía y cae de noche. Además, el $O_3$ sube los fines de semana porque la menor emisión de $NO_2$ permite que se acumule.
 
 # Discusión outliers
 
@@ -379,5 +379,3 @@ datos_atipicos %>% count(Contaminante, Hora) %>%
 Como ya hemos comentado, las concentraciones de $NO_{2}$ están estrechamente relacionadas con el tráfico, por lo que es coherente que los niveles más altos de de $NO_{2}$ se concentren principalmente en horas punta de tráfico (7-9h y 19-21h). Por otro lado, la formación de $O_{3}$ depende de la radiación solar y de temperatura elevada, por lo que tampoco es sorprendente que los valores atípicos se encuentren concentrados principalmente alrededor del mediodía, y vayan decreciendo con la caída del sol.
 
 No obstante, este breve análisis sobre los valores atípicos detectados no debe entenderse como un criterio absoluto para determinar si son errores de medición o no, sino más bien como una primera aproximación a una discusión mucho más profunda. Si bien los valores detectados para el $O_{3}$ no estaban muy por encima, en general, de los bigotes; los valores detectados para el $NO_{2}$ alcanzaban concentraciones hasta más de 100 unidades por encima del límite superior. Por ello, sería también interesante estudiar en que estaciones se producen estos valores tan altos (si están localizadas en zonas con mucho o poco tráfico), en que día se produjeron, en que condiciones de temperatura y radiación, etc. Sin embargo, debido a la escasez de espacio, nos conformamos con dar una primera aproximación analizando la distribución de estos valores por horas.
-
-# Discusión y conclusiones
