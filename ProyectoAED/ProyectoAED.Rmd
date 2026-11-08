@@ -1,7 +1,7 @@
 ---
-title: "Análisis exploratorio de la calidad del aire en València"
+title: "Análisis exploratorio de la calidad del aire en Valencia"
 author:
-  - name: "Noa Martin Hodar, Marcos Ruiz Baidez, Jose Luis Pérez Sánchez"
+  - name: "Noa Martín Hodar, Marcos Ruiz Baidez, Jose Luis Pérez Sánchez"
     affil: "1"
 affiliation:
   - num: 1
@@ -11,7 +11,7 @@ affiliation:
       46100 Burjassot, València
     email: jopesan7@alumni.uv.es
 authorcitation: |
-  Martin Hodar, N.; Ruiz Baidez, M.; Pérez Sánchez, J.L.
+  Martín Hodar, N.; Ruiz Baidez, M.; Pérez Sánchez, J.L.
 correspondence: |
   José Luis Pérez Sánchez; jopesan7@alumni.uv.es
 journal: notspecified
@@ -20,9 +20,9 @@ status: submit
 simplesummary: |
   Proyecto de la asignatura Análisis Exploratorio de Datos (AED) sobre la calidad del aire en Valencia.
 abstract: |
-  Este trabajo presenta un análisis exploratorio de los datos horarios de calidad del aire de la ciudad de València entre 2016 y 2021, procedentes del portal de datos abiertos del Ayuntamiento. Tras depurar el conjunto inicial de 449.026 observaciones y 27 variables, mediante la conversión de tipos, la corrección de valores imposibles de radiación y el descarte de las variables casi vacías y de tres estaciones sin registros de los contaminantes principales, se obtuvo un conjunto de 350.712 observaciones y 16 variables. Las correlaciones de Spearman sobre medias diarias identificaron el $NO_2$ y el $O_3$ como los contaminantes principales, con una relación inversa apreciable, por lo que se estudió su distribución por estación, su evolución temporal, incluido el periodo del estado de alarma por la COVID-19, y su ciclo horario. Los resultados muestran una relación inversa entre $NO_2$ y $O_3$, coherente con el consumo de ozono por los óxidos de nitrógeno emitidos por el tráfico; una tendencia descendente del $NO_2$, con una caída marcada en 2020; una estacionalidad opuesta, con máximos de $NO_2$ en invierno y de $O_3$ en primavera y verano, coherente con su origen fotoquímico, ya que su formación se ve favorecida por la mayor radiación solar y las temperaturas más altas de estos meses; y un ciclo horario del $NO_2$ con picos en horas punta, más atenuado los fines de semana. Los valores atípicos se concentran en esas mismas franjas horarias. 
+  Este trabajo presenta un análisis exploratorio de los datos horarios de calidad del aire de la ciudad de Valencia entre 2016 y 2021, procedentes del portal de datos abiertos del Ayuntamiento. Tras depurar el conjunto inicial de 449.026 observaciones y 27 variables, mediante la conversión de tipos, la corrección de valores imposibles de radiación y el descarte de las variables casi vacías y de tres estaciones sin registros de los contaminantes principales, se obtuvo un conjunto de 350.712 observaciones y 16 variables. Las correlaciones de Spearman sobre medias diarias identificaron el $NO_2$ y el $O_3$ como los contaminantes principales, con una relación inversa apreciable, por lo que se estudió su distribución por estación, su evolución temporal, incluido el periodo del estado de alarma por la COVID-19, y su ciclo horario. Los resultados muestran una relación inversa entre $NO_2$ y $O_3$, coherente con el consumo de ozono por los óxidos de nitrógeno emitidos por el tráfico; una tendencia descendente del $NO_2$, con una caída marcada en 2020; una estacionalidad opuesta, con máximos de $NO_2$ en invierno y de $O_3$ en primavera y verano, coherente con su origen fotoquímico, ya que su formación se ve favorecida por la mayor radiación solar y las temperaturas más altas de estos meses; y un ciclo horario del $NO_2$ con picos en horas punta, más atenuado los fines de semana. Los valores atípicos se concentran en esas mismas franjas horarias. 
 keywords: |
-  calidad del aire; NO2; O3; análisis exploratorio; preparación de datos; valores perdidos; correlación de Spearman; estacionalidad
+  calidad del aire; NO2; O3; análisis exploratorio; preparación de datos; valores perdidos; correlación de Spearman; estacionalidad.
 bibliography: mybibfile.bib
 endnotes: false
 header-includes:
@@ -75,7 +75,7 @@ Para orientar el estudio, el proyecto se guía en torno a dos preguntas clave:
 
 ## Conversión y selección de variables:
 
-Tras descargar en formato *csv* e importar el archivo en *R* inspeccionamos su estructura, de tal amnera que obetenmos 449.026 observaciones y 27 variables.
+Tras descargar en formato *csv* e importar el archivo en *R*, inspeccionamos su estructura obteniendo 449.026 observaciones y 27 variables.
 
 ```{r,results='hide'}
 #Importamos los datos usando una ruta relativa 
@@ -86,9 +86,9 @@ dim(datos)
 str(datos)
 ```
 
-Detectamos que la variable `Fecha` aparece como una cadena de caracteres, al igual que `Día.de.la.semana`, `Hora` y `Estación`, aunque estas últimas representan variables categóricas.
+Detectamos que la variable `Fecha` aparece como una cadena de caracteres; al igual que `Día.de.la.semana`, `Hora` y `Estación`, representando estas últimas variables categóricas.
 
-Para corregirlo, convertimos Fecha a formato *POSIXct* y las tres variables cualitativas a factores. De esta manera, *R* puede interpretar correctamente la información temporal y categórica.
+Para resolverlo, convertimos `Fecha` a formato *POSIXct* y las tres variables cualitativas a factores. De esta manera, *R* puede interpretar correctamente la información temporal y categórica.
 
 ```{r,results='hide'}
 #Convertimos la columna Fecha a formato POSIXct 
@@ -107,19 +107,19 @@ Una vez corregidos los formatos, estudiamos la completitud de las variables medi
 summary(datos)
 ```
 
-Observamos que variables como C6H6, C7H8 y C8H10 están prácticamente vacías, pues presentan más de 400.000 valores ausentes sobre las 449.026 observaciones iniciales. También destacan NH3 y Ruido, con cifras similares. Mantener estas variables aportaría muy poca información útil para el análisis exploratorio.
+Observamos que variables como C6H6, C7H8 y C8H10 están prácticamente vacías, pues presentan más de 400.000 valores ausentes sobre las 449.026 observaciones iniciales. También destacan NH3 y Ruido, con cifras similares. Mantenerlas aportaría muy poca información útil en el estudio.
 
-El mapa de calor permite visualizar cómo se distribuyen estas ausencias entre las distintas estaciones y variables, identificando también problemas de disponibilidad específicos de algunas estaciones.
+El mapa de calor permite visualizar cómo se distribuyen las ausencias de datos entre las distintas estaciones y variables, identificando también problemas de disponibilidad específicos de algunas estaciones.
 
 ```{r fig.height=3.5, fig.width=6.5}
 # Visualizamos el porcentaje de NAs por estación y variable mediante un mapa de calor
 datos %>%
   group_by(Estación) %>%                                    # nulos por estación
   summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%  # % de NAs por variable
-  pivot_longer(-Estación, names_to = "Variable", values_to = "Porcentaje_Nulos") %>%  # formato largo para ggplot
+  pivot_longer(-Estación, names_to = "Variable", values_to = "Porcentaje_Nulos") %>%  #formato largo para ggplot
   ggplot(aes(Variable, Estación, fill = Porcentaje_Nulos)) +
   geom_tile(color = "grey40", linewidth = 0.3) +            # mapa de calor
-  scale_fill_gradient(low = "lightgreen", high = "red", name="Porcenjate Nulos") +   # verde  a rojo
+  scale_fill_gradient(low = "lightgreen", high = "red", name="Porcenjate Nulos") +   #verde a rojo
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))  # etiquetas X en vertical
 ```
 
@@ -127,15 +127,15 @@ Seleccionamos 16 variables para continuar trabajando: las variables temporales y
 
 ```{r,results='hide'}
 # Seleccionamos las variables de interés
-datos_filtrados <- select(datos, Fecha, Hora, Día.de.la.semana, Estación, NO, NO2, NOx, O3, SO2, PM2.5, PM10, Temperatura, Humedad.relativa, Presión, Radiación, Precipitación)
-
+datos_filtrados <- select(datos, Fecha, Hora, Día.de.la.semana, Estación, NO, NO2, NOx, O3, 
+SO2, PM2.5, PM10, Temperatura, Humedad.relativa, Presión, Radiación, Precipitación)
 # Verificamos las dimensiones resultantes del dataset depurado
 dim(datos_filtrados)
 ```
 
 ## Correción de anomalías y getsión de *NAs* .
 
-Tras la selección, todavía debemos resolver algunas inconsistencias. En el *summary* detectamos un valor físicamente imposible de -7 en `Radiación`. En lugar de eliminar toda la fila, sustituimos únicamente ese valor por un NA, conservando el resto de mediciones.
+Tras la selección, todavía debemos resolver algunas inconsistencias. En el *summary* detectamos un valor físicamente imposible de -7 en `Radiación`. En lugar de eliminar toda la fila, sustituimos únicamente ese valor por un *NA*, conservando el resto de mediciones.
 
 ```{r,results='hide'}
 #Convertimos en NA los valores negativos de Radiación
@@ -158,28 +158,28 @@ datos_filtrados <- filter(datos_filtrados, !(Estación %in% estaciones_descartad
 
 Tras este filtrado, los valores ausentes se reducen a 24.788 en $N0_2$ y 24.583 en $O_3$.
 
-Para gestionar los NAs restantes, descartamos tanto la eliminación indiscriminada de filas, que supondría perder observaciones y continuidad temporal, como la imputación masiva mediante medias o medianas, que podría reducir artificialmente la variabilidad y suavizar los picos reales de contaminación.
+Para gestionar los NAs restantes; descartamos tanto la eliminación indiscriminada de filas, que supondría perder observaciones y continuidad temporal, como la imputación masiva mediante medias o medianas, que podría reducir artificialmente la variabilidad y suavizar los picos reales de contaminación.
 
 Por tanto, conservamos los valores ausentes y los gestionamos localmente mediante *na.rm = TRUE*, utilizando únicamente las mediciones disponibles.
 
-Finalmente, obtenemos un conjunto acondicionado de 350.712 observaciones y 16 variables,
+Finalmente, obtenemos un conjunto acondicionado de 350.712 observaciones y 16 variables.
 
 # Matriz de correlación entre contaminantes y variables meteorológicas
 
-Calculamos correlaciones de Spearman sobre las medias diarias de las variables numéricas, agrupando las mediciones de las estaciones por día.
+Para explorar las relaciones entre contaminantes y variables meteorológicas, agrupamos los registros por día y calculamos la media diaria. A partir de ella calculamos los coeficientes de correlación de Spearman entre cada par de variables y los representamos mediante una matriz de diagramas de dispersión:
 
 ```{r fig.width=10, fig.height=5}
-# Definimos una paleta de colores para la correlación
+#matriz de diagramas de dispersión con coeficientes de correlación de Spearman
 paleta <- col_numeric(palette = c("firebrick", "white", "steelblue"), domain = c(-1, 1))
 
-# calculamos primero las medias diarias de las variables y representamos sus relaciones por pares 
+#Agrupamos los registros por día, reuniendo las mediciones de todas las estaciones 
 datos_filtrados %>%
   group_by(dia = floor_date(Fecha, "day")) %>%                            
-  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%
-  select(-dia) %>%
-  pairs(gap = 0, xaxt = "n", yaxt = "n", cex.labels = 0.7,                                   
-        lower.panel = function(x, y, ...) points(x, y, pch = 16, cex = 0.5),
-        upper.panel = function(x, y, ...) {
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>%  # media diaria, ignorando NAs
+  select(-dia) %>%  #Eliminamos la columna auxiliar de fecha
+  pairs(gap = 0, xaxt = "n", yaxt = "n", cex.labels = 0.7, #Representamos relaciones entre cada par 
+        lower.panel = function(x, y, ...) points(x, y, pch = 16, cex = 0.5)#diagrama dispersión
+        upper.panel = function(x, y, ...) {    #coef. correlación Spearman
           correlacion <- cor(x, y, method = "spearman", use = "complete.obs")        
           coords <- par("usr")
           rect(coords[1], coords[3], coords[2], coords[4], col = paleta(correlacion))
@@ -240,25 +240,24 @@ Por último, es interesante destacar que las estaciones que presentan mayores co
 
 - `Pista silla` presenta una de las concentraciones medianas más altas de $NO_{2}$, mientras que su concentración mediana de $O_{3}$ es de las más bajas.
 
-Corroboramos cuantitativamente este comportamiento con el cálculo de la correlación de Spearman entre el $NO_2$ y el $0_3$, verificando cómo arroja un coeficiente negativo de -0.64 que confirma la relación inversa existente entre ambos contaminantes.
+Complementamos esta observación con la correlación de Spearman entre las medias diarias de $NO_2$ y el $O_3$, que presenta un coeficiente de −0,64 obtenido anteriormente.
 
 # Análisis temporal
 
-Esta sección responde a la pregunta ¿cómo evolucionan los contaminantes a lo largo del tiempo y se observa estacionalidad? Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los datos horarios originales (`datos`), calculando las medias con `na.rm = TRUE`, es decir, sin rellenar los valores perdidos.
+Esta sección responde a la pregunta ¿cómo evolucionan los contaminantes a lo largo del tiempo, se observa estacionalidad? Se estudian tres escalas: la serie diaria completa (con el efecto del estado de alarma de 2020), la estacionalidad mensual y el ciclo a lo largo del día. Se trabaja con los `datos_filtrados`, calculando las medias con `na.rm = TRUE`.
 
 ```{r}
 # Variables de calendario con lubridate poniendo lunes como primer día de la semana
-datos_temporales <- datos_filtrados %>%
-  mutate(
-    año       = year(Fecha), # extraemos año, mes y día de la semana de la fecha
-    mes        = month(Fecha, label = TRUE, abbr = TRUE),
-    fin_semana = wday(Fecha, week_start = 1) >= 6, # definimos fin de semana como sábado y domingo
-    hora_num   = hour(hms(Hora)) # extraemos unicamente el numero de la hora
-  )
+datos_temporales <- mutate(datos_filtrados,
+  año        = year(Fecha), # extraemos año, mes y día de la semana de la fecha
+  mes        = month(Fecha, label = TRUE, abbr = TRUE),
+  fin_semana = wday(Fecha, week_start = 1) >= 6, # definimos fin de semana como sábado y domingo
+  hora_num   = hour(hms(Hora)) # extraemos unicamente el numero de la hora
+)
 ```
 
 ```{r}
-# # Definimos los periodos de estado de alarma para 2019, 2020 y 2021
+# # Definimos los periodos de estado de alarma para 2019, 2020 y 2021:
 en_alarma_2020 <- datos_temporales$Fecha >= as.Date("2020-03-14") & datos_temporales$Fecha <= as.Date("2020-06-21")
 en_alarma_2021 <- datos_temporales$Fecha >= as.Date("2021-03-14") & datos_temporales$Fecha <= as.Date("2021-06-21")
 en_alarma_2019 <- datos_temporales$Fecha >= as.Date("2019-03-14") & datos_temporales$Fecha <= as.Date("2019-06-21")
@@ -283,7 +282,7 @@ Las líneas discontinuas naranjas delimitan el estado de alarma por la COVID-19 
 # Graficamos la evolución diaria del NO2 con suavizado y líneas verticales para el estado de alarma
 datos %>%
   group_by(Fecha) %>% # Agrupamos por fecha para calcular la media diaria
-  summarise(no2_global = mean(NO2, na.rm = TRUE)) %>% # Calculamos la media diaria de NO2 ignorando los NAs
+  summarise(no2_global = mean(NO2, na.rm = TRUE)) %>% # Calculamos media diaria de NO2 ignorando NAs
   ggplot(aes(x = Fecha, y = no2_global)) +
   geom_line(alpha = 0.3) +
   geom_smooth(method = "loess", span = 0.15, colour = "firebrick", se = FALSE) +
@@ -320,7 +319,7 @@ ggplot(descomp, aes(Fecha, y, colour = contaminante)) +
   theme_bw() + theme(legend.position = "none")                                   # sin leyenda: el color ya se ve en cada faceta
 ```
 
-Para estudiar la evolución de ambos contaminantes, separamos la serie diaria en estacionalidad, el patrón que se repite cada año, y tendencia, lo que queda al quitarlo. La estacionalidad es la media de cada semana del año menos la media global, y la tendencia es la serie menos la estacionalidad, suavizada con LOESS. En la tendencia, el $NO_2$ se mantiene hasta mediados de 2017 y después desciende hasta un mínimo a finales de 2020, tras el cual se recupera ligeramente. El $O_3$ muestra el comportamiento contrario: asciende desde comienzos de 2017 hasta 2021, compatible con un menor consumo de ozono al haber menos $NO_x$, ya que los óxidos de nitrógeno del tráfico reaccionan con el $O_3$ y lo destruyen. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno, lo que concuerda con un mayor tráfico, y el $O_3$ en primavera y verano, en línea con su origen fotoquímico: no se emite directamente, sino que se forma cuando la radiación.
+Para estudiar la evolución de ambos contaminantes, separamos la serie diaria en estacionalidad, el patrón que se repite cada año, y tendencia, lo que queda al quitarlo. La estacionalidad es la media de cada semana del año menos la media global, y la tendencia es la serie menos la estacionalidad, suavizada con LOESS. En la tendencia, el $NO_2$ se mantiene hasta mediados de 2017 y después desciende hasta un mínimo a finales de 2020, tras el cual se recupera ligeramente. El $O_3$ muestra el comportamiento contrario: asciende desde comienzos de 2017 hasta 2021, compatible con un menor consumo de ozono al haber menos $NO_2$, ya que los óxidos de nitrógeno del tráfico reaccionan con el $O_3$ y lo destruyen. En la estacionalidad, el $NO_2$ alcanza sus máximos en invierno, lo que concuerda con un mayor tráfico, y el $O_3$ en primavera y verano, en línea con su origen fotoquímico: no se emite directamente, sino que se forma cuando la radiación.
 
 ## Ciclo horario: laborables frente a fines de semana
 
