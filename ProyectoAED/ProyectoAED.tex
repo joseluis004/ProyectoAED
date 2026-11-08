@@ -278,7 +278,7 @@ datos brutos (\emph{Raw Data}) en información interpretable
 (\emph{Technically Correct Data}) mediante un proceso de depuración,
 transformación y visualización de datos en \emph{R}. De tal manera que
 podamos estudiar el comportamiento de los contaminantes y su relación
-con variables meteorlógicas.
+con variables meteorológicas.
 
 Para orientar el estudio, el proyecto se guía en torno a dos preguntas
 clave:
@@ -385,9 +385,9 @@ nuestro estudio.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{\texorpdfstring{Correción de anomalías y getsión de
+\subsection{\texorpdfstring{Corrección de anomalías y gestión de
 \emph{NAs}
-.}{Correción de anomalías y getsión de NAs .}}\label{correciuxf3n-de-anomaluxedas-y-getsiuxf3n-de-nas-.}
+.}{Corrección de anomalías y gestión de NAs .}}\label{correcciuxf3n-de-anomaluxedas-y-gestiuxf3n-de-nas-.}
 
 Tras la selección, todavía debemos resolver algunas inconsistencias. En
 el \emph{summary} detectamos un valor físicamente imposible de -7 en
@@ -413,7 +413,7 @@ variables meteorológicas mantienen ausencias.
 \end{Highlighting}
 \end{Shaded}
 
-En particular, el \(N0_2\) presenta 96.232 NAs y el \(O_3\), 122.897. Al
+En particular, el \(NO_2\) presenta 96.232 NAs y el \(O_3\), 122.897. Al
 volver al mapa de calor, observamos que \texttt{Consellería\ Meteo} y
 \texttt{Nazaret\ Meteo} presentan un 100 \% de ausencias en ambos
 contaminantes, mientras que \texttt{Valencia\ Centro} no registra
@@ -428,7 +428,7 @@ observaciones correspondientes a estas tres estaciones, pasando de
 \end{Highlighting}
 \end{Shaded}
 
-Tras este filtrado, los valores ausentes se reducen a 24.788 en \(N0_2\)
+Tras este filtrado, los valores ausentes se reducen a 24.788 en \(NO_2\)
 y 24.583 en \(O_3\).
 
 Para gestionar los NAs restantes; descartamos tanto la eliminación
@@ -476,16 +476,16 @@ matriz de diagramas de dispersión:
 
 \begin{flushleft}\includegraphics[width=0.95\linewidth]{ProyectoAED_files/figure-latex/unnamed-chunk-10-1} \end{flushleft}
 
-Hay tres obseravciones clave:
+Hay tres observaciones clave:
 
 \begin{itemize}
 \tightlist
 \item
-  \(N0_2\) y \(O_3\) presentan una relación inversa (-0,64). Cuando las
+  \(NO_2\) y \(O_3\) presentan una relación inversa (-0,64). Cuando las
   medias diarias de \(N0_2\) son mayores, las de \(O_3\) tienden a ser
   menores.
 \item
-  \(N0_2\) está muy correlacionado con \(NO\) (0,92) y \(NO_x\) (0,98)
+  \(NO_2\) está muy correlacionado con \(NO\) (0,92) y \(NO_x\) (0,98)
   indicando que presentan comportamientos monótonos muy similares por lo
   que \(NO_2\) puede servirnos como representante de interés para
   estudiar este grupo.
@@ -494,7 +494,7 @@ Hay tres obseravciones clave:
   relación que retomaremos al estudiar su comportamiento estacional.
 \end{itemize}
 
-Estos resultados nos permiten centrar el análisis posterior en \(N0_2\)
+Estos resultados nos permiten centrar el análisis posterior en \(NO_2\)
 y \(O_3\), dos contaminantes con comportamientos diferenciados y una
 relación inversa apreciable. Eso sí, correlación no significa
 causalidad. La matriz orienta nuestro análisis, pero no demuestra por sí
@@ -507,7 +507,7 @@ medición}\label{distribuciuxf3n-de-los-principales-contaminantes-entre-las-esta
 Nos centramos ahora en dar respuesta a la primera pregunta formulada:
 ¿Cómo se distribuyen los niveles de \(NO_{2}\) y \(O_{3}\) entre las
 distintas estaciones de medición de la ciudad de Valencia? Para ello,
-visualizaremos como se distribuyen los distintos contaminantes por
+visualizaremos cómo se distribuyen los distintos contaminantes por
 estación usando un boxplot para cada contaminante:
 
 \begin{Shaded}
@@ -559,12 +559,12 @@ estación}{Distribución del \textbackslash mathbf\{NO\_\{2\}\} por estación}}\
 
 Aunque, en general, la forma de la distribución parece no variar mucho
 entre estaciones, podemos resaltar algunas diferencias significativas.
-\texttt{Pista\ de\ silla} presenta una de las concentraciones medianas
-más elevadas, así como la mayor dispersión de valores centrales. De
-forma opuesta, \texttt{Politécnico} presenta la concentración mediana
-más baja, así como los valores centrales menos dispersos. Destaca
-también que las estaciones de \texttt{Avda\ Francia} y
-\texttt{Bulevard\ Sud} presentan los mayores picos de concentración
+\texttt{Pista\ Silla} presenta una de las concentraciones medianas más
+elevadas, así como la mayor dispersión de valores centrales. De forma
+opuesta, \texttt{Politécnico} presenta la concentración mediana más
+baja, así como los valores centrales menos dispersos. Destaca también
+que las estaciones de \texttt{Avda\ Francia} y \texttt{Bulevard\ Sud}
+presentan los mayores picos de concentración.
 
 \subsection{\texorpdfstring{Distribución del \(\mathbf{O_{3}}\) por
 estación}{Distribución del \textbackslash mathbf\{O\_\{3\}\} por estación}}\label{distribuciuxf3n-del-mathbfo_3-por-estaciuxf3n}
@@ -634,12 +634,12 @@ trabaja con los \texttt{datos\_filtrados}, calculando las medias con
 \NormalTok{var\_alarma\_2019 }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ (no2\_2020 }\SpecialCharTok{{-}}\NormalTok{ no2\_2019) }\SpecialCharTok{/}\NormalTok{ no2\_2019, }\DecValTok{1}\NormalTok{))}
 \NormalTok{var\_alarma\_2021 }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ (no2\_2021 }\SpecialCharTok{{-}}\NormalTok{ no2\_2020) }\SpecialCharTok{/}\NormalTok{ no2\_2020, }\DecValTok{1}\NormalTok{))}
 
-\FunctionTok{cat}\NormalTok{(}\StringTok{"El No2 un año antes del inicio del estado de alarma fue un"}\NormalTok{, var\_alarma\_2019, }\StringTok{"\% mas }\SpecialCharTok{\textbackslash{}n}\StringTok{ que durante el estado de alarma, y un "}\NormalTok{, var\_alarma\_2021, }\StringTok{"\% menos que un año después }\SpecialCharTok{\textbackslash{}n}\StringTok{ del inicio del estado de alarma."}\NormalTok{)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"El NO2 un año antes del inicio del estado de alarma fue un"}\NormalTok{, var\_alarma\_2019, }\StringTok{"\% mas }\SpecialCharTok{\textbackslash{}n}\StringTok{ que durante el estado de alarma, y un "}\NormalTok{, var\_alarma\_2021, }\StringTok{"\% menos que un año después }\SpecialCharTok{\textbackslash{}n}\StringTok{ del inicio del estado de alarma."}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## El No2 un año antes del inicio del estado de alarma fue un 46.4 % mas 
+## El NO2 un año antes del inicio del estado de alarma fue un 46.4 % mas 
 ##  que durante el estado de alarma, y un  47.7 % menos que un año después 
 ##  del inicio del estado de alarma.
 \end{verbatim}
@@ -720,7 +720,7 @@ hasta 2021, compatible con un menor consumo de ozono al haber menos
 \(O_3\) y lo destruyen. En la estacionalidad, el \(NO_2\) alcanza sus
 máximos en invierno, lo que concuerda con un mayor tráfico, y el \(O_3\)
 en primavera y verano, en línea con su origen fotoquímico: no se emite
-directamente, sino que se forma cuando la radiación.
+directamente, sino que se forma cuando incide la radiación solar.
 
 \subsection{Ciclo horario: laborables frente a fines de
 semana}\label{ciclo-horario-laborables-frente-a-fines-de-semana}
@@ -805,16 +805,15 @@ con la caída del sol.
 No obstante, este breve análisis sobre los valores atípicos detectados
 no debe entenderse como un criterio absoluto para determinar si son
 errores de medición o no, sino más bien como una primera aproximación a
-una discusión mucho más profunda. Si bien los valores detectados para el
-\(O_{3}\) no estaban muy por encima, en general, de los bigotes; los
-valores detectados para el \(NO_{2}\) alcanzaban concentraciones hasta
-más de 100 unidades por encima del límite superior. Por ello, sería
-también interesante estudiar en que estaciones se producen estos valores
-tan altos (si están localizadas en zonas con mucho o poco tráfico), en
-que día se produjeron, en que condiciones de temperatura y radiación,
-etc. Sin embargo, debido a la escasez de espacio, nos conformamos con
-dar una primera aproximación analizando la distribución de estos valores
-por horas.
+una discusión mucho más profunda. Mientras que los valores atípicos del
+\(O_3\) se situaban, en general, relativamente cerca del umbral
+superior, algunos valores atípicos del \(NO_2\) alcanzaban
+concentraciones considerablemente más elevadas. Por ello, sería también
+interesante estudiar en qué estaciones se producen estos valores tan
+altos (si están localizadas en zonas con mucho o poco tráfico), en qué
+día se produjeron, en qué condiciones de temperatura y radiación, etc.
+Sin embargo, por limitaciones de espacio, presentamos una primera
+aproximación analizando la distribución horaria de estos valores.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
